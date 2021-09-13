@@ -74,12 +74,12 @@ void MarketWatcher::ChangeState(MarketState *State) {
       delete CurrentState;
    }
    CurrentState = State;
-   CurrentState.SetMarketWatcher(this);
+   CurrentState.SetMarketWatcher(GetPointer(this));
 }
 
 //--- Execution Logics From The Current State
-void   MarketWatcher::MonitorStateTransition(void)        { CurrentState.MonitorStateTransition();              }
-string MarketWatcher::GetStateName(void)                  { return CurrentState.GetStateName();                 }
+void   MarketWatcher::MonitorStateTransition(void) { CurrentState.MonitorStateTransition(); }
+string MarketWatcher::GetStateName(void)           { return CurrentState.GetStateName();    }
 
 //--- Services For State Class To Use
 int MarketWatcher::GetInChannelBuffer(void)  { return InChannelBuffer;  }
@@ -97,11 +97,11 @@ double MarketWatcher::GetLowestAskPrice(void)         { return LowestAskPrice;  
 double MarketWatcher::GetLowestBuyStopLossLevel(void) { return LowestBuyStopLossLevel; }
 
 int MarketWatcher::GetCurrentDiffFastFAMA_HighestFastFAMA_Pts(void) {
-   return PriceToPointCvt(IP.GetSymbol(), MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetHighestFastFAMA()));
+   return PriceToPointCvt(MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetHighestFastFAMA()));
 }
 
 int MarketWatcher::GetCurrentDiffFastFAMA_LowestFastFAMA_Pts(void) {
-   return PriceToPointCvt(IP.GetSymbol(), MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetLowestFastFAMA()));
+   return PriceToPointCvt(MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetLowestFastFAMA()));
 }
 
 //--- Tracking Helper Functions

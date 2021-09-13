@@ -1,7 +1,11 @@
 #ifndef MQL_TRADE_RESULT_H
 #define MQL_TRADE_RESULT_H
 
-class MqlTradeResultWrapper
+#include <Generic/Interfaces/IComparable.mqh>
+
+#include "../General/GlobalConstants.mqh"
+
+class MqlTradeResultWrapper : public IComparable<MqlTradeResultWrapper*>
 {
 public:
    //--- Default Constructor
@@ -13,6 +17,12 @@ public:
    //--- Revert Back To Struct Format
    void Unwrap(MqlTradeResult &result);
    
+   //--- Required ADT Functions
+   int  Compare(MqlTradeResultWrapper* Other) override;
+   bool Equals(MqlTradeResultWrapper* Other) override;
+   int  HashCode() override;
+   
+   //--- Attributes   
    uint     retcode;
    ulong    deal;
    ulong    order;

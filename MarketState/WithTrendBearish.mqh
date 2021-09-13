@@ -14,9 +14,11 @@ private:
    bool IsWithTrendBearishToRanging(void);
    bool IsWithTrendBearishToCounterTrendBearish(void);
    
-   double GetCapstoneLevel(void);
-   double GetApexLevel(void);
+   int GetMaxIntervalSize(void);
+   int GetStopLossSize(void);
+   
    double GetStopLossLevel(void);
+   double GetCapstoneLevel(void);
 };
 
 #endif

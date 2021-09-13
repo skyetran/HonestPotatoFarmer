@@ -21,9 +21,11 @@ private:
    bool OneTimeExecutionFlag;
    double GetLastLowestFastFAMA(void);
    
-   double GetCapstoneLevel(void);
-   double GetApexLevel(void);
+   int GetMaxIntervalSize(void);
+   int GetStopLossSize(void);
+   
    double GetStopLossLevel(void);
+   double GetCapstoneLevel(void);
 };
 
 #endif

@@ -38,6 +38,14 @@ bool PositionManagementHyperParameters::LogMinLevel(const int &InputMinLevel) {
    return false;
 }
 
+bool PositionManagementHyperParameters::LogOutOfBoundBuffer(const int &InputOutOfBoundBuffer) {
+   if (IsOutOfBoundBufferValid(InputOutOfBoundBuffer)) {
+      OutOfBoundBuffer = InputOutOfBoundBuffer;
+      return true;
+   }
+   return false;
+}
+
 //--- Validation
 bool PositionManagementHyperParameters::IsSlippageValid(const int &InputSlippage) {
    return MIN_SLIPPAGE <= InputSlippage && InputSlippage <= MAX_SLIPPAGE;
@@ -51,7 +59,12 @@ bool PositionManagementHyperParameters::IsMinLevelValid(const int &InputMinLevel
    return InputMinLevel >= MIN_MIN_LEVEL;
 }
 
+bool PositionManagementHyperParameters::IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer) {
+   return InputOutOfBoundBuffer >= MIN_OUT_OF_BOUND_BUFFER;
+}
+
 //--- Getters
 int PositionManagementHyperParameters::GetSlippage(void)              { return Slippage;              }
 int PositionManagementHyperParameters::GetIntervalSizeIncrement(void) { return IntervalSizeIncrement; }
 int PositionManagementHyperParameters::GetMinLevel(void)              { return MinLevel;              }
+int PositionManagementHyperParameters::GetOutOfBoundBuffer(void)      { return OutOfBoundBuffer;      }

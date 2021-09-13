@@ -1,7 +1,12 @@
 #ifndef MQL_TRADE_REQUEST_WRAPPER_H
 #define MQL_TRADE_REQUEST_WRAPPER_H
 
-class MqlTradeRequestWrapper
+#include <Generic/Interfaces/IComparable.mqh>
+
+#include "../General/GlobalConstants.mqh"
+#include "../General/IndicatorProcessor.mqh"
+
+class MqlTradeRequestWrapper : public IComparable<MqlTradeRequestWrapper*>
 {
 public:
    //--- Default Constructor
@@ -12,7 +17,12 @@ public:
    
    //--- Revert Back To Struct Format
    void Unwrap(MqlTradeRequest &request);
-
+   
+   //--- Required ADT Functions
+   int  Compare(MqlTradeRequestWrapper* Other) override;
+   bool Equals(MqlTradeRequestWrapper* Other) override;
+   int  HashCode() override;
+   
    //--- Attributes
    ENUM_TRADE_REQUEST_ACTIONS    action;
    ulong                         magic;
@@ -31,6 +41,9 @@ public:
    string                        comment;
    ulong                         position;
    ulong                         position_by;
+
+private:
+   IndicatorProcessor *IP;
 };
 
 #endif

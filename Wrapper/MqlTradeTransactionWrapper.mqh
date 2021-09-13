@@ -1,7 +1,11 @@
 #ifndef MQL_TRADE_TRANSACTION_WRAPPER_H
 #define MQL_TRADE_TRANSACTION_WRAPPER_H
 
-class MqlTradeTransactionWrapper
+#include <Generic/Interfaces/IComparable.mqh>
+
+#include "../General/GlobalConstants.mqh"
+
+class MqlTradeTransactionWrapper : public IComparable<MqlTradeTransactionWrapper*>
 {
 public:
    //--- Default Constructor
@@ -13,6 +17,12 @@ public:
    //--- Revert Back To Struct Format
    void Unwrap(MqlTradeTransaction &trans);
    
+   //--- Required ADT Functions
+   int  Compare(MqlTradeTransactionWrapper* Other) override;
+   bool Equals(MqlTradeTransactionWrapper* Other) override;
+   int  HashCode() override;
+   
+   //--- Attributes
    ulong                         deal;
    ulong                         order;
    string                        symbol;

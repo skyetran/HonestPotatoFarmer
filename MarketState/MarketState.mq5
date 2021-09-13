@@ -5,15 +5,15 @@
 //--- Main Constructor
 MarketState::MarketState(void) {
    IP = IndicatorProcessor::GetInstance();
-   EntryPosition = 0;
+   EntryPositionID = 0;
 }
 
 //--- Set Reference Back To The Main Cordinator
-void MarketState::SetMarketWatcher(MarketWatcher &Watcher) {
-   MW = GetPointer(Watcher);
+void MarketState::SetMarketWatcher(MarketWatcher *Watcher) {
+   MW = Watcher;
 }
 
 //--- Tracking Functions
-int  MarketState::GetEntryPosition(void)       { return EntryPosition;      }
-void MarketState::IncrementEntryPosition(void) { EntryPosition++;           }
-bool MarketState::IsFirstPosition(void)        { return EntryPosition == 0; }
+int  MarketState::GetEntryPosition(void)       { return EntryPositionID;      }
+void MarketState::IncrementEntryPosition(void) { EntryPositionID++;           }
+bool MarketState::IsFirstPosition(void)        { return EntryPositionID == 0; }

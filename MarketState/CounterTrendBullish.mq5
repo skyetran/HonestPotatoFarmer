@@ -28,7 +28,7 @@ bool CounterTrendBullish::IsCounterTrendBullishToWithTrendBullish(void) {
 
 bool CounterTrendBullish::IsCounterTrendBullishToRanging(void) {
    return IP.GetFastFAMA(CURRENT_BAR) < GetLastHighestFastFAMA()                                                                  &&
-          PriceToPointCvt(IP.GetSymbol(), MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetLastHighestFastFAMA())) > MW.GetWiggleBuffer() &&
+          PriceToPointCvt(MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetLastHighestFastFAMA())) > MW.GetWiggleBuffer() &&
           IP.HasTouchedUpperSSB(CURRENT_BAR)                                                                                       ;
 }
 
@@ -40,7 +40,7 @@ bool CounterTrendBullish::IsCounterTrendBullishToWithTrendBearish(void) {
 double CounterTrendBullish::GetLastHighestFastFAMA(void) {
    static double LastHighestFastFAMA;
    if (OneTimeExecutionFlag) {
-      LastHighestFastFAMA = MW.GetHighestFastFAMA() + PointToPriceCvt(IP.GetSymbol(), MW.GetWiggleBuffer());
+      LastHighestFastFAMA = MW.GetHighestFastFAMA() + PointToPriceCvt(MW.GetWiggleBuffer());
       OneTimeExecutionFlag = false;
    }
    return LastHighestFastFAMA;
@@ -50,17 +50,25 @@ string CounterTrendBullish::GetStateName(void) {
    return "Counter-Trend Bullish";
 }
 
+int CounterTrendBullish::GetMaxIntervalSize(void) {
+   int FirstMaxIntervalSizeOption  = PriceToPointCvt(GetCapstoneLevel() - IP.GetLowerSSB(CURRENT_BAR));
+   int SecondMaxIntervalSizeOption = IP.GetTakeProfitVolatilityInPts(CURRENT_BAR);
+   return MathMax(FirstMaxIntervalSizeOption, SecondMaxIntervalSizeOption);
+}
+
+int CounterTrendBullish::GetStopLossSize(void) {
+   return PriceToPointCvt(GetStopLossLevel() - GetCapstoneLevel());
+}
+
+double CounterTrendBullish::GetStopLossLevel(void) {
+   double FirstStopLossLevelOption = IP.GetSellStopLossLevel(CURRENT_BAR);
+   double SecondStopLossLevelOption = GetCapstoneLevel() + IP.GetStopLossVolatilityInPrice(CURRENT_BAR);
+   return MathMax(FirstStopLossLevelOption, SecondStopLossLevelOption);
+}
+
 double CounterTrendBullish::GetCapstoneLevel(void) {
    if (IsFirstPosition()) {
       return IP.GetFastMAMA(CURRENT_BAR);
    }
    return IP.GetFastFAMA(CURRENT_BAR);
-}
-
-double CounterTrendBullish::GetApexLevel(void) {
-   return IP.GetLowerSSB(CURRENT_BAR);
-}
-
-double CounterTrendBullish::GetStopLossLevel(void) {
-   return IP.GetSellStopLossLevel(CURRENT_BAR);
 }

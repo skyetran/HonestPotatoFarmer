@@ -4,11 +4,11 @@
 //|                        https://www.linkedin.com/in/skye-leblanc/ |
 //+------------------------------------------------------------------+
 
+#include "ConstructManagement/Construct/Construct.mqh"
 #include "General/MoneyManagementHyperParameters.mqh"
 #include "General/PositionManagementHyperParameters.mqh"
 #include "MarketState/Ranging.mqh"
 #include "MarketWatcher.mqh"
-#include "OrderManager.mqh"
 
 extern string           Text1                               = "Indicators Settings";
 input  double           FastMAMA_FastLimit                  = 0.5;
@@ -28,11 +28,13 @@ input  int              WiggleBuffer                        = 5;
 extern string           Text3                               = "Money Management Settings";
 input  double           TimidFractionalKelly                = 0.4;
 input  double           BoldFractionalKelly                 = 0.8;
+input  double           CommissionPerStandardLot            = 0.0;
 
 extern string           Text4                               = "Trade Settings (Points)";
-input  int              Slippage                            = 10;
+input  int              Slippage                            = 5;
 input  int              IntervalSizeIncrement               = 5;
 input  int              MinLevel                            = 3;
+input  int              OutOfBoundBuffer                    = 40;
 
 //--- Global Variables
 IndicatorProcessor *IP = IndicatorProcessor::GetInstance();
@@ -50,8 +52,6 @@ int OnInit()
 
 //--- Set Hyperparameters To Indicators
 bool InitIndicator(void) {
-   IP.SetSymbol(Symbol());
-   IP.SetTimeFrame(Period());
    if (IP.SetFastMAMAParameters(FastMAMA_FastLimit, FastMAMA_SlowLimit)                      &&
        IP.SetSlowMAMAParameters(SlowMAMA_FastLimit, SlowMAMA_SlowLimit)                      &&
        IP.SetSSBParameters(SSB_AttenuationPeriod, SSB_MarketAlpha, SSB_Beta)                 &&
@@ -71,22 +71,24 @@ bool InitMarketWatcher(void) {
 
 //--- Set Hyperparameters For Money Management
 bool InitMoneyManagement(void) {
-   return MMHP.LogTimidFractionalKelly(TimidFractionalKelly) &&
-          MMHP.LogBoldFractionalKelly(BoldFractionalKelly)    ;
+   return MMHP.LogTimidFractionalKelly(TimidFractionalKelly)         &&
+          MMHP.LogBoldFractionalKelly(BoldFractionalKelly)           &&
+          MMHP.LogCommissionPerStandardLot(CommissionPerStandardLot)  ;
 }
 
 //--- Set Hyperparameter For Position Management
 bool InitPositionManagement(void) {
    return PMHP.LogSlippage(Slippage)                           &&
           PMHP.LogIntervalSizeIncrement(IntervalSizeIncrement) &&
-          PMHP.LogMinLevel(MinLevel)                            ;
+          PMHP.LogMinLevel(MinLevel)                           &&
+          PMHP.LogOutOfBoundBuffer(OutOfBoundBuffer)            ;
 }
 
 void OnTick()
 {
    Update();
    string DebugMsg;
-   DebugMsg += IP.GetDebugMessage() + "\n";
+   //DebugMsg += IP.GetDebugMessage() + "\n";
    DebugMsg += MW.GetDebugMessage();
    Comment(DebugMsg);
 }

@@ -27,20 +27,25 @@ string WithTrendBullish::GetStateName(void) {
    return "With-Trend Bullish";
 }
 
+int WithTrendBullish::GetMaxIntervalSize(void) {
+   int FirstMaxIntervalSizeOption  = PriceToPointCvt(IP.GetUpperSSB(CURRENT_BAR) - GetCapstoneLevel());
+   int SecondMaxIntervalSizeOption = IP.GetTakeProfitVolatilityInPts(CURRENT_BAR);
+   return MathMax(FirstMaxIntervalSizeOption, SecondMaxIntervalSizeOption);
+}
+
+int WithTrendBullish::GetStopLossSize(void) {
+   return PriceToPointCvt(GetCapstoneLevel() - GetStopLossLevel());
+}
+
+double WithTrendBullish::GetStopLossLevel(void) {
+   double FirstStopLossLevelOption = IP.GetBuyStopLossLevel(CURRENT_BAR);
+   double SecondStopLossLevelOption = GetCapstoneLevel() - IP.GetStopLossVolatilityInPrice(CURRENT_BAR);
+   return MathMin(FirstStopLossLevelOption, SecondStopLossLevelOption);
+}
+
 double WithTrendBullish::GetCapstoneLevel(void) {
    if (IsFirstPosition()) {
       return IP.GetFastMAMA(CURRENT_BAR);
    }
    return IP.GetFastFAMA(CURRENT_BAR);
-}
-
-double WithTrendBullish::GetApexLevel(void) {
-   if (IsFirstPosition()) {
-      return IP.GetSellStopLossLevel(CURRENT_BAR);
-   }
-   return IP.GetUpperSSB(CURRENT_BAR);
-}
-
-double WithTrendBullish::GetStopLossLevel(void) {
-   return IP.GetBuyStopLossLevel(CURRENT_BAR);
 }

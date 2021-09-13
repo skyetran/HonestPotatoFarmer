@@ -5,6 +5,7 @@
 #define MAX_SLIPPAGE                20
 #define MIN_INTERVAL_SIZE_INCREMENT 2
 #define MIN_MIN_LEVEL               3
+#define MIN_OUT_OF_BOUND_BUFFER     30
 
 class PositionManagementHyperParameters
 {
@@ -16,11 +17,13 @@ public:
    bool LogSlippage(const int &InputSlippage);
    bool LogIntervalSizeIncrement(const int &InputIntervalSizeIncrement);
    bool LogMinLevel(const int &InputMinLevel);
+   bool LogOutOfBoundBuffer(const int &InputOutOfBoundBuffer);
 
    //--- Getters
    int GetSlippage(void);
    int GetIntervalSizeIncrement(void);
    int GetMinLevel(void);
+   int GetOutOfBoundBuffer(void);
 
 private:
    //--- Main Constructor --- Singleton
@@ -30,6 +33,7 @@ private:
    int Slippage;
    int IntervalSizeIncrement;
    int MinLevel;
+   int OutOfBoundBuffer;
    
    static PositionManagementHyperParameters *Instance;
    
@@ -37,6 +41,7 @@ private:
    bool IsSlippageValid(const int &InputSlippage);
    bool IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement);
    bool IsMinLevelValid(const int &InputMinLevel);
+   bool IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer);
 };
 
 PositionManagementHyperParameters* PositionManagementHyperParameters::Instance = NULL;

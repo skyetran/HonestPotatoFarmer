@@ -3,7 +3,9 @@
 #include "../Wrapper/MqlTradeRequestWrapper.mqh"
 
 //--- Default Constructor
-MqlTradeRequestWrapper::MqlTradeRequestWrapper(void) { }
+MqlTradeRequestWrapper::MqlTradeRequestWrapper(void) {
+   IP = IndicatorProcessor::GetInstance();
+}
 
 //--- Main Constructor
 MqlTradeRequestWrapper::MqlTradeRequestWrapper(MqlTradeRequest &request) {

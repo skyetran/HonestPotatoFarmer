@@ -28,7 +28,7 @@ bool CounterTrendBearish::IsCounterTrendBearishToWithTrendBearish(void) {
 
 bool CounterTrendBearish::IsCounterTrendBearishToRanging(void) {
    return IP.GetFastFAMA(CURRENT_BAR) > GetLastLowestFastFAMA()                                                                  &&
-          PriceToPointCvt(IP.GetSymbol(), MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetLastLowestFastFAMA())) > MW.GetWiggleBuffer() &&
+          PriceToPointCvt(MathAbs(IP.GetFastFAMA(CURRENT_BAR) - GetLastLowestFastFAMA())) > MW.GetWiggleBuffer() &&
           IP.HasTouchedLowerSSB(CURRENT_BAR)                                                                                      ;
 }
 
@@ -40,7 +40,7 @@ bool CounterTrendBearish::IsCounterTrendBearishToWithTrendBullish(void) {
 double CounterTrendBearish::GetLastLowestFastFAMA(void) {
    static double LastLowestFastFAMA;
    if (OneTimeExecutionFlag) {
-      LastLowestFastFAMA = MW.GetLowestFastFAMA() - PointToPriceCvt(IP.GetSymbol(), MW.GetWiggleBuffer());
+      LastLowestFastFAMA = MW.GetLowestFastFAMA() - PointToPriceCvt(MW.GetWiggleBuffer());
       OneTimeExecutionFlag = false;
    }
    return LastLowestFastFAMA;
@@ -50,17 +50,25 @@ string CounterTrendBearish::GetStateName(void) {
    return "Counter-Trend Bearish";
 }
 
+int CounterTrendBearish::GetMaxIntervalSize(void) {
+   int FirstMaxIntervalSizeOption  = PriceToPointCvt(IP.GetUpperSSB(CURRENT_BAR) - GetCapstoneLevel());
+   int SecondMaxIntervalSizeOption = IP.GetTakeProfitVolatilityInPts(CURRENT_BAR);
+   return MathMax(FirstMaxIntervalSizeOption, SecondMaxIntervalSizeOption);
+}
+
+int CounterTrendBearish::GetStopLossSize(void) {
+   return PriceToPointCvt(GetCapstoneLevel() - GetStopLossLevel());
+}
+
+double CounterTrendBearish::GetStopLossLevel(void) {
+   double FirstStopLossLevelOption = IP.GetBuyStopLossLevel(CURRENT_BAR);
+   double SecondStopLossLevelOption = GetCapstoneLevel() - IP.GetStopLossVolatilityInPrice(CURRENT_BAR);
+   return MathMin(FirstStopLossLevelOption, SecondStopLossLevelOption);
+}
+
 double CounterTrendBearish::GetCapstoneLevel(void) {
    if (IsFirstPosition()) {
       return IP.GetFastMAMA(CURRENT_BAR);
    }
    return IP.GetFastFAMA(CURRENT_BAR);
-}
-
-double CounterTrendBearish::GetApexLevel(void) {
-   return IP.GetUpperSSB(CURRENT_BAR);
-}
-
-double CounterTrendBearish::GetStopLossLevel(void) {
-   return IP.GetBuyStopLossLevel(CURRENT_BAR);
 }
