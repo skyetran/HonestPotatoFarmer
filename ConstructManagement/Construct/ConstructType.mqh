@@ -15,8 +15,8 @@ public:
    ConstructType(const ENUM_CONSTRUCT_CLASS &InputClass, const int &InputLevel);
    
    //--- Getter
-   ENUM_CONSTRUCT_CLASS GetClass(void)         const;
-   int                  GetLevel(void)         const;
+   ENUM_CONSTRUCT_CLASS GetClass(void) const;
+   int                  GetLevel(void) const;
    
    //--- Required ADT Functions
    int  Compare(ConstructType* Other) override;

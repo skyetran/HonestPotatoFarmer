@@ -20,8 +20,8 @@ public:
    
    //--- Required ADT Functions
    int  Compare(ConstructParameters* Other) override;
-   bool Equals(ConstructParameters* Other) override;
-   int  HashCode() override;
+   bool Equals(ConstructParameters* Other)  override;
+   int  HashCode()                          override;
 
 private:
    double CapstoneLevel;

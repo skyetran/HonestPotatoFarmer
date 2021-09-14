@@ -22,8 +22,11 @@ public:
    //--- Add New Construct To The Inventory
    void Add(Construct *NewConstruct);
    
-   //--- Retrieve Construct With The Corresponding Parameters
-   Construct *Retrieve(ConstructType *Parameters);
+   //--- Retrieve Construct With The Corresponding Type
+   Construct *RetrieveConstruct(ConstructType *Type);
+   
+   //--- Retrieve Construct Multiplier With The Corresponding Type
+   int RetrieveMultiplier(ConstructType *Type);
    
    //--- Clear All Inventory
    void Clear(void);

@@ -2,10 +2,16 @@
 #define CONSTRUCT_FACTORY_H
 
 #include "../Construct/Construct.mqh"
-#include "../General/GlobalCosntants.mqh"
 
-class ConstructFactory {
-   virtual Construct *Create() = NULL;
+class ConstructFactory
+{
+public:
+   //--- Constructor
+   ConstructFactory(void);
+   
+   //--- Operations
+   virtual ConstructPreCheckInfo *PreCheck(Construct *construct) = NULL;   
+   virtual Construct             *Create(void)                   = NULL;
 };
 
 #endif

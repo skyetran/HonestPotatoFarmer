@@ -16,6 +16,8 @@ class ConstructFactory;
 
 class ConstructMonitor;
 
+class Accountant;
+
 class Construct
 {
 public:
@@ -26,16 +28,19 @@ public:
    virtual ~Construct(void);
    
    //--- Register Construct Type To The Right Construct Factory
-   static void RegisterType(ConstructType *Type, ConstructFactory *Factory);
+   static void RegisterType(ConstructType *InputType, ConstructFactory *InputFactory);
    
    //--- Register Construct Type To The Right Construct Monitor
-   static void RegisterMonitor(ConstructType *Type, ConstructMonitor *Monitor);
+   static void RegisterMonitor(ConstructType *InputType, ConstructMonitor *InputMonitor);
+   
+   //--- Register Construct Type To The Right Accountant
+   static void RegisterAccountant(ConstructType *InputType, Accountant* InputAccountant);
    
    //--- Return Key Variables To Check If Construct Meet Requirements --- Validation Happens Elsewhere
-   static ConstructPreCheckInfo *PreCheck(ConstructType *Type, ConstructParameters *Parameters);
+   static ConstructPreCheckInfo *PreCheck(ConstructType *InputType, ConstructParameters *InputParameters);
    
    //--- Find The Corresponding Construct Factory And Get Factory To Create The Construct
-   static Construct *create(ConstructType *Type, ConstructParameters *Parameters);
+   static Construct *create(ConstructType *InputType, ConstructParameters *InputParameters);
    
    //--- Getters
    ConstructKey         *GetConstructKey(void)         const;
@@ -43,13 +48,13 @@ public:
    ConstructType        *GetConstructType(void)        const;
    ConstructRollingInfo *GetConstructRollingInfo(void) const;
    ConstructResultInfo  *GetConstructResultInfo(void)  const;
+   ConstructTradePool   *GetConstructTradePool(void)   const;
 
-   //--- Setters
-   void SetConstructParameters(ConstructParameters *InputParameters);
-
-   //--- Main Operation
-   ConstructTradePool *GetConstructTradePool(void);
-   void Update(void);
+   //--- Main Operations
+   //--- Find The Right Monitor And Run OnTick Update
+   void UpdateTradePool(void);
+   void UpdateFinance(void);
+   void UpdateRisk(void);
 
 protected:
    //--- External Attributes
@@ -64,19 +69,27 @@ protected:
    ConstructRollingInfo  *RollingInfo;
    ConstructType         *Type;
    
-   virtual void FillTradePool(void) = NULL;
-   
    //--- Validation
-   virtual bool IsConstructValid(void)             const = NULL;
-   virtual bool IsConstructKeyValid(void)          const = NULL;
-   virtual bool IsConstructParametersValid(void)   const = NULL;
-   virtual bool IsConstructTypeValid(void)         const = NULL;
+   bool IsConstructValid(void)           const;
+   bool IsConstructKeyValid(void)        const;
+   bool IsConstructParametersValid(void) const;
+   bool IsConstructTypeValid(void)       const;
    
 private:
-   static CHashMap<ConstructType*, ConstructFactory*> *GetConstructFactories() {
+   static CHashMap<ConstructType*, ConstructFactory*> *GetConstructFactories(void) {
       static CHashMap<ConstructType*, ConstructFactory*> *ConstructFactories;
       return ConstructFactories;
    };
+   
+   static CHashMap<ConstructType*, ConstructMonitor*> *GetConstructMonitors(void) {
+      static CHashMap<ConstructType*, ConstructMonitor*> *ConstructMonitors;
+      return ConstructMonitors;
+   }
+   
+   static CHashMap<ConstructType*, Accountant*> *GetAccountants(void) {
+      static CHashMap<ConstructType*, Accountant*> *Accountants;
+      return Accountants;
+   }
 };
 
 #endif

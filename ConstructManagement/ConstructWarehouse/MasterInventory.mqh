@@ -20,7 +20,10 @@ public:
    void Insert(Construct *NewConstruct);
    
    //--- Retrieve Construct With The Corresponding Key
-   Construct *Retrieve(ContructKey *RetrievedKey);
+   Construct *RetrieveConstruct(ContructKey *RetrievedKey);
+   
+   //--- Retrieve Construct Multiplier With The Corresponding Key
+   int RetrieveMultiplier(ConstructKey *RetrieveKey);
    
    //--- Clear All Construct
    void Clear(void);
