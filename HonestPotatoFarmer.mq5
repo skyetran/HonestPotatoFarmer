@@ -36,6 +36,9 @@ input  int              IntervalSizeIncrement               = 5;
 input  int              MinLevel                            = 3;
 input  int              OutOfBoundBuffer                    = 40;
 
+extern string           Text5                               = "Execution Settings";
+input  int              RateOfOperationsPerSecond           = 50;
+
 //--- Global Variables
 IndicatorProcessor *IP = IndicatorProcessor::GetInstance();
 MarketWatcher *MW = new MarketWatcher(new Ranging());
@@ -89,7 +92,8 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   DebugMsg += MW.GetDebugMessage();
+   //DebugMsg += MW.GetDebugMessage();
+   
    Comment(DebugMsg);
 }
 

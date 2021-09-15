@@ -5,18 +5,16 @@
 
 #include "../../General/PositionManagementHyperParameters.mqh"
 #include "../../OrderManagement/ConstructTradePool.mqh"
-#include "ConstructKey.mqh"
-#include "ConstructParameters.mqh"
-#include "ConstructPreCheckInfo.mqh"
-#include "ConstructResultInfo.mqh"
-#include "ConstructRollingInfo.mqh"
-#include "ConstructType.mqh"
+#include "Key.mqh"
+#include "Parameters.mqh"
+#include "PreCheckInfo.mqh"
+#include "ResultInfo.mqh"
+#include "RollingInfo.mqh"
+#include "Type.mqh"
 
 class ConstructFactory;
 
 class ConstructMonitor;
-
-class Accountant;
 
 class Construct
 {
@@ -32,9 +30,6 @@ public:
    
    //--- Register Construct Type To The Right Construct Monitor
    static void RegisterMonitor(ConstructType *InputType, ConstructMonitor *InputMonitor);
-   
-   //--- Register Construct Type To The Right Accountant
-   static void RegisterAccountant(ConstructType *InputType, Accountant* InputAccountant);
    
    //--- Return Key Variables To Check If Construct Meet Requirements --- Validation Happens Elsewhere
    static ConstructPreCheckInfo *PreCheck(ConstructType *InputType, ConstructParameters *InputParameters);
@@ -55,6 +50,9 @@ public:
    void UpdateTradePool(void);
    void UpdateFinance(void);
    void UpdateRisk(void);
+   
+   //--- Report Result To The Right Accountant Based On EntryPositionID & Construct Type
+   void Report(void);
 
 protected:
    //--- External Attributes
@@ -84,11 +82,6 @@ private:
    static CHashMap<ConstructType*, ConstructMonitor*> *GetConstructMonitors(void) {
       static CHashMap<ConstructType*, ConstructMonitor*> *ConstructMonitors;
       return ConstructMonitors;
-   }
-   
-   static CHashMap<ConstructType*, Accountant*> *GetAccountants(void) {
-      static CHashMap<ConstructType*, Accountant*> *Accountants;
-      return Accountants;
    }
 };
 
