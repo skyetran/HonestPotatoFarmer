@@ -12,7 +12,7 @@ public:
    ConstructType(void);
    
    //--- Main Constructor
-   ConstructType(const ENUM_CONSTRUCT_CLASS &InputClass, const int &InputLevel);
+   ConstructType(ENUM_CONSTRUCT_CLASS InputClass, int InputLevel);
    
    //--- Getter
    ENUM_CONSTRUCT_CLASS GetClass(void) const;

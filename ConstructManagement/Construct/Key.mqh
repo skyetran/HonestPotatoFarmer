@@ -11,16 +11,14 @@ public:
    ConstructKey(void);
    
    //--- Main Constructor
-   ConstructKey(ConstructType *InputType, ConstructParameters *InputParameters, const int &EntryPositionID);
+   ConstructKey(ConstructType *InputType, ConstructParameters *InputParameters, int InputEntryPositionID);
    
    //--- Getters
-   string GetConstructKeyStr(void)                    const;
    ConstructType *GetConstructType(void)              const;
    ConstructParameters *GetConstructParameters(void)  const;
    int GetEntryPositionID(void)                       const;
    
 private:
-   string               ConstructKeyStr;
    ConstructType       *Type;
    ConstructParameters *Parameters;
    int                  EntryPositionID;

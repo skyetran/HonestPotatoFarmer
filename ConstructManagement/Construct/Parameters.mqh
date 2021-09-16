@@ -10,7 +10,7 @@ public:
    ConstructParameters(void);
    
    //--- Main Constructor
-   ConstructParameters(const double &InputCapstoneLevel, const double &InputApexLevel, const double &InputStopLossLevel, const int &InputIntervalSize);
+   ConstructParameters(double InputCapstoneLevel, double InputApexLevel, double InputStopLossLevel, int InputIntervalSize);
    
    //--- Getter
    double GetCapstoneLevel(void) const;
@@ -21,7 +21,7 @@ public:
    //--- Required ADT Functions
    int  Compare(ConstructParameters* Other) override;
    bool Equals(ConstructParameters* Other)  override;
-   int  HashCode()                          override;
+   int  HashCode(void)                      override;
 
 private:
    double CapstoneLevel;

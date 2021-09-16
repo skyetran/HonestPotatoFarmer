@@ -84,7 +84,7 @@ bool IndicatorProcessor::SetSlowMAMAParameters(const double &FastLimit, const do
 }
 
 //--- Validation: MAMA Indicator Checker
-bool IndicatorProcessor::IsMAMAValid(const double &FastLimit, const double &SlowLimit) {
+bool IndicatorProcessor::IsMAMAValid(const double &FastLimit, const double &SlowLimit) const {
    return FastLimit > MIN_MAMA_FAST_LIMIT && 
           SlowLimit > MIN_MAMA_SLOW_LIMIT && 
           FastLimit >= SlowLimit          ;
@@ -113,7 +113,7 @@ bool IndicatorProcessor::SetSSBStopLossParameters(const int &AttenuationPeriod, 
 }
 
 //--- Validation: SSB Indicator Checker
-bool IndicatorProcessor::IsSSBValid(const int &AttenuationPeriod, const double &Alpha, const double &Beta) {
+bool IndicatorProcessor::IsSSBValid(const int &AttenuationPeriod, const double &Alpha, const double &Beta) const {
    return AttenuationPeriod >= MIN_ATTENUATION_PERIOD &&
           Alpha             >= MIN_ALPHA              &&
           Alpha             <= MAX_ALPHA              &&
@@ -141,48 +141,48 @@ void IndicatorProcessor::Update(void) {
 }
 
 //--- Extract Raw Data From Indicators
-double IndicatorProcessor::GetFastMAMA(int Shift)           { return NormalizeDouble(FastMAMA_Buffer[Shift]    , Digits()); }
-double IndicatorProcessor::GetFastFAMA(int Shift)           { return NormalizeDouble(FastFAMA_Buffer[Shift]    , Digits()); }
-double IndicatorProcessor::GetSlowMAMA(int Shift)           { return NormalizeDouble(SlowMAMA_Buffer[Shift]    , Digits()); }
-double IndicatorProcessor::GetSlowFAMA(int Shift)           { return NormalizeDouble(SlowFAMA_Buffer[Shift]    , Digits()); }
-double IndicatorProcessor::GetUpperSSB(int Shift)           { return NormalizeDouble(UpperSSB_Buffer[Shift]    , Digits()); }
-double IndicatorProcessor::GetLowerSSB(int Shift)           { return NormalizeDouble(LowerSSB_Buffer[Shift]    , Digits()); }
-double IndicatorProcessor::GetFilteredPrice(int Shift)      { return NormalizeDouble(FilteredPriceBuffer[Shift], Digits()); }
-double IndicatorProcessor::GetBuyStopLossLevel(int Shift)   { return NormalizeDouble(BuyStopLossBuffer[Shift]  , Digits()); }
-double IndicatorProcessor::GetSellStopLossLevel(int Shift)  { return NormalizeDouble(SellStopLossBuffer[Shift] , Digits()); }
+double IndicatorProcessor::GetFastMAMA(const int Shift)          const { return NormalizeDouble(FastMAMA_Buffer[Shift]    , Digits()); }
+double IndicatorProcessor::GetFastFAMA(const int Shift)          const { return NormalizeDouble(FastFAMA_Buffer[Shift]    , Digits()); }
+double IndicatorProcessor::GetSlowMAMA(const int Shift)          const { return NormalizeDouble(SlowMAMA_Buffer[Shift]    , Digits()); }
+double IndicatorProcessor::GetSlowFAMA(const int Shift)          const { return NormalizeDouble(SlowFAMA_Buffer[Shift]    , Digits()); }
+double IndicatorProcessor::GetUpperSSB(const int Shift)          const { return NormalizeDouble(UpperSSB_Buffer[Shift]    , Digits()); }
+double IndicatorProcessor::GetLowerSSB(const int Shift)          const { return NormalizeDouble(LowerSSB_Buffer[Shift]    , Digits()); }
+double IndicatorProcessor::GetFilteredPrice(const int Shift)     const { return NormalizeDouble(FilteredPriceBuffer[Shift], Digits()); }
+double IndicatorProcessor::GetBuyStopLossLevel(const int Shift)  const { return NormalizeDouble(BuyStopLossBuffer[Shift]  , Digits()); }
+double IndicatorProcessor::GetSellStopLossLevel(const int Shift) const { return NormalizeDouble(SellStopLossBuffer[Shift] , Digits()); }
 
-int    IndicatorProcessor::GetOpenSpreadInPts(int Shift)    { return (int) (OpenSpread[Shift]);  }
-int    IndicatorProcessor::GetHighSpreadInPts(int Shift)    { return (int) (HighSpread[Shift]);  }
-int    IndicatorProcessor::GetLowSpreadInPts(int Shift)     { return (int) (LowSpread[Shift]);   }
-int    IndicatorProcessor::GetCloseSpreadInPts(int Shift)   { return (int) (CloseSpread[Shift]); }
-double IndicatorProcessor::GetAverageSpreadInPts(int Shift) { return AverageSpread[Shift];       }
+int    IndicatorProcessor::GetOpenSpreadInPts(const int Shift)    const { return (int) (OpenSpread[Shift]);  }
+int    IndicatorProcessor::GetHighSpreadInPts(const int Shift)    const { return (int) (HighSpread[Shift]);  }
+int    IndicatorProcessor::GetLowSpreadInPts(const int Shift)     const { return (int) (LowSpread[Shift]);   }
+int    IndicatorProcessor::GetCloseSpreadInPts(const int Shift)   const { return (int) (CloseSpread[Shift]); }
+double IndicatorProcessor::GetAverageSpreadInPts(const int Shift) const { return AverageSpread[Shift];       }
 
 //--- Preprocessed Raw Data From Indicators
-int IndicatorProcessor::GetDiffFastFAMA_SlowFAMA_Pts(int Shift) {
+int IndicatorProcessor::GetDiffFastFAMA_SlowFAMA_Pts(const int Shift) const {
    return PriceToPointCvt(MathAbs(FastFAMA_Buffer[Shift] - SlowFAMA_Buffer[Shift]));
 }
 
-bool IndicatorProcessor::HasTouchedUpperSSB(int Shift) { return GetBidPrice(Shift) > GetUpperSSB(Shift); }
-bool IndicatorProcessor::HasTouchedLowerSSB(int Shift) { return GetBidPrice(Shift) < GetLowerSSB(Shift); }
+bool IndicatorProcessor::HasTouchedUpperSSB(const int Shift) const { return GetBidPrice(Shift) > GetUpperSSB(Shift); }
+bool IndicatorProcessor::HasTouchedLowerSSB(const int Shift) const { return GetBidPrice(Shift) < GetLowerSSB(Shift); }
 
-double IndicatorProcessor::GetStopLossVolatilityInPrice(int Shift) {
+double IndicatorProcessor::GetStopLossVolatilityInPrice(const int Shift) const {
    return GetFilteredPrice(Shift) - GetBuyStopLossLevel(Shift);
 }
 
-double IndicatorProcessor::GetTakeProfitVolatilityInPrice(int Shift) {
+double IndicatorProcessor::GetTakeProfitVolatilityInPrice(const int Shift) const {
    return GetFilteredPrice(Shift) - GetLowerSSB(Shift);
 }
 
-int IndicatorProcessor::GetStopLossVolatilityInPts(int Shift) {
+int IndicatorProcessor::GetStopLossVolatilityInPts(const int Shift) const {
    return PriceToPointCvt(GetStopLossVolatilityInPrice(Shift));
 }
 
-int IndicatorProcessor::GetTakeProfitVolatilityInPts(int Shift) {
+int IndicatorProcessor::GetTakeProfitVolatilityInPts(const int Shift) const {
    return PriceToPointCvt(GetTakeProfitVolatilityInPrice(Shift));
 }
 
 //--- Additional Data
-double IndicatorProcessor::GetBidPrice(int Shift) { return iClose(CurrencyPair, TimeFrame, CURRENT_BAR); }
-double IndicatorProcessor::GetAskPrice(int Shift) { return GetBidPrice(Shift) + iSpread(CurrencyPair, TimeFrame, Shift); }
-double IndicatorProcessor::GetCurrentBid(void)    { return SymbolInfoDouble(CurrencyPair, SYMBOL_BID); }
-double IndicatorProcessor::GetCurrentAsk(void)    { return SymbolInfoDouble(CurrencyPair, SYMBOL_ASK); }
+double IndicatorProcessor::GetBidPrice(const int Shift) const { return iClose(CurrencyPair, TimeFrame, CURRENT_BAR);                 }
+double IndicatorProcessor::GetAskPrice(const int Shift) const { return GetBidPrice(Shift) + iSpread(CurrencyPair, TimeFrame, Shift); }
+double IndicatorProcessor::GetCurrentBid(void)          const { return SymbolInfoDouble(CurrencyPair, SYMBOL_BID);                   }
+double IndicatorProcessor::GetCurrentAsk(void)          const { return SymbolInfoDouble(CurrencyPair, SYMBOL_ASK);                   }

@@ -21,10 +21,10 @@ public:
    bool LogCommissionPerStandardLot(const double &InputCommissionPerStandardLot);
    
    //--- Getters
-   double GetTimidFractionalKelly(void);
-   double GetBoldFractionalKelly(void);
-   double GetCommisionCostInPrice(void);
-   int    GetCommissionCostInPts(void);
+   double GetTimidFractionalKelly(void) const;
+   double GetBoldFractionalKelly(void) const;
+   double GetCommisionCostInPrice(void) const;
+   int    GetCommissionCostInPts(void) const;
 
 private:
    IndicatorProcessor *IP;
@@ -39,11 +39,11 @@ private:
    static MoneyManagementHyperParameters *Instance;
    
    //--- Validation
-   bool IsFractionalKellyValid(const double &InputFractionalKelly);
-   bool IsCommissionPerStandardLotValid(const double &InputCommissionPerStandardLot);
+   bool IsFractionalKellyValid(const double &InputFractionalKelly) const;
+   bool IsCommissionPerStandardLotValid(const double &InputCommissionPerStandardLot) const;
    
    //--- Helper
-   double GetPointValuePerStandardLot(void);
+   double GetPointValuePerStandardLot(void) const;
 };
 
 MoneyManagementHyperParameters* MoneyManagementHyperParameters::Instance = NULL;

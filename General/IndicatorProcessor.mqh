@@ -50,36 +50,36 @@ public:
    void Update(void);
    
    //--- Extract Raw Data From Indicators
-   double GetFastMAMA(int Shift);
-   double GetFastFAMA(int Shift);
-   double GetSlowMAMA(int Shift);
-   double GetSlowFAMA(int Shift);
-   double GetUpperSSB(int Shift);
-   double GetLowerSSB(int Shift);
-   double GetFilteredPrice(int Shift);
-   double GetBuyStopLossLevel(int Shift);
-   double GetSellStopLossLevel(int Shift);
+   double GetFastMAMA(const int Shift) const;
+   double GetFastFAMA(const int Shift) const;
+   double GetSlowMAMA(const int Shift) const;
+   double GetSlowFAMA(const int Shift) const;
+   double GetUpperSSB(const int Shift) const;
+   double GetLowerSSB(const int Shift) const;
+   double GetFilteredPrice(const int Shift) const;
+   double GetBuyStopLossLevel(const int Shift) const;
+   double GetSellStopLossLevel(const int Shift) const;
    
-   int    GetOpenSpreadInPts(int Shift);
-   int    GetHighSpreadInPts(int Shift);
-   int    GetLowSpreadInPts(int Shift);
-   int    GetCloseSpreadInPts(int Shift);
-   double GetAverageSpreadInPts(int Shift);
+   int    GetOpenSpreadInPts(const int Shift) const;
+   int    GetHighSpreadInPts(const int Shift) const;
+   int    GetLowSpreadInPts(const int Shift) const;
+   int    GetCloseSpreadInPts(const int Shift) const;
+   double GetAverageSpreadInPts(const int Shift) const;
    
    //--- Preprocessed Raw Data From Indicators
-   int    GetDiffFastFAMA_SlowFAMA_Pts(int Shift);
-   bool   HasTouchedUpperSSB(int Shift);
-   bool   HasTouchedLowerSSB(int Shift);
-   double GetStopLossVolatilityInPrice(int Shift);
-   double GetTakeProfitVolatilityInPrice(int Shift);
-   int    GetStopLossVolatilityInPts(int Shift);
-   int    GetTakeProfitVolatilityInPts(int Shift);
+   int    GetDiffFastFAMA_SlowFAMA_Pts(const int Shift) const;
+   bool   HasTouchedUpperSSB(const int Shift) const;
+   bool   HasTouchedLowerSSB(const int Shift) const;
+   double GetStopLossVolatilityInPrice(const int Shift) const;
+   double GetTakeProfitVolatilityInPrice(const int Shift) const;
+   int    GetStopLossVolatilityInPts(const int Shift) const;
+   int    GetTakeProfitVolatilityInPts(const int Shift) const;
    
    //--- Additional Data
-   double GetBidPrice(int Shift);
-   double GetAskPrice(int Shift);
-   double GetCurrentBid(void);
-   double GetCurrentAsk(void);
+   double GetBidPrice(const int Shift) const;
+   double GetAskPrice(const int Shift) const;
+   double GetCurrentBid(void) const;
+   double GetCurrentAsk(void) const;
    
 private:
    //--- Indicator Handles
@@ -112,8 +112,8 @@ private:
    IndicatorProcessor(void);
    
    //--- Validation Checks
-   bool IsMAMAValid(const double &FastLimit, const double &SlowLimit);
-   bool IsSSBValid(const int &AttenuationPeriod, const double &Alpha, const double &Beta);
+   bool IsMAMAValid(const double &FastLimit, const double &SlowLimit) const;
+   bool IsSSBValid(const int &AttenuationPeriod, const double &Alpha, const double &Beta) const;
 };
 
 IndicatorProcessor* IndicatorProcessor::Instance = NULL;

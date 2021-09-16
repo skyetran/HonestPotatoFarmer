@@ -9,6 +9,12 @@
 #define LAST_BAR      1
 #define LAST_LAST_BAR 2
 
+#define THREE_LEVEL  3
+#define FOUR_LEVEL   4
+#define FIVE_LEVEL   5
+#define SIX_LEVEL    6
+#define SEVEN_LEVEL  7
+
 enum ENUM_CONSTRUCT_CLASS {
    FREE_STYLING_LONG  = 0,
    FREE_STYLING_SHORT = 1,

@@ -20,10 +20,10 @@ public:
    bool LogOutOfBoundBuffer(const int &InputOutOfBoundBuffer);
 
    //--- Getters
-   int GetSlippage(void);
-   int GetIntervalSizeIncrement(void);
-   int GetMinLevel(void);
-   int GetOutOfBoundBuffer(void);
+   int GetSlippage(void)              const;
+   int GetIntervalSizeIncrement(void) const;
+   int GetMinLevel(void)              const;
+   int GetOutOfBoundBuffer(void)      const;
 
 private:
    //--- Main Constructor --- Singleton
@@ -38,10 +38,10 @@ private:
    static PositionManagementHyperParameters *Instance;
    
    //--- Validation
-   bool IsSlippageValid(const int &InputSlippage);
-   bool IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement);
-   bool IsMinLevelValid(const int &InputMinLevel);
-   bool IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer);
+   bool IsSlippageValid(const int &InputSlippage)                           const;
+   bool IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement) const;
+   bool IsMinLevelValid(const int &InputMinLevel)                           const;
+   bool IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer)           const;
 };
 
 PositionManagementHyperParameters* PositionManagementHyperParameters::Instance = NULL;

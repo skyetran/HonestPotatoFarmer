@@ -41,22 +41,22 @@ bool MoneyManagementHyperParameters::LogCommissionPerStandardLot(const double &I
 }
 
 //--- Validation
-bool MoneyManagementHyperParameters::IsFractionalKellyValid(const double &InputFractionalKelly) { 
+bool MoneyManagementHyperParameters::IsFractionalKellyValid(const double &InputFractionalKelly) const { 
    return MIN_FRACTIONAL_KELLY < InputFractionalKelly && InputFractionalKelly < MAX_FRACTIONAL_KELLY; 
 }
 
-bool MoneyManagementHyperParameters::IsCommissionPerStandardLotValid(const double &InputCommissionPerStandardLot) {
+bool MoneyManagementHyperParameters::IsCommissionPerStandardLotValid(const double &InputCommissionPerStandardLot) const {
    return InputCommissionPerStandardLot >= MIN_COMMISSION_PER_STANDARD_LOT;
 }
 
 //--- Getters
-double MoneyManagementHyperParameters::GetTimidFractionalKelly(void) { return TimidFractionalKelly; }
-double MoneyManagementHyperParameters::GetBoldFractionalKelly(void)  { return BoldFractionalKelly;  }
+double MoneyManagementHyperParameters::GetTimidFractionalKelly(void) const { return TimidFractionalKelly; }
+double MoneyManagementHyperParameters::GetBoldFractionalKelly(void)  const { return BoldFractionalKelly;  }
 
-int MoneyManagementHyperParameters::GetCommissionCostInPts(void) {
+int MoneyManagementHyperParameters::GetCommissionCostInPts(void) const {
    return (int) MathCeil(CommissionPerStandardLot / GetPointValuePerStandardLot());
 }
 
-double MoneyManagementHyperParameters::GetPointValuePerStandardLot(void) {
+double MoneyManagementHyperParameters::GetPointValuePerStandardLot(void) const {
    return (SymbolInfoDouble(Symbol(), SYMBOL_TRADE_TICK_VALUE) / SymbolInfoDouble(Symbol(), SYMBOL_TRADE_TICK_SIZE)) * SymbolInfoDouble(Symbol(), SYMBOL_POINT);
 }

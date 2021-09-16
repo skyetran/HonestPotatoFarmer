@@ -47,24 +47,24 @@ bool PositionManagementHyperParameters::LogOutOfBoundBuffer(const int &InputOutO
 }
 
 //--- Validation
-bool PositionManagementHyperParameters::IsSlippageValid(const int &InputSlippage) {
+bool PositionManagementHyperParameters::IsSlippageValid(const int &InputSlippage) const {
    return MIN_SLIPPAGE <= InputSlippage && InputSlippage <= MAX_SLIPPAGE;
 }
 
-bool PositionManagementHyperParameters::IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement) {
+bool PositionManagementHyperParameters::IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement) const {
    return InputIntervalSizeIncrement >= MIN_INTERVAL_SIZE_INCREMENT;
 }
 
-bool PositionManagementHyperParameters::IsMinLevelValid(const int &InputMinLevel) {
+bool PositionManagementHyperParameters::IsMinLevelValid(const int &InputMinLevel) const {
    return InputMinLevel >= MIN_MIN_LEVEL;
 }
 
-bool PositionManagementHyperParameters::IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer) {
+bool PositionManagementHyperParameters::IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer) const {
    return InputOutOfBoundBuffer >= MIN_OUT_OF_BOUND_BUFFER;
 }
 
 //--- Getters
-int PositionManagementHyperParameters::GetSlippage(void)              { return Slippage;              }
-int PositionManagementHyperParameters::GetIntervalSizeIncrement(void) { return IntervalSizeIncrement; }
-int PositionManagementHyperParameters::GetMinLevel(void)              { return MinLevel;              }
-int PositionManagementHyperParameters::GetOutOfBoundBuffer(void)      { return OutOfBoundBuffer;      }
+int PositionManagementHyperParameters::GetSlippage(void)              const { return Slippage;              }
+int PositionManagementHyperParameters::GetIntervalSizeIncrement(void) const { return IntervalSizeIncrement; }
+int PositionManagementHyperParameters::GetMinLevel(void)              const { return MinLevel;              }
+int PositionManagementHyperParameters::GetOutOfBoundBuffer(void)      const { return OutOfBoundBuffer;      }

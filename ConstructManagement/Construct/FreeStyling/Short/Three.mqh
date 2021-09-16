@@ -3,14 +3,14 @@
 
 #include "../../Construct.mqh"
 
-class ThreeLevelNetThreeFreeStylingConstruct : public Construct
+class ThreeLevelNetShortFreeStylingConstruct : public Construct
 {
 public:
    //--- Constructor
-   ThreeLevelNetThreeFreeStylingConstruct(void);
+   ThreeLevelNetShortFreeStylingConstruct(void);
    
    //--- Destructor
-   ~ThreeLevelNetThreeFreeStylingConstruct(void);
+   ~ThreeLevelNetShortFreeStylingConstruct(void);
 };
 
 #endif
