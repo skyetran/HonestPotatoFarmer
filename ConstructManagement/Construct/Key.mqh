@@ -11,7 +11,7 @@ public:
    ConstructKey(void);
    
    //--- Main Constructor
-   ConstructKey(ConstructType *InputType, ConstructParameters *InputParameters, int InputEntryPositionID);
+   ConstructKey(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPositionID);
    
    //--- Getters
    ConstructType *GetConstructType(void)              const;

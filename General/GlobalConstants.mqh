@@ -23,3 +23,6 @@ enum ENUM_CONSTRUCT_CLASS {
    BIG_HEDGE_LONG     = 4,
    BIG_HEDGE_SHORT    = 5,
 };
+
+//--- Error Message
+string CONSTRUCT_TYPE_DOES_NOT_EXIST = "Construct Type Does Not Exist";

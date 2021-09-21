@@ -1,6 +1,7 @@
 #ifndef SIX_LEVEL_NET_LONG_FREE_STYLING_FACTORY_H
 #define SIX_LEVEL_NET_LONG_FREE_STYLING_FACTORY_H
 
+#include "../../../Construct/FreeStyling/Long/Six.mqh"
 #include "../../ConstructFactory.mqh"
 
 class SixLevelNetLongFreeStylingFactory : public ConstructFactory
@@ -11,8 +12,9 @@ public:
    SixLevelNetLongFreeStylingFactory(void);
    
    //--- Operations
-   ConstructPreCheckInfo *PreCheck(Construct *construct) override;   
-   Construct             *Create(void)                   override;
+   ConstructPreCheckInfo *PreCheck(ConstructParameters *InputParameters)                                 override;
+   bool                   Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) override;
+   Construct             *Create(ConstructParameters *InputParameters, const int InputEntryPositionID)   override;
 };
 
 #endif

@@ -10,8 +10,9 @@ public:
    ConstructFactory(void);
    
    //--- Operations
-   virtual ConstructPreCheckInfo *PreCheck(Construct *construct) = NULL;   
-   virtual Construct             *Create(void)                   = NULL;
+   virtual ConstructPreCheckInfo *PreCheck(ConstructParameters *InputParameters)                                 = NULL; 
+   virtual bool                   Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) = NULL;  
+   virtual Construct             *Create(ConstructParameters *InputParameters, const int InputEntryPositionID)   = NULL;
 };
 
 #endif

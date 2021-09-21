@@ -13,7 +13,7 @@ public:
    ConstructTradePool(void);
    
    //--- Destructor
-   ~ConstructTradePool(void);
+   //~ConstructTradePool(void);
    
    //--- Market Order Has The Highest Priority
    //--- Sudo Limit Orders: Place Market Order At The Lower Price (Slippage Deducted)

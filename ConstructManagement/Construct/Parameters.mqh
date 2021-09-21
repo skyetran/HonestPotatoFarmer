@@ -10,7 +10,7 @@ public:
    ConstructParameters(void);
    
    //--- Main Constructor
-   ConstructParameters(double InputCapstoneLevel, double InputApexLevel, double InputStopLossLevel, int InputIntervalSize);
+   ConstructParameters(const double InputCapstoneLevel, const double InputApexLevel, const double InputStopLossLevel, const int InputIntervalSize);
    
    //--- Getter
    double GetCapstoneLevel(void) const;
@@ -28,6 +28,8 @@ private:
    double ApexLevel;
    double StopLossLevel;
    int    IntervalSize;
+   
+   string HashString;
 };
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef THREE_LEVEL_NET_SHORT_COUNTER_FACTORY_H
 #define THREE_LEVEL_NET_SHORT_COUNTER_FACTORY_H
 
+#include "../../../Construct/Counter/Short/Three.mqh"
 #include "../../ConstructFactory.mqh"
 
 class ThreeLevelNetShortCounterFactory : public ConstructFactory
@@ -11,8 +12,9 @@ public:
    ThreeLevelNetShortCounterFactory(void);
    
    //--- Operations
-   ConstructPreCheckInfo *PreCheck(Construct *construct) override;   
-   Construct             *Create(void)                   override;
+   ConstructPreCheckInfo *PreCheck(ConstructParameters *InputParameters)                                 override;
+   bool                   Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) override;
+   Construct             *Create(ConstructParameters *InputParameters, const int InputEntryPositionID)   override;
 };
 
 #endif

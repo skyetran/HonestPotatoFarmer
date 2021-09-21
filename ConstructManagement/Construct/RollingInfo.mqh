@@ -8,11 +8,11 @@ public:
    ConstructRollingInfo(void);
    
    //--- Updaters
-   void UpdateReleasedFreeMargin(const double &NewReleasedFreeMargin);
-   void UpdatePositiveSlippageInPrice(const double &NewPositiveSlippageInPrice);
-   void UpdatePositiveSlippageInPts(const int &NewPositiveSlippageInPts);
-   void UpdateValueAtRisk(const double &NewValueAtRisk);
-   void UpdateActiveStatus(const bool &ActiveStatus);
+   void UpdateReleasedFreeMargin(const double NewReleasedFreeMargin);
+   void UpdatePositiveSlippageInPrice(const double NewPositiveSlippageInPrice);
+   void UpdatePositiveSlippageInPts(const int NewPositiveSlippageInPts);
+   void UpdateValueAtRisk(const double NewValueAtRisk);
+   void UpdateActiveStatus(const bool NewActiveStatus);
   
    //--- Getters
    double GetReleasedFreeMargin(void)      const;

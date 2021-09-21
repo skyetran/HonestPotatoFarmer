@@ -93,7 +93,6 @@ void OnTick()
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
    //DebugMsg += MW.GetDebugMessage();
-   
    Comment(DebugMsg);
 }
 

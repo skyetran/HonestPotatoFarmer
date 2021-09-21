@@ -1,6 +1,7 @@
 #ifndef SEVEN_LEVEL_NET_LONG_FREE_STYLING_FACTORY_H
 #define SEVEN_LEVEL_NET_LONG_FREE_STYLING_FACTORY_H
 
+#include "../../../Construct/FreeStyling/Long/Seven.mqh"
 #include "../../ConstructFactory.mqh"
 
 class SevenLevelNetLongFreeStylingFactory : public ConstructFactory
@@ -11,8 +12,9 @@ public:
    SevenLevelNetLongFreeStylingFactory(void);
    
    //--- Operations
-   ConstructPreCheckInfo *PreCheck(Construct *construct) override;   
-   Construct             *Create(void)                   override;
+   ConstructPreCheckInfo *PreCheck(ConstructParameters *InputParameters)                                 override;
+   bool                   Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) override;
+   Construct             *Create(ConstructParameters *InputParameters, const int InputEntryPositionID)   override;
 };
 
 #endif

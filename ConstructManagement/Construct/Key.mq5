@@ -6,7 +6,7 @@
 ConstructKey::ConstructKey(void) { }
 
 //--- Main Constructor
-ConstructKey::ConstructKey(ConstructType *InputType, ConstructParameters *InputParameters, int InputEntryPositionID) {
+ConstructKey::ConstructKey(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPositionID) {
    Type            = InputType;
    Parameters      = InputParameters;
    EntryPositionID = InputEntryPositionID;

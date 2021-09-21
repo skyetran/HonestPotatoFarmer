@@ -19,31 +19,34 @@ class ConstructMonitor;
 class Construct
 {
 public:
-   //--- Constructor
+   //--- Main Constructor
    Construct(void);
    
    //--- Destructor
    virtual ~Construct(void);
    
    //--- Register Construct Type To The Right Construct Factory
-   static void RegisterType(ConstructType *InputType, ConstructFactory *InputFactory);
+   static void RegisterFactory(ConstructType *InputType, ConstructFactory *InputFactory);
    
    //--- Register Construct Type To The Right Construct Monitor
    static void RegisterMonitor(ConstructType *InputType, ConstructMonitor *InputMonitor);
    
-   //--- Return Key Variables To Check If Construct Meet Requirements --- Validation Happens Elsewhere
+   //--- Return Key Variables To Check If Construct Meet Requirements
    static ConstructPreCheckInfo *PreCheck(ConstructType *InputType, ConstructParameters *InputParameters);
    
+   //--- Find The Corresponding Construct Factory And Validate The Construct
+   static bool Validate(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition);
+   
    //--- Find The Corresponding Construct Factory And Get Factory To Create The Construct
-   static Construct *create(ConstructType *InputType, ConstructParameters *InputParameters);
+   static Construct *create(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition);
    
    //--- Getters
+   ConstructTradePool   *GetConstructTradePool(void)   const;
    ConstructKey         *GetConstructKey(void)         const;
-   ConstructParameters  *GetConstructParameters(void)  const;
    ConstructType        *GetConstructType(void)        const;
+   ConstructParameters  *GetConstructParameters(void)  const;
    ConstructRollingInfo *GetConstructRollingInfo(void) const;
    ConstructResultInfo  *GetConstructResultInfo(void)  const;
-   ConstructTradePool   *GetConstructTradePool(void)   const;
 
    //--- Main Operations
    //--- Find The Right Monitor And Run OnTick Update
@@ -61,17 +64,10 @@ protected:
    //--- Core Information
    ConstructTradePool    *Pool;
    ConstructKey          *Key;
-   ConstructParameters   *Parameters;
-   ConstructPreCheckInfo *PreCheckInfo;
-   ConstructResultInfo   *ResultInfo;
-   ConstructRollingInfo  *RollingInfo;
    ConstructType         *Type;
-   
-   //--- Validation
-   bool IsConstructValid(void)           const;
-   bool IsConstructKeyValid(void)        const;
-   bool IsConstructParametersValid(void) const;
-   bool IsConstructTypeValid(void)       const;
+   ConstructParameters   *Parameters;
+   ConstructRollingInfo  *RollingInfo;
+   ConstructResultInfo   *ResultInfo;
    
 private:
    static CHashMap<ConstructType*, ConstructFactory*> *GetConstructFactories(void) {

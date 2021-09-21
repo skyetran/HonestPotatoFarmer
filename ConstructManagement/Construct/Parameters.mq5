@@ -6,11 +6,14 @@
 ConstructParameters::ConstructParameters(void) { }
 
 //--- Main Constructor
-ConstructParameters::ConstructParameters(double InputCapstoneLevel, double InputApexLevel, double InputStopLossLevel, int InputIntervalSize) {
+ConstructParameters::ConstructParameters(const double InputCapstoneLevel, const double InputApexLevel, const double InputStopLossLevel, const int InputIntervalSize) {
    CapstoneLevel = InputCapstoneLevel;
    ApexLevel     = InputApexLevel;
    StopLossLevel = InputStopLossLevel;
    IntervalSize  = InputIntervalSize;
+   
+   HashString = DoubleToString(CapstoneLevel) + DoubleToString(ApexLevel) +
+                DoubleToString(StopLossLevel) + DoubleToString(IntervalSize);
 }
 
 //--- Getters
@@ -21,6 +24,7 @@ int    ConstructParameters::GetIntervalSize(void)  const { return IntervalSize; 
 
 //--- Required ADT Functions
 int ConstructParameters::Compare(ConstructParameters *Other) {
+   //--- No Comparison Logics
    return 0;
 }
 
@@ -32,5 +36,14 @@ bool ConstructParameters::Equals(ConstructParameters *Other) {
 }
 
 int ConstructParameters::HashCode(void) {
-   return 0;
+   int Length    = StringLen(HashString);
+   int HashValue = 0;
+   
+   if (Length > 0) {
+      for (int i = 0; i < Length; i++) {
+         HashValue = 31 * HashValue + HashString[i];
+      }
+   }
+   
+   return HashValue;
 }

@@ -1,6 +1,7 @@
 #ifndef SEVEN_LEVEL_NET_LONG_COUNTER_FACTORY_H
 #define SEVEN_LEVEL_NET_LONG_COUNTER_FACTORY_H
 
+#include "../../../Construct/Counter/Long/Seven.mqh"
 #include "../../ConstructFactory.mqh"
 
 class SevenLevelNetLongCounterFactory : public ConstructFactory
@@ -11,8 +12,9 @@ public:
    SevenLevelNetLongCounterFactory(void);
    
    //--- Operations
-   ConstructPreCheckInfo *PreCheck(Construct *construct) override;   
-   Construct             *Create(void)                   override;
+   ConstructPreCheckInfo *PreCheck(ConstructParameters *InputParameters)                                 override;
+   bool                   Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) override;
+   Construct             *Create(ConstructParameters *InputParameters, const int InputEntryPositionID)   override;
 };
 
 #endif

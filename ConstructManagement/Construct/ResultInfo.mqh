@@ -8,7 +8,7 @@ public:
    ConstructResultInfo(void);
    
    //--- Main Constructor
-   ConstructResultInfo(const double &InputTotalRealizedProfit, const double &InputMaxRisk);
+   ConstructResultInfo(const double InputTotalRealizedProfit, const double InputMaxRisk);
    
    //--- Getters
    double GetTotalRealizedProfit(void) const;

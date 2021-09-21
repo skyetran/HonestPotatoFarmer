@@ -11,7 +11,7 @@ public:
    ConstructPreCheckInfo(void);
    
    //--- Main Constructor
-   ConstructPreCheckInfo(const double &InputMaxMarginRequirement, const double &InputPersistingMarginRequirement, const double &InputMaxPotentialLoss);
+   ConstructPreCheckInfo(const double InputMaxMarginRequirement, const double InputPersistingMarginRequirement, const double InputMaxPotentialLoss);
    
    //--- Getters
    double GetMaxMarginRequirement(void)         const;
