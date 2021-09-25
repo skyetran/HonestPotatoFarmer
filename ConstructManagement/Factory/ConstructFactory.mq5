@@ -38,6 +38,10 @@ bool ConstructFactory::IsNetShort(ConstructParameters *InputParameters) const {
           InputParameters.GetStopLossLevel() >= InputParameters.GetCapstoneLevel()  ;
 }
 
+bool ConstructFactory::IsTwoLevel(ConstructParameters *InputParameters) const {
+   return TWO_LEVEL <= GetConstructLevel(InputParameters) <= THREE_LEVEL;
+}
+
 bool ConstructFactory::IsThreeLevel(ConstructParameters *InputParameters) const {
    return THREE_LEVEL <= GetConstructLevel(InputParameters) <= FOUR_LEVEL;
 }

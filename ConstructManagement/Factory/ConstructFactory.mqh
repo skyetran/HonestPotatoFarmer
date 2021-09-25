@@ -31,6 +31,7 @@ protected:
    bool IsNetLong(ConstructParameters *InputParameters)    const;
    bool IsNetShort(ConstructParameters *InputParameters)   const;
    
+   bool IsTwoLevel(ConstructParameters *InputParameters)   const;
    bool IsThreeLevel(ConstructParameters *InputParameters) const;
    bool IsFourLevel(ConstructParameters *InputParameters)  const;
    bool IsFiveLevel(ConstructParameters *InputParameters)  const;
