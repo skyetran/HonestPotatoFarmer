@@ -9,6 +9,7 @@ Construct::Construct(void) {
 
 //--- Destructor
 Construct::~Construct(void) {
+   delete FullTradePool;
    delete Pool;
    delete Key;
    delete Type;
@@ -39,7 +40,7 @@ static ConstructPreCheckInfo *Construct::PreCheck(ConstructType *InputType, Cons
    }
    ConstructFactory *ResponsibleFactory;
    GetConstructFactories().TryGetValue(InputType, ResponsibleFactory);
-   return ResponsibleFactory.PreCheck(GetPointer(InputParameters));
+   return ResponsibleFactory.PreCheck(InputParameters);
 }
 
 //--- Find The Corresponding Construct Factory And Validate The Construct
@@ -50,7 +51,7 @@ static bool Construct::Validate(ConstructType *InputType, ConstructParameters *I
    }
    ConstructFactory *ResponsibleFactory;
    GetConstructFactories().TryGetValue(InputType, ResponsibleFactory);
-   return ResponsibleFactory.Validate(GetPointer(InputParameters), InputEntryPosition);
+   return ResponsibleFactory.Validate(InputParameters, InputEntryPosition);
 }
 
 //--- Find The Corresponding Construct Factory And Get Factory To Create The Construct
@@ -61,16 +62,24 @@ static Construct *Construct::create(ConstructType *InputType, ConstructParameter
    }
    ConstructFactory *ResponsibleFactory;
    GetConstructFactories().TryGetValue(InputType, ResponsibleFactory);
-   return ResponsibleFactory.Create(GetPointer(InputParameters), InputEntryPosition);
+   return ResponsibleFactory.Create(InputParameters, InputEntryPosition);
 }
 
 //--- Getters
-ConstructTradePool   *Construct::GetConstructTradePool(void)   const { return Pool;        }
-ConstructKey         *Construct::GetConstructKey(void)         const { return Key;         }
-ConstructType        *Construct::GetConstructType(void)        const { return Type;        }
-ConstructParameters  *Construct::GetConstructParameters(void)  const { return Parameters;  }
-ConstructRollingInfo *Construct::GetConstructRollingInfo(void) const { return RollingInfo; }
-ConstructResultInfo  *Construct::GetConstructResultInfo(void)  const { return ResultInfo;  }
+ConstructFullTradePool *Construct::GetFullConstructTradePool(void) const { return FullTradePool;   }
+ConstructTradePool     *Construct::GetConstructTradePool(void)     const { return Pool;            }
+ConstructKey           *Construct::GetConstructKey(void)           const { return Key;             }
+ConstructType          *Construct::GetConstructType(void)          const { return Type;            }
+ConstructParameters    *Construct::GetConstructParameters(void)    const { return Parameters;      }
+ConstructRollingInfo   *Construct::GetConstructRollingInfo(void)   const { return RollingInfo;     }
+ConstructResultInfo    *Construct::GetConstructResultInfo(void)    const { return ResultInfo;      }
+int                     Construct::GetEntryPositionID(void)        const { return EntryPositionID; }
+
+//--- Setters
+void Construct::SetConstructKey(ConstructKey *InputConstructKey)                      { Key             = InputConstructKey;        }
+void Construct::SetConstructParameters(ConstructParameters *InputConstructParameters) { Parameters      = InputConstructParameters; }
+void Construct::SetEntryPositionID(const int InputEntryPositionID)                    { EntryPositionID = InputEntryPositionID;     }
+void Construct::SetFullTradePool(ConstructFullTradePool *InputFullTradePool)          { FullTradePool   = InputFullTradePool;       }
 
 //--- Main Operations
 //--- Find The Right Monitor And Run OnTick Update

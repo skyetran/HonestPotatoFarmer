@@ -5,6 +5,7 @@
 //+------------------------------------------------------------------+
 
 #include "ConstructManagement/Construct/Construct.mqh"
+#include "General/GeneralSettings.mqh"
 #include "General/MoneyManagementHyperParameters.mqh"
 #include "General/PositionManagementHyperParameters.mqh"
 #include "MarketState/Ranging.mqh"
@@ -33,21 +34,24 @@ input  double           CommissionPerStandardLot            = 0.0;
 extern string           Text4                               = "Trade Settings (Points)";
 input  int              Slippage                            = 5;
 input  int              IntervalSizeIncrement               = 5;
-input  int              MinLevel                            = 3;
 input  int              OutOfBoundBuffer                    = 40;
 
 extern string           Text5                               = "Execution Settings";
 input  int              RateOfOperationsPerSecond           = 50;
 
+extern string           Text6                               = "Expert Advisor ID Settings";
+input  int              MagicNumber                         = 45723695;
+
 //--- Global Variables
 IndicatorProcessor *IP = IndicatorProcessor::GetInstance();
 MarketWatcher *MW = new MarketWatcher(new Ranging());
+GeneralSettings *GS = GeneralSettings::GetInstance();
 MoneyManagementHyperParameters *MMHP = MoneyManagementHyperParameters::GetInstance();
 PositionManagementHyperParameters *PMHP = PositionManagementHyperParameters::GetInstance(); 
 
 int OnInit()
 {
-   if (!InitIndicator() || !InitMarketWatcher() || !InitMoneyManagement() || !InitPositionManagement()) {
+   if (!InitIndicator() || !InitMarketWatcher() || !InitMoneyManagement() || !InitPositionManagement() || !InitGeneralSettings()) {
       return(INIT_FAILED);
    }
    return(INIT_SUCCEEDED);
@@ -83,8 +87,13 @@ bool InitMoneyManagement(void) {
 bool InitPositionManagement(void) {
    return PMHP.LogSlippage(Slippage)                           &&
           PMHP.LogIntervalSizeIncrement(IntervalSizeIncrement) &&
-          PMHP.LogMinLevel(MinLevel)                           &&
           PMHP.LogOutOfBoundBuffer(OutOfBoundBuffer)            ;
+}
+
+//--- Set General Settings
+bool InitGeneralSettings(void) {
+   GS.LogMagicNumber(MagicNumber);
+   return GS.LogRateOfOperationsPerSecond(RateOfOperationsPerSecond);
 }
 
 void OnTick()
@@ -92,7 +101,17 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   //DebugMsg += MW.GetDebugMessage();
+   DebugMsg += MW.GetDebugMessage();
+
+   //Construct *Test = Construct::create(new ConstructType(BIG_HEDGE_LONG, FIVE_LEVEL), new ConstructParameters(IP.GetBidPrice(CURRENT_BAR), IP.GetBidPrice(CURRENT_BAR), IP.GetBidPrice(CURRENT_BAR) - 0.001, 50), 1);
+   //ConstructFullTradePool *TestPool = Test.GetFullConstructTradePool();
+   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(IP.GetBidPrice(CURRENT_BAR));
+   //for (int i = 0; i < RequestList.Count(); i++) {
+   //   MqlTradeRequestWrapper *Request;
+   //   RequestList.TryGetValue(i, Request);
+   //   DebugMsg += DoubleToString(Request.price) + " ";
+   //}
+   
    Comment(DebugMsg);
 }
 

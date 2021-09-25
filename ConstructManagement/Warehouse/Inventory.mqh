@@ -4,7 +4,7 @@
 #include <Generic\HashMap.mqh>
 
 #include "../Construct/Construct.mqh"
-#include "../Construct/Type.mqh"
+#include "../Construct/Attributes/Type.mqh"
 #include "Container.mqh"
 
 class Inventory

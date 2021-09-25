@@ -25,16 +25,7 @@ public:
    CArrayList<CombinedTradeRequest*> *GetMarketOrderRequestList(void);
    CArrayList<CombinedTradeRequest*> *GetPendingOrderRequestList(void);
    
-   bool GetMergeTradePoolFlag(void) const;
-   
-   //--- Setter
-   void SetMergeTradePoolFlag(bool InputFlag);
-   void SetMarketOrderSendFlag(bool InputFlag);
-   
-private:
-   bool MergeTradePoolFlag;
-   bool MarketOrderSendFlag;
-   
+private:   
    //--- Subcribe To A List Of Trade Pools
    CArrayList<ConstructTradePool*> TradePoolList;
    

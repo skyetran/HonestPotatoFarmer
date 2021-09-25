@@ -12,3 +12,23 @@ namespace _AnonymousSevenLevelNetShortBigHedgeConstructNameSpace {
 SevenLevelNetShortBigHedgeFactory::SevenLevelNetShortBigHedgeFactory(void) {
    Construct::RegisterFactory(_AnonymousSevenLevelNetShortBigHedgeConstructNameSpace::AnonymousSevenLevelNetShortBigHedgeConstruct.GetConstructType(), GetPointer(this));
 }
+
+//--- Operations
+ConstructPreCheckInfo *SevenLevelNetShortBigHedgeFactory::PreCheck(ConstructParameters *InputParameters) {
+   return NULL;
+}
+
+bool SevenLevelNetShortBigHedgeFactory::Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) {
+   return false;
+}
+
+Construct *SevenLevelNetShortBigHedgeFactory::Create(ConstructParameters *InputParameters, const int InputEntryPositionID) {
+   return NULL;
+}
+
+//--- Helper Functions: Create Operation
+ConstructFullTradePool *SevenLevelNetShortBigHedgeFactory::CreateFullTradePool(ConstructParameters *InputParameters) {
+   ConstructFullTradePool *FullTradePool = new ConstructFullTradePool();
+   
+   return FullTradePool;
+}

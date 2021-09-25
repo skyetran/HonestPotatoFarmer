@@ -3,14 +3,16 @@
 
 #include <Generic\HashMap.mqh>
 
+#include "../../General/GlobalConstants.mqh"
 #include "../../General/PositionManagementHyperParameters.mqh"
 #include "../../OrderManagement/ConstructTradePool.mqh"
-#include "Key.mqh"
-#include "Parameters.mqh"
-#include "PreCheckInfo.mqh"
-#include "ResultInfo.mqh"
-#include "RollingInfo.mqh"
-#include "Type.mqh"
+#include "Attributes/FullTradePool.mqh"
+#include "Attributes/Key.mqh"
+#include "Attributes/Parameters.mqh"
+#include "Attributes/PreCheckInfo.mqh"
+#include "Attributes/ResultInfo.mqh"
+#include "Attributes/RollingInfo.mqh"
+#include "Attributes/Type.mqh"
 
 class ConstructFactory;
 
@@ -41,12 +43,20 @@ public:
    static Construct *create(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition);
    
    //--- Getters
-   ConstructTradePool   *GetConstructTradePool(void)   const;
-   ConstructKey         *GetConstructKey(void)         const;
-   ConstructType        *GetConstructType(void)        const;
-   ConstructParameters  *GetConstructParameters(void)  const;
-   ConstructRollingInfo *GetConstructRollingInfo(void) const;
-   ConstructResultInfo  *GetConstructResultInfo(void)  const;
+   ConstructFullTradePool *GetFullConstructTradePool(void) const;
+   ConstructTradePool     *GetConstructTradePool(void)     const;
+   ConstructKey           *GetConstructKey(void)           const;
+   ConstructType          *GetConstructType(void)          const;
+   ConstructParameters    *GetConstructParameters(void)    const;
+   ConstructRollingInfo   *GetConstructRollingInfo(void)   const;
+   ConstructResultInfo    *GetConstructResultInfo(void)    const;
+   int                     GetEntryPositionID(void)        const;
+   
+   //--- Setters
+   void SetConstructKey(ConstructKey *InputConstructKey);
+   void SetConstructParameters(ConstructParameters *InputConstructParameters);
+   void SetEntryPositionID(const int InputEntryPositionID);
+   void SetFullTradePool(ConstructFullTradePool *InputFullTradePool);
 
    //--- Main Operations
    //--- Find The Right Monitor And Run OnTick Update
@@ -62,23 +72,29 @@ protected:
    PositionManagementHyperParameters *PMHP;
    
    //--- Core Information
-   ConstructTradePool    *Pool;
-   ConstructKey          *Key;
-   ConstructType         *Type;
-   ConstructParameters   *Parameters;
-   ConstructRollingInfo  *RollingInfo;
-   ConstructResultInfo   *ResultInfo;
+   ConstructFullTradePool *FullTradePool;
+   ConstructTradePool     *Pool;
+   ConstructKey           *Key;
+   ConstructType          *Type;
+   ConstructParameters    *Parameters;
+   ConstructRollingInfo   *RollingInfo;
+   ConstructResultInfo    *ResultInfo;
+   int                     EntryPositionID;
    
 private:
+   static CHashMap<ConstructType*, ConstructFactory*> *ConstructFactories;
+   static CHashMap<ConstructType*, ConstructMonitor*> *ConstructMonitors;
+
    static CHashMap<ConstructType*, ConstructFactory*> *GetConstructFactories(void) {
-      static CHashMap<ConstructType*, ConstructFactory*> *ConstructFactories;
       return ConstructFactories;
    };
    
    static CHashMap<ConstructType*, ConstructMonitor*> *GetConstructMonitors(void) {
-      static CHashMap<ConstructType*, ConstructMonitor*> *ConstructMonitors;
       return ConstructMonitors;
    }
 };
+
+CHashMap<ConstructType*, ConstructFactory*> *Construct::ConstructFactories = new CHashMap<ConstructType*, ConstructFactory*>();
+CHashMap<ConstructType*, ConstructMonitor*> *Construct::ConstructMonitors  = new CHashMap<ConstructType*, ConstructMonitor*>();
 
 #endif

@@ -5,7 +5,7 @@
 #include <Generic\HashMap.mqh>
 
 #include "../ConstructManagement/Construct/Construct.mqh"
-#include "../ConstructManagement/Construct/Type.mqh"
+#include "../ConstructManagement/Construct/Attributes/Type.mqh"
 
 #define MAX_CAPACITY 10000
 

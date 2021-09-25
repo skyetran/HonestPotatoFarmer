@@ -50,36 +50,44 @@ public:
    void Update(void);
    
    //--- Extract Raw Data From Indicators
-   double GetFastMAMA(const int Shift) const;
-   double GetFastFAMA(const int Shift) const;
-   double GetSlowMAMA(const int Shift) const;
-   double GetSlowFAMA(const int Shift) const;
-   double GetUpperSSB(const int Shift) const;
-   double GetLowerSSB(const int Shift) const;
-   double GetFilteredPrice(const int Shift) const;
-   double GetBuyStopLossLevel(const int Shift) const;
+   double GetFastMAMA(const int Shift)          const;
+   double GetFastFAMA(const int Shift)          const;
+   double GetSlowMAMA(const int Shift)          const;
+   double GetSlowFAMA(const int Shift)          const;
+   double GetUpperSSB(const int Shift)          const;
+   double GetLowerSSB(const int Shift)          const;
+   double GetFilteredPrice(const int Shift)     const;
+   double GetBuyStopLossLevel(const int Shift)  const;
    double GetSellStopLossLevel(const int Shift) const;
    
-   int    GetOpenSpreadInPts(const int Shift) const;
-   int    GetHighSpreadInPts(const int Shift) const;
-   int    GetLowSpreadInPts(const int Shift) const;
-   int    GetCloseSpreadInPts(const int Shift) const;
-   double GetAverageSpreadInPts(const int Shift) const;
+   int    GetOpenSpreadInPts(const int Shift)      const;
+   int    GetHighSpreadInPts(const int Shift)      const;
+   int    GetLowSpreadInPts(const int Shift)       const;
+   int    GetCloseSpreadInPts(const int Shift)     const;
+   int    GetAverageSpreadInPts(const int Shift)   const;
+   
+   double GetOpenSpreadInPrice(const int Shift)    const;
+   double GetHighSpreadInPrice(const int Shift)    const;
+   double GetLowSpreadInPrice(const int Shift)     const;
+   double GetCloseSpreadInPrice(const int Shift)   const;
+   double GetAverageSpreadInPrice(const int Shift) const;
    
    //--- Preprocessed Raw Data From Indicators
-   int    GetDiffFastFAMA_SlowFAMA_Pts(const int Shift) const;
-   bool   HasTouchedUpperSSB(const int Shift) const;
-   bool   HasTouchedLowerSSB(const int Shift) const;
-   double GetStopLossVolatilityInPrice(const int Shift) const;
-   double GetTakeProfitVolatilityInPrice(const int Shift) const;
-   int    GetStopLossVolatilityInPts(const int Shift) const;
-   int    GetTakeProfitVolatilityInPts(const int Shift) const;
+   int    GetDiffFastFAMA_SlowFAMA_Pts(const int Shift)     const;
+   bool   HasTouchedUpperSSB(const int Shift)               const;
+   bool   HasTouchedLowerSSB(const int Shift)               const;
+   double GetStopLossVolatilityInPrice(const int Shift)     const;
+   double GetTakeProfitVolatilityInPrice(const int Shift)   const;
+   int    GetStopLossVolatilityInPts(const int Shift)       const;
+   int    GetTakeProfitVolatilityInPts(const int Shift)     const;
    
    //--- Additional Data
-   double GetBidPrice(const int Shift) const;
-   double GetAskPrice(const int Shift) const;
-   double GetCurrentBid(void) const;
-   double GetCurrentAsk(void) const;
+   double GetBidPrice(const int Shift)   const;
+   double GetAskPrice(const int Shift)   const;
+   double GetCurrentBid(void)            const;
+   double GetCurrentAsk(void)            const;
+   double GetTradeStopLevelInPrice(void) const;
+   int    GetTradeStoplevelInPts(void)   const;
    
 private:
    //--- Indicator Handles

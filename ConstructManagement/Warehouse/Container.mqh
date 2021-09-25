@@ -4,8 +4,8 @@
 #include <Generic\HashMap.mqh>
 
 #include "../Construct/Construct.mqh"
-#include "../Construct/Parameters.mqh"
-#include "../Construct/Type.mqh"
+#include "../Construct/Attributes/Parameters.mqh"
+#include "../Construct/Attributes/Type.mqh"
 
 class Container
 {

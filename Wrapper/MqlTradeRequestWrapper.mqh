@@ -13,10 +13,10 @@ public:
    MqlTradeRequestWrapper(void);
    
    //--- Main Constructor
-   MqlTradeRequestWrapper(MqlTradeRequest &request);
+   MqlTradeRequestWrapper(MqlTradeRequest &InputRequest);
    
    //--- Revert Back To Struct Format
-   void Unwrap(MqlTradeRequest &request);
+   void Unwrap(MqlTradeRequest &InputRequest);
    
    //--- Required ADT Functions
    int  Compare(MqlTradeRequestWrapper* Other) override;
@@ -44,6 +44,7 @@ public:
 
 private:
    IndicatorProcessor *IP;
+   MqlTradeRequest     Request;
 };
 
 #endif

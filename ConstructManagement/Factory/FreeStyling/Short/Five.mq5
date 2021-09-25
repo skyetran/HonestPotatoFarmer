@@ -12,3 +12,23 @@ namespace _AnonymousFiveLevelNetShortFreeStylingConstructNameSpace {
 FiveLevelNetShortFreeStylingFactory::FiveLevelNetShortFreeStylingFactory(void) {
    Construct::RegisterFactory(_AnonymousFiveLevelNetShortFreeStylingConstructNameSpace::AnonymousFiveLevelNetShortFreeStylingConstruct.GetConstructType(), GetPointer(this));
 }
+
+//--- Operations
+ConstructPreCheckInfo *FiveLevelNetShortFreeStylingFactory::PreCheck(ConstructParameters *InputParameters) {
+   return NULL;
+}
+
+bool FiveLevelNetShortFreeStylingFactory::Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) {
+   return false;
+}
+
+Construct *FiveLevelNetShortFreeStylingFactory::Create(ConstructParameters *InputParameters, const int InputEntryPositionID) {
+   return NULL;
+}
+
+//--- Helper Functions: Create Operation
+ConstructFullTradePool *FiveLevelNetShortFreeStylingFactory::CreateFullTradePool(ConstructParameters *InputParameters) {
+   ConstructFullTradePool *FullTradePool = new ConstructFullTradePool();
+   
+   return FullTradePool;
+}

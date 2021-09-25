@@ -151,11 +151,17 @@ double IndicatorProcessor::GetFilteredPrice(const int Shift)     const { return 
 double IndicatorProcessor::GetBuyStopLossLevel(const int Shift)  const { return NormalizeDouble(BuyStopLossBuffer[Shift]  , Digits()); }
 double IndicatorProcessor::GetSellStopLossLevel(const int Shift) const { return NormalizeDouble(SellStopLossBuffer[Shift] , Digits()); }
 
-int    IndicatorProcessor::GetOpenSpreadInPts(const int Shift)    const { return (int) (OpenSpread[Shift]);  }
-int    IndicatorProcessor::GetHighSpreadInPts(const int Shift)    const { return (int) (HighSpread[Shift]);  }
-int    IndicatorProcessor::GetLowSpreadInPts(const int Shift)     const { return (int) (LowSpread[Shift]);   }
-int    IndicatorProcessor::GetCloseSpreadInPts(const int Shift)   const { return (int) (CloseSpread[Shift]); }
-double IndicatorProcessor::GetAverageSpreadInPts(const int Shift) const { return AverageSpread[Shift];       }
+int    IndicatorProcessor::GetOpenSpreadInPts(const int Shift)      const { return (int) (OpenSpread[Shift]);                     }
+int    IndicatorProcessor::GetHighSpreadInPts(const int Shift)      const { return (int) (HighSpread[Shift]);                     }
+int    IndicatorProcessor::GetLowSpreadInPts(const int Shift)       const { return (int) (LowSpread[Shift]);                      }
+int    IndicatorProcessor::GetCloseSpreadInPts(const int Shift)     const { return (int) (CloseSpread[Shift]);                    }
+int    IndicatorProcessor::GetAverageSpreadInPts(const int Shift)   const { return (int) MathCeil(AverageSpread[Shift]);          }
+
+double IndicatorProcessor::GetOpenSpreadInPrice(const int Shift)    const { return PointToPriceCvt(GetOpenSpreadInPts(Shift));    }
+double IndicatorProcessor::GetHighSpreadInPrice(const int Shift)    const { return PointToPriceCvt(GetHighSpreadInPts(Shift));    }
+double IndicatorProcessor::GetLowSpreadInPrice(const int Shift)     const { return PointToPriceCvt(GetLowSpreadInPts(Shift));     }
+double IndicatorProcessor::GetCloseSpreadInPrice(const int Shift)   const { return PointToPriceCvt(GetCloseSpreadInPts(Shift));   }
+double IndicatorProcessor::GetAverageSpreadInPrice(const int Shift) const { return PointToPriceCvt(GetAverageSpreadInPts(Shift)); }
 
 //--- Preprocessed Raw Data From Indicators
 int IndicatorProcessor::GetDiffFastFAMA_SlowFAMA_Pts(const int Shift) const {
@@ -182,7 +188,9 @@ int IndicatorProcessor::GetTakeProfitVolatilityInPts(const int Shift) const {
 }
 
 //--- Additional Data
-double IndicatorProcessor::GetBidPrice(const int Shift) const { return iClose(CurrencyPair, TimeFrame, CURRENT_BAR);                 }
-double IndicatorProcessor::GetAskPrice(const int Shift) const { return GetBidPrice(Shift) + iSpread(CurrencyPair, TimeFrame, Shift); }
-double IndicatorProcessor::GetCurrentBid(void)          const { return SymbolInfoDouble(CurrencyPair, SYMBOL_BID);                   }
-double IndicatorProcessor::GetCurrentAsk(void)          const { return SymbolInfoDouble(CurrencyPair, SYMBOL_ASK);                   }
+double IndicatorProcessor::GetBidPrice(const int Shift)   const { return iClose(CurrencyPair, TimeFrame, CURRENT_BAR);                                  }
+double IndicatorProcessor::GetAskPrice(const int Shift)   const { return GetBidPrice(Shift) + PointToPriceCvt(iSpread(CurrencyPair, TimeFrame, Shift)); }
+double IndicatorProcessor::GetCurrentBid(void)            const { return SymbolInfoDouble(CurrencyPair, SYMBOL_BID);                                    }
+double IndicatorProcessor::GetCurrentAsk(void)            const { return SymbolInfoDouble(CurrencyPair, SYMBOL_ASK);                                    }
+double IndicatorProcessor::GetTradeStopLevelInPrice(void) const { return PointToPriceCvt(GetTradeStoplevelInPts());                                     }
+int    IndicatorProcessor::GetTradeStoplevelInPts(void)   const { return (int) SymbolInfoInteger(Symbol(), SYMBOL_TRADE_STOPS_LEVEL);                   }
