@@ -144,7 +144,7 @@ double ConstructFactory::GetStopLevelSlippageLowerOffsetPriceEntry(const double 
    return GetStopLevelLowerOffsetPriceEntry(OriginalPriceEntry) - PMHP.GetSlippageInPrice();
 }
 
-//--- Raw Base Entry Orders (Big Hedge)
+//--- Raw Base Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume) {
    MqlTradeRequest request = {};
    
@@ -160,7 +160,7 @@ MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double 
    return new MqlTradeRequestWrapper(request);
 }
 
-//--- Raw Base Entry Orders (Big Hedge)
+//--- Raw Base Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume) {
    MqlTradeRequest request = {};
    
@@ -172,38 +172,6 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    
    request.volume    = volume;
    request.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
-   
-   return new MqlTradeRequestWrapper(request);
-}
-
-//--- Base Entry Orders
-MqlTradeRequestWrapper *ConstructFactory::BuyMarketOrderRequest(const double volume) {
-   MqlTradeRequest request = {};
-   
-   request.action    = TRADE_ACTION_DEAL;
-   request.magic     = GS.GetMagicNumber();
-   request.symbol    = Symbol();
-   request.deviation = PMHP.GetSlippageInPts();
-   request.type      = ORDER_TYPE_BUY;
-   
-   request.volume    = volume;
-   request.price     = NormalizeDouble(GetSpreadOffsetBuyOrderPriceEntry(GetSlippageOffsetBuyOrderPriceEntry(IP.GetAskPrice(CURRENT_BAR))), Digits());
-   
-   return new MqlTradeRequestWrapper(request);
-}
-
-//--- Base Entry Orders
-MqlTradeRequestWrapper *ConstructFactory::SellMarketOrderRequest(const double volume) {
-   MqlTradeRequest request = {};
-   
-   request.action    = TRADE_ACTION_DEAL;
-   request.magic     = GS.GetMagicNumber();
-   request.symbol    = Symbol();
-   request.deviation = PMHP.GetSlippageInPts();
-   request.type      = ORDER_TYPE_SELL;
-   
-   request.volume    = volume;
-   request.price     = NormalizeDouble(GetSlippageOffsetSellOrderPriceEntry(IP.GetBidPrice(CURRENT_BAR)), Digits());
    
    return new MqlTradeRequestWrapper(request);
 }
@@ -304,16 +272,6 @@ MqlTradeRequestWrapper *ConstructFactory::SellStopOrderRequest(const double volu
    request.price     = NormalizeDouble(price, Digits());
    
    return new MqlTradeRequestWrapper(request);
-}
-
-//--- Helper Functions: BuyMarketOrderRequest & SellMarketOrderRequest
-double ConstructFactory::GetSlippageOffsetBuyOrderPriceEntry(const double OriginalPriceEntry) const {
-   return OriginalPriceEntry - PMHP.GetSlippageInPrice();
-}
-
-//--- Helper Functions: BuyMarketOrderRequest & SellMarketOrderRequest
-double ConstructFactory::GetSlippageOffsetSellOrderPriceEntry(const double OriginalPriceEntry) const {
-   return OriginalPriceEntry + PMHP.GetSlippageInPrice();
 }
 
 //--- Classifier: Upper Construct (Counter & FreeStyling) Or Lower Construct (BigHedge)

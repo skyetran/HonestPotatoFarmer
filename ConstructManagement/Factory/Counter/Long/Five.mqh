@@ -2,9 +2,9 @@
 #define FIVE_LEVEL_NET_LONG_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Long/Five.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class FiveLevelNetLongCounterFactory : public ConstructFactory
+class FiveLevelNetLongCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor

@@ -2,9 +2,9 @@
 #define FOUR_LEVEL_NET_LONG_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Long/Four.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class FourLevelNetLongCounterFactory : public ConstructFactory
+class FourLevelNetLongCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor

@@ -10,7 +10,8 @@ namespace _AnonymousFiveLevelNetLongCounterConstructNameSpace {
 //--- Constructor
 //--- Call To Register Type
 FiveLevelNetLongCounterFactory::FiveLevelNetLongCounterFactory(void) {
-   Construct::RegisterFactory(_AnonymousFiveLevelNetLongCounterConstructNameSpace::AnonymousFiveLevelNetLongCounterConstruct.GetConstructType(), GetPointer(this));
+   Type = _AnonymousFiveLevelNetLongCounterConstructNameSpace::AnonymousFiveLevelNetLongCounterConstruct.GetConstructType();
+   Construct::RegisterFactory(Type, GetPointer(this));
 }
 
 //--- Operations

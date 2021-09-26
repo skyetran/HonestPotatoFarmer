@@ -9,6 +9,8 @@
 #define LAST_BAR              1
 #define LAST_LAST_BAR         2
 
+#define ZERO_LEVEL            0
+#define ONE_LEVEL             1
 #define TWO_LEVEL             2
 #define THREE_LEVEL           3
 #define FOUR_LEVEL            4
@@ -30,6 +32,8 @@
 #define MAX_CONSTRUCT_LEVEL   7
 
 #define INVALID               -1
+
+#define MIN_LOT_SIZE          0.01
 
 enum ENUM_CONSTRUCT_CLASS {
    FREE_STYLING_LONG  = 0,

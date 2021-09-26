@@ -2,9 +2,9 @@
 #define THREE_LEVEL_NET_LONG_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Long/Three.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class ThreeLevelNetLongCounterFactory : public ConstructFactory
+class ThreeLevelNetLongCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor

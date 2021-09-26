@@ -87,10 +87,6 @@ private:
    double GetNLevelPriceLowerConstruct(ConstructParameters *InputParameters, const int Level);
    double GetOutOfBoundPrice(ConstructParameters *InputParameters);
    
-   //--- Helper Functions: BuyMarketOrderRequest & SellMarketOrderRequest
-   double GetSlippageOffsetBuyOrderPriceEntry(const double OriginalPriceEntry)  const;
-   double GetSlippageOffsetSellOrderPriceEntry(const double OriginalPriceEntry) const;
-   
    //--- Other Auxilary Functions
    bool IsLevelValid(const int InputLevel)      const;
    bool IsLevelOutOfBound(const int InputLevel) const;

@@ -2,9 +2,9 @@
 #define SEVEN_LEVEL_NET_LONG_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Long/Seven.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class SevenLevelNetLongCounterFactory : public ConstructFactory
+class SevenLevelNetLongCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor

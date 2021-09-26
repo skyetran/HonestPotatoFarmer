@@ -2,9 +2,9 @@
 #define SEVEN_LEVEL_NET_SHORT_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Short/Seven.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class SevenLevelNetShortCounterFactory : public ConstructFactory
+class SevenLevelNetShortCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor

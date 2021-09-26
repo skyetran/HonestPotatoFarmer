@@ -2,9 +2,9 @@
 #define SIX_LEVEL_NET_SHORT_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Short/Six.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class SixLevelNetShortCounterFactory : public ConstructFactory
+class SixLevelNetShortCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor

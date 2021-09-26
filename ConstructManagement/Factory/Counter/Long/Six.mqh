@@ -2,9 +2,9 @@
 #define SIX_LEVEL_NET_LONG_COUNTER_FACTORY_H
 
 #include "../../../Construct/Counter/Long/Six.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../CounterFactory.mqh"
 
-class SixLevelNetLongCounterFactory : public ConstructFactory
+class SixLevelNetLongCounterFactory : public CounterFactory
 {
 public:
    //--- Constructor
