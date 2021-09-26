@@ -16,7 +16,7 @@ SevenLevelNetLongBigHedgeFactory::SevenLevelNetLongBigHedgeFactory(void) {
 
 //--- Operations
 ConstructPreCheckInfo *SevenLevelNetLongBigHedgeFactory::PreCheck(ConstructParameters *InputParameters) {
-   int DeathZoneSize = PriceToPointCvt(MathAbs(GetNLevelPrice(InputParameters, LEVEL_FIVE) - InputParameters.GetStopLossLevel()));
+   int DeathZoneSize = PriceToPointCvt(MathAbs(GetNLevelPrice(InputParameters, LEVEL_SEVEN) - InputParameters.GetStopLossLevel()));
    int MaxPotentialLossInMinLotPointValue = 14 * IP.GetAverageSpreadInPts(CURRENT_BAR) + 42 * InputParameters.GetIntervalSizeInPts() + 14 * DeathZoneSize;
    return new ConstructPreCheckInfo(0.14, 0.14, MaxPotentialLossInMinLotPointValue);
 }
