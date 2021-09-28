@@ -5,6 +5,7 @@
 //+------------------------------------------------------------------+
 
 #include "ConstructManagement/Construct/Construct.mqh"
+#include "ConstructManagement/Factory/Counter/CounterFactory.mqh"
 #include "General/GeneralSettings.mqh"
 #include "General/MoneyManagementHyperParameters.mqh"
 #include "General/PositionManagementHyperParameters.mqh"
@@ -101,16 +102,24 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   DebugMsg += MW.GetDebugMessage();
+   //DebugMsg += MW.GetDebugMessage();
 
-   //Construct *Test = Construct::create(new ConstructType(BIG_HEDGE_LONG, FIVE_LEVEL), new ConstructParameters(IP.GetBidPrice(CURRENT_BAR), IP.GetBidPrice(CURRENT_BAR), IP.GetBidPrice(CURRENT_BAR) - 0.001, 50), 1);
+   //ConstructType         *TestType           = new ConstructType(COUNTER_LONG, FOUR_LEVEL);
+   //ConstructParameters   *TestParameters     = new ConstructParameters(1, 1.00700, 0.99700, 175);
+
+   //Construct *Test = Construct::Create(TestType, TestParameters, 1);
    //ConstructFullTradePool *TestPool = Test.GetFullConstructTradePool();
-   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(IP.GetBidPrice(CURRENT_BAR));
+   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetOneTimeRequest(1);
    //for (int i = 0; i < RequestList.Count(); i++) {
    //   MqlTradeRequestWrapper *Request;
    //   RequestList.TryGetValue(i, Request);
-   //   DebugMsg += DoubleToString(Request.price) + " ";
+   //   DebugMsg += DoubleToString(Request.price) + " " + DoubleToString(Request.volume) + "\n";
    //}
+   
+   //ConstructPreCheckInfo *TestPreCheck = Construct::PreCheck(TestType, TestParameters);
+   //DebugMsg += DoubleToString(TestPreCheck.GetMaxLotSizeExposure()) + "\n";
+   //DebugMsg += DoubleToString(TestPreCheck.GetPersistingLotSizeExposure()) + "\n";
+   //DebugMsg += IntegerToString(TestPreCheck.GetMaxPotentialLossInMinLotPointValue()) + "\n";
    
    Comment(DebugMsg);
 }

@@ -2,7 +2,7 @@
 
 #include "../../../ConstructManagement/Factory/Counter/CounterFactory.mqh"
 
-//--- Construct
+//--- Constructor
 CounterFactory::CounterFactory(void) { }
 
 //--- Helper Functions For N-Level Long/Short Counter Construct
@@ -43,14 +43,14 @@ int CounterFactory::GetDeathZoneSize(ConstructParameters *InputParameters) const
 
 //--- Helper Functions
 double CounterFactory::ConvertToLotSize(const double &CoveredCounterInPts) const {
-   return NormalizeDouble(MathCeil(CoveredCounterInPts) / 100, 2);
+   return MathMax(MIN_LOT_SIZE, NormalizeDouble(MathCeil(CoveredCounterInPts) / 100, 2));
 }
 
 //--- Helper Functions
 double CounterFactory::GetAllCoveredCounterLotSize(ConstructParameters *InputParameters, const int ConstructLevel) const {
    double LotSize = 0;
    
-   for (int CounterLevel = 0; CounterLevel < ConstructLevel - 1; CounterLevel++) {
+   for (int CounterLevel = ZERO_LEVEL; CounterLevel < ConstructLevel; CounterLevel++) {
       LotSize += GetCoveredCounterLotSizeNLevel(CounterLevel, InputParameters, ConstructLevel);
    }
    return LotSize;
@@ -58,6 +58,5 @@ double CounterFactory::GetAllCoveredCounterLotSize(ConstructParameters *InputPar
 
 //--- Helper Functions
 double CounterFactory::GetPossibleLossPerMinLotSizeForAllCoveredCounterLotSize(ConstructParameters *InputParameters, const int ConstructLevel) const {
-   int DeathZoneSize = GetDeathZoneSize(InputParameters);
-   return (DeathZoneSize + IP.GetAverageSpreadInPts(CURRENT_BAR)) * GetAllCoveredCounterLotSize(InputParameters, ConstructLevel);
+   return (GetDeathZoneSize(InputParameters) + IP.GetAverageSpreadInPts(CURRENT_BAR)) * GetAllCoveredCounterLotSize(InputParameters, ConstructLevel) * 100;
 }

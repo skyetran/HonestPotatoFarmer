@@ -2,9 +2,9 @@
 #define TWO_LEVEL_NET_LONG_FREE_STYLING_FACTORY_H
 
 #include "../../../Construct/FreeStyling/Long/Two.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../FreeStylingFactory.mqh"
 
-class TwoLevelNetLongFreeStylingFactory : public ConstructFactory
+class TwoLevelNetLongFreeStylingFactory : public FreeStylingFactory
 {
 public:
    //--- Constructor

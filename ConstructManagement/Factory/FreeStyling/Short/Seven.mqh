@@ -2,9 +2,9 @@
 #define SEVEN_LEVEL_NET_SHORT_FREE_STYLING_FACTORY_H
 
 #include "../../../Construct/FreeStyling/Short/Seven.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../FreeStylingFactory.mqh"
 
-class SevenLevelNetShortFreeStylingFactory : public ConstructFactory
+class SevenLevelNetShortFreeStylingFactory : public FreeStylingFactory
 {
 public:
    //--- Constructor

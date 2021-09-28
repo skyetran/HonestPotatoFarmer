@@ -10,7 +10,8 @@ namespace _AnonymousFiveLevelNetLongFreeStylingConstructNameSpace {
 //--- Constructor
 //--- Call To Register Type
 FiveLevelNetLongFreeStylingFactory::FiveLevelNetLongFreeStylingFactory(void) {
-   Construct::RegisterFactory(_AnonymousFiveLevelNetLongFreeStylingConstructNameSpace::AnonymousFiveLevelNetLongFreeStylingConstruct.GetConstructType(), GetPointer(this));
+   Type = _AnonymousFiveLevelNetLongFreeStylingConstructNameSpace::AnonymousFiveLevelNetLongFreeStylingConstruct.GetConstructType();
+   Construct::RegisterFactory(Type, GetPointer(this));
 }
 
 //--- Operations

@@ -2,9 +2,9 @@
 #define SIX_LEVEL_NET_LONG_FREE_STYLING_FACTORY_H
 
 #include "../../../Construct/FreeStyling/Long/Six.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../FreeStylingFactory.mqh"
 
-class SixLevelNetLongFreeStylingFactory : public ConstructFactory
+class SixLevelNetLongFreeStylingFactory : public FreeStylingFactory
 {
 public:
    //--- Constructor

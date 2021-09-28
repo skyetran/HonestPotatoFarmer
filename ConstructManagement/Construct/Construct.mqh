@@ -40,7 +40,7 @@ public:
    static bool Validate(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition);
    
    //--- Find The Corresponding Construct Factory And Get Factory To Create The Construct
-   static Construct *create(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition);
+   static Construct *Create(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition);
    
    //--- Getters
    ConstructFullTradePool *GetFullConstructTradePool(void) const;

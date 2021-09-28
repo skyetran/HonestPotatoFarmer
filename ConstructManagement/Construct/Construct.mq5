@@ -55,7 +55,7 @@ static bool Construct::Validate(ConstructType *InputType, ConstructParameters *I
 }
 
 //--- Find The Corresponding Construct Factory And Get Factory To Create The Construct
-static Construct *Construct::create(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition) {
+static Construct *Construct::Create(ConstructType *InputType, ConstructParameters *InputParameters, const int InputEntryPosition) {
    if (!GetConstructFactories().ContainsKey(InputType)) {
       Print(CONSTRUCT_TYPE_DOES_NOT_EXIST);
       return NULL;

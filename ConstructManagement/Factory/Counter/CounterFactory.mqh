@@ -6,7 +6,7 @@
 class CounterFactory : public ConstructFactory
 {
 public:
-   //--- Construct
+   //--- Constructor
    CounterFactory(void);
    
 protected:

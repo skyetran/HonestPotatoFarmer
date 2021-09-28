@@ -176,6 +176,40 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    return new MqlTradeRequestWrapper(request);
 }
 
+//--- Raw Base Entry Orders (Counter & Free Styling)
+MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume, double tp) {
+   MqlTradeRequest request = {};
+   
+   request.action    = TRADE_ACTION_DEAL;
+   request.magic     = GS.GetMagicNumber();
+   request.symbol    = Symbol();
+   request.deviation = PMHP.GetSlippageInPts();
+   request.type      = ORDER_TYPE_BUY;
+   
+   request.volume    = volume;
+   request.tp        = tp;
+   request.price     = NormalizeDouble(IP.GetAskPrice(CURRENT_BAR), Digits());
+   
+   return new MqlTradeRequestWrapper(request);
+}
+
+//--- Raw Base Entry Orders (Counter & Free Styling)
+MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume, double tp) {
+   MqlTradeRequest request = {};
+   
+   request.action    = TRADE_ACTION_DEAL;
+   request.magic     = GS.GetMagicNumber();
+   request.symbol    = Symbol();
+   request.deviation = PMHP.GetSlippageInPts();
+   request.type      = ORDER_TYPE_SELL;
+   
+   request.volume    = volume;
+   request.tp        = tp;
+   request.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
+   
+   return new MqlTradeRequestWrapper(request);
+}
+
 //--- Limit Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyLimitOrderRequest(const double volume, const double price) {
    MqlTradeRequest request = {};

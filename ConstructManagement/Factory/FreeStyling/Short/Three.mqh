@@ -2,9 +2,9 @@
 #define THREE_LEVEL_NET_SHORT_FREE_STYLING_FACTORY_H
 
 #include "../../../Construct/FreeStyling/Short/Three.mqh"
-#include "../../ConstructFactory.mqh"
+#include "../FreeStylingFactory.mqh"
 
-class ThreeLevelNetShortFreeStylingFactory : public ConstructFactory
+class ThreeLevelNetShortFreeStylingFactory : public FreeStylingFactory
 {
 public:
    //--- Constructor

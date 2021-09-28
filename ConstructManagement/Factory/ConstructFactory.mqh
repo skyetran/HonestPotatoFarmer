@@ -3,6 +3,7 @@
 
 #include "../Construct/Construct.mqh"
 #include "../../General/GeneralSettings.mqh"
+#include "../../General/GlobalConstants.mqh"
 #include "../../General/PositionManagementHyperParameters.mqh"
 
 class ConstructFactory
@@ -51,9 +52,9 @@ protected:
    MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume);
    MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume);
    
-   //--- Base Entry Orders (Counter & Free Styling)
-   MqlTradeRequestWrapper *BuyMarketOrderRequest(const double volume);
-   MqlTradeRequestWrapper *SellMarketOrderRequest(const double volume);
+   //--- Raw Base Entry Orders (Counter & Free Styling)
+   MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume, double tp);
+   MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume, double tp);
    
    //--- Limit Entry Orders
    MqlTradeRequestWrapper *BuyLimitOrderRequest(const double volume, const double price);

@@ -22,17 +22,25 @@ public:
    ~ConstructFullTradePool(void);
    
    //--- Operations
-   void AddRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
-   CArrayList<MqlTradeRequestWrapper*> *GetRequest(const double ExecutionPrice);
+   void AddOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
+   void AddRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
+   
+   CArrayList<MqlTradeRequestWrapper*> *GetOneTimeRequest(const double ExecutionPrice);
+   CArrayList<MqlTradeRequestWrapper*> *GetRecurrentRequest(const double ExecutionPrice);
 
 private:
-   CHashMap<ExecutionBoundary*, CArrayList<MqlTradeRequestWrapper*>*> TradePool;
+   CHashMap<ExecutionBoundary*, CArrayList<MqlTradeRequestWrapper*>*> OneTimeTradePool;
+   CHashMap<ExecutionBoundary*, CArrayList<MqlTradeRequestWrapper*>*> RecurrentTradePool;
    
-   //--- Helper Functions: AddRequest
-   void AddExistedBoundaryRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
-   void AddNewBoundaryRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
+   //--- Helper Functions: AddOneTimeRequest
+   void AddExistedBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
+   void AddNewBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
    
-   //--- Helper Functions: GetRequest
+   //--- Helper Functions: AddRecurrentRequest
+   void AddExistedBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
+   void AddNewBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request);
+   
+   //--- Auxilary Functions
    bool IsInExecutionZone(ExecutionBoundary *InputBoundary, const double ExecutionBoundary);
    void TransferRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To);
 };

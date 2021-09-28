@@ -10,20 +10,28 @@ namespace _AnonymousSevenLevelNetLongFreeStylingConstructNameSpace {
 //--- Constructor
 //--- Call To Register Type
 SevenLevelNetLongFreeStylingFactory::SevenLevelNetLongFreeStylingFactory(void) {
-   Construct::RegisterFactory(_AnonymousSevenLevelNetLongFreeStylingConstructNameSpace::AnonymousSevenLevelNetLongFreeStylingConstruct.GetConstructType(), GetPointer(this));
+   Type = _AnonymousSevenLevelNetLongFreeStylingConstructNameSpace::AnonymousSevenLevelNetLongFreeStylingConstruct.GetConstructType();
+   Construct::RegisterFactory(Type, GetPointer(this));
 }
 
 //--- Operations
 ConstructPreCheckInfo *SevenLevelNetLongFreeStylingFactory::PreCheck(ConstructParameters *InputParameters) {
-   return NULL;
+   return new ConstructPreCheckInfo(GetMaxLotSizeExposure(InputParameters, SEVEN_LEVEL),
+                                    GetPersistingLotSizeExposure(InputParameters, SEVEN_LEVEL),
+                                    GetMaxPotentialLossInMinLotPointValue(InputParameters, SEVEN_LEVEL));
 }
 
 bool SevenLevelNetLongFreeStylingFactory::Validate(ConstructParameters *InputParameters, const int InputEntryPositionID) {
-   return false;
+   return IsSevenLevel(InputParameters)                                      &&
+          IsNetLong(InputParameters)                                         &&
+          IsAttributeValidFundamentally(InputParameters, InputEntryPositionID);
 }
 
 Construct *SevenLevelNetLongFreeStylingFactory::Create(ConstructParameters *InputParameters, const int InputEntryPositionID) {
-   return NULL;
+   SevenLevelNetLongFreeStylingConstruct *NewConstruct = new SevenLevelNetLongFreeStylingConstruct();
+   LogCoreInformation(NewConstruct, InputParameters, InputEntryPositionID);
+   NewConstruct.SetFullTradePool(CreateFullTradePool(InputParameters));
+   return NewConstruct;
 }
 
 //--- Helper Functions: Create Operation

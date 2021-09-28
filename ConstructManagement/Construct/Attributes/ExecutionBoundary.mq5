@@ -7,8 +7,8 @@ ExecutionBoundary::ExecutionBoundary(void) { }
 
 //--- Main Constructor
 ExecutionBoundary::ExecutionBoundary(const double InputLowerBound, const double InputUpperBound) {
-   LowerBound = InputLowerBound;
-   UpperBound = InputUpperBound;
+   LowerBound = MathMin(InputLowerBound, InputUpperBound);
+   UpperBound = MathMax(InputLowerBound, InputUpperBound);
    
    HashString = DoubleToString(InputLowerBound) + DoubleToString(InputUpperBound);
 }
