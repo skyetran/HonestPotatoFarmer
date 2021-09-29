@@ -45,16 +45,14 @@ protected:
    double GetSpreadOffsetBuyOrderPriceEntry(const double OriginalPriceEntry)         const;
    double GetStopLevelUpperOffsetPriceEntry(const double OriginalPriceEntry)         const;
    double GetStopLevelLowerOffsetPriceEntry(const double OriginalPriceEntry)         const;
+   double GetSlippageUpperOffsetPriceEntry(const double OriginalPriceEntry)          const;
+   double GetSlippageLowerOffsetPriceEntry(const double OriginalPriceEntry)          const;
    double GetStopLevelSlippageUpperOffsetPriceEntry(const double OriginalPriceEntry) const;
    double GetStopLevelSlippageLowerOffsetPriceEntry(const double OriginalPriceEntry) const;
    
-   //--- Raw Base Entry Orders (Big Hedge)
+   //--- Raw Base Entry Orders
    MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume);
    MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume);
-   
-   //--- Raw Base Entry Orders (Counter & Free Styling)
-   MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume, double tp);
-   MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume, double tp);
    
    //--- Limit Entry Orders
    MqlTradeRequestWrapper *BuyLimitOrderRequest(const double volume, const double price);

@@ -21,7 +21,6 @@ private:
    //--- Helper Functions
    int    GetDeathZoneSize(ConstructParameters *InputParameters)                                                                      const;
    double ConvertToLotSize(const double &CoveredCounterInPts)                                                                         const;
-   double GetCoveredRetracementLotSizeFirstLevelBias(ConstructParameters *InputParameters)                                            const;
    double GetAllCoveredRetracementLotSize(ConstructParameters *InputParameters, const int ConstructLevel)                             const;
    double GetPossibleLossPerMinLotSizeForAllCoveredRetracementLotSize(ConstructParameters *InputParameters, const int ConstructLevel) const;
 

@@ -136,12 +136,21 @@ double ConstructFactory::GetStopLevelLowerOffsetPriceEntry(const double Original
    return OriginalPriceEntry - IP.GetTradeStopLevelInPrice();
 }
 
+double ConstructFactory::GetSlippageUpperOffsetPriceEntry(const double OriginalPriceEntry) const {
+   return OriginalPriceEntry + PMHP.GetSlippageInPrice();
+}
+
+double ConstructFactory::GetSlippageLowerOffsetPriceEntry(const double OriginalPriceEntry) const {
+   return OriginalPriceEntry - PMHP.GetSlippageInPrice();
+}
+
+
 double ConstructFactory::GetStopLevelSlippageUpperOffsetPriceEntry(const double OriginalPriceEntry) const {
-   return GetStopLevelUpperOffsetPriceEntry(OriginalPriceEntry) + PMHP.GetSlippageInPrice();
+   return GetStopLevelUpperOffsetPriceEntry(GetSlippageUpperOffsetPriceEntry(OriginalPriceEntry));
 }
 
 double ConstructFactory::GetStopLevelSlippageLowerOffsetPriceEntry(const double OriginalPriceEntry) const {
-   return GetStopLevelLowerOffsetPriceEntry(OriginalPriceEntry) - PMHP.GetSlippageInPrice();
+   return GetStopLevelLowerOffsetPriceEntry(GetStopLevelLowerOffsetPriceEntry(OriginalPriceEntry));
 }
 
 //--- Raw Base Entry Orders
@@ -171,40 +180,6 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    request.type      = ORDER_TYPE_SELL;
    
    request.volume    = volume;
-   request.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
-   
-   return new MqlTradeRequestWrapper(request);
-}
-
-//--- Raw Base Entry Orders (Counter & Free Styling)
-MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume, double tp) {
-   MqlTradeRequest request = {};
-   
-   request.action    = TRADE_ACTION_DEAL;
-   request.magic     = GS.GetMagicNumber();
-   request.symbol    = Symbol();
-   request.deviation = PMHP.GetSlippageInPts();
-   request.type      = ORDER_TYPE_BUY;
-   
-   request.volume    = volume;
-   request.tp        = tp;
-   request.price     = NormalizeDouble(IP.GetAskPrice(CURRENT_BAR), Digits());
-   
-   return new MqlTradeRequestWrapper(request);
-}
-
-//--- Raw Base Entry Orders (Counter & Free Styling)
-MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume, double tp) {
-   MqlTradeRequest request = {};
-   
-   request.action    = TRADE_ACTION_DEAL;
-   request.magic     = GS.GetMagicNumber();
-   request.symbol    = Symbol();
-   request.deviation = PMHP.GetSlippageInPts();
-   request.type      = ORDER_TYPE_SELL;
-   
-   request.volume    = volume;
-   request.tp        = tp;
    request.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
    
    return new MqlTradeRequestWrapper(request);

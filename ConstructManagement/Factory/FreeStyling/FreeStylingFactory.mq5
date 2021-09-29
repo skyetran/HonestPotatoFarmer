@@ -51,11 +51,6 @@ double FreeStylingFactory::ConvertToLotSize(const double &CoveredCounterInPts) c
 }
 
 //--- Helper Functions
-double FreeStylingFactory::GetCoveredRetracementLotSizeFirstLevelBias(ConstructParameters *InputParameters) const {
-   return GetDeathZoneSize(InputParameters) - InputParameters.GetIntervalSizeInPts() + IP.GetAverageSpreadInPts(CURRENT_BAR);
-}
-
-//--- Helper Functions
 double FreeStylingFactory::GetAllCoveredRetracementLotSize(ConstructParameters *InputParameters, const int ConstructLevel) const {
    double LotSize = 0;
    
