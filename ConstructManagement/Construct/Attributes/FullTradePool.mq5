@@ -38,21 +38,21 @@ void ConstructFullTradePool::AddNewBoundaryOneTimeRequest(ExecutionBoundary *Inp
 //--- Operations
 void ConstructFullTradePool::AddRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper* Request) {
    if (RecurrentTradePool.ContainsKey(InputBoundary)) {
-      AddExistedBoundaryRecurrentRequest(InputBoundary, Request);
+      AddExistedExecutionBoundaryRecurrentRequest(InputBoundary, Request);
    } else {
-      AddNewBoundaryRecurrentRequest(InputBoundary, Request);
+      AddNewExecutionBoundaryRecurrentRequest(InputBoundary, Request);
    }
 }
 
 //--- Helper Functions: AddRecurrentRequest
-void ConstructFullTradePool::AddExistedBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
+void ConstructFullTradePool::AddExistedExecutionBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
    CArrayList<MqlTradeRequestWrapper*> *RequestList = new CArrayList<MqlTradeRequestWrapper*>();
    RecurrentTradePool.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
 }
 
 //--- Helper Functios: AddRecurrentRequest
-void ConstructFullTradePool::AddNewBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
+void ConstructFullTradePool::AddNewExecutionBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
    CArrayList<MqlTradeRequestWrapper*> *RequestList = new CArrayList<MqlTradeRequestWrapper*>();
    RequestList.Add(Request);
    RecurrentTradePool.Add(InputBoundary, RequestList);

@@ -102,7 +102,7 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   //DebugMsg += MW.GetDebugMessage();
+   DebugMsg += MW.GetDebugMessage();
 
    //ConstructType         *TestType           = new ConstructType(COUNTER_LONG, FOUR_LEVEL);
    //ConstructParameters   *TestParameters     = new ConstructParameters(1, 1.00700, 0.99700, 175);

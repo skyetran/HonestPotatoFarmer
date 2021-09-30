@@ -1,2 +1,0 @@
-# HonestPotatoFarmer
-Forex Trading Algorithm
