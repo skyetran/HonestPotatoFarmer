@@ -48,3 +48,42 @@ void MqlTradeRequestWrapper::Unwrap(MqlTradeRequest &request) {
    request.position     = position;
    request.position_by  = position_by;
 }
+
+//--- Required ADT Functions
+int  MqlTradeRequestWrapper::Compare(MqlTradeRequestWrapper* Other) {
+   //--- Ranking Importance Of Request To Determine Which To Execute First
+   return 0;
+}
+
+bool MqlTradeRequestWrapper::Equals(MqlTradeRequestWrapper* Other) {
+   return action       == Other.action       &&
+          magic        == Other.magic        &&
+          order        == Other.order        &&
+          symbol       == Other.symbol       &&
+          volume       == Other.volume       &&
+          price        == Other.price        &&
+          stoplimit    == Other.stoplimit    &&
+          sl           == Other.sl           &&
+          tp           == Other.tp           &&
+          deviation    == Other.deviation    &&
+          type         == Other.type         &&
+          type_filling == Other.type_filling &&
+          type_time    == Other.type_time    &&
+          expiration   == Other.expiration   &&
+          comment      == Other.comment      &&
+          position     == Other.position     &&
+          position_by  == Other.position_by   ;
+}
+
+int  MqlTradeRequestWrapper::HashCode() {
+   string HashString = DoubleToString(10 * action + order) + DoubleToString(volume) + DoubleToString(price) + DoubleToString(stoplimit) + comment;
+   int    Length     = StringLen(HashString);
+   int    HashValue  = 0;
+   
+   if (Length > 0) {
+      for (int i = 0; i < Length; i++) {
+         HashValue = 31 * HashValue + HashString[i];
+      }
+   } 
+   return HashValue;
+}

@@ -53,18 +53,26 @@ protected:
    //--- Raw Base Entry Orders
    MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume);
    MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume);
+   MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume, const string &comment);
+   MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume, const string &comment);
    
    //--- Limit Entry Orders
    MqlTradeRequestWrapper *BuyLimitOrderRequest(const double volume, const double price);
    MqlTradeRequestWrapper *SellLimitOrderRequest(const double volume, const double price);
+   MqlTradeRequestWrapper *BuyLimitOrderRequest(const double volume, const double price, const string &comment);
+   MqlTradeRequestWrapper *SellLimitOrderRequest(const double volume, const double price, const string &comment);
    
    //--- Stop Limit Entry Orders
    MqlTradeRequestWrapper *BuyStopLimitOrderRequest(const double volume, const double price, const double stoplimit);
    MqlTradeRequestWrapper *SellStopLimitOrderRequest(const double volume, const double price, const double stoplimit);
+   MqlTradeRequestWrapper *BuyStopLimitOrderRequest(const double volume, const double price, const double stoplimit, const string &comment);
+   MqlTradeRequestWrapper *SellStopLimitOrderRequest(const double volume, const double price, const double stoplimit, const string &comment);
    
    //--- Stop Orders
    MqlTradeRequestWrapper *BuyStopOrderRequest(const double volume, const double price);
    MqlTradeRequestWrapper *SellStopOrderRequest(const double volume, const double price);
+   MqlTradeRequestWrapper *BuyStopOrderRequest(const double volume, const double price, const string &comment);
+   MqlTradeRequestWrapper *SellStopOrderRequest(const double volume, const double price, const string &comment);
    
    virtual ConstructFullTradePool *CreateFullTradePool(ConstructParameters *InputParameters) = NULL;
    

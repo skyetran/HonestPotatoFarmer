@@ -155,6 +155,16 @@ double ConstructFactory::GetStopLevelSlippageLowerOffsetPriceEntry(const double 
 
 //--- Raw Base Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume) {
+   return BuyRawMarketOrderRequest(volume, EMPTY_COMMENT);
+}
+
+//--- Raw Base Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume) {
+   return SellRawMarketOrderRequest(volume, EMPTY_COMMENT);
+}
+
+//--- Raw Base Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_DEAL;
@@ -165,12 +175,13 @@ MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double 
    
    request.volume    = volume;
    request.price     = NormalizeDouble(IP.GetAskPrice(CURRENT_BAR), Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Raw Base Entry Orders
-MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume) {
+MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_DEAL;
@@ -181,12 +192,23 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    
    request.volume    = volume;
    request.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Limit Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyLimitOrderRequest(const double volume, const double price) {
+   return BuyLimitOrderRequest(volume, price, EMPTY_COMMENT);
+}
+
+//--- Limit Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::SellLimitOrderRequest(const double volume, const double price) {
+   return SellLimitOrderRequest(volume, price, EMPTY_COMMENT);
+}
+
+//--- Limit Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::BuyLimitOrderRequest(const double volume, const double price, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_PENDING;
@@ -197,12 +219,13 @@ MqlTradeRequestWrapper *ConstructFactory::BuyLimitOrderRequest(const double volu
    
    request.volume    = volume;
    request.price     = NormalizeDouble(price, Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Limit Entry Orders
-MqlTradeRequestWrapper *ConstructFactory::SellLimitOrderRequest(const double volume, const double price) {
+MqlTradeRequestWrapper *ConstructFactory::SellLimitOrderRequest(const double volume, const double price, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_PENDING;
@@ -213,12 +236,23 @@ MqlTradeRequestWrapper *ConstructFactory::SellLimitOrderRequest(const double vol
    
    request.volume    = volume;
    request.price     = NormalizeDouble(price, Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Stop Limit Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyStopLimitOrderRequest(const double volume, const double price, const double stoplimit) {
+   return BuyStopLimitOrderRequest(volume, price, stoplimit, EMPTY_COMMENT);
+}
+
+//--- Stop Limit Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::SellStopLimitOrderRequest(const double volume, const double price, const double stoplimit) {
+   return SellStopLimitOrderRequest(volume, price, stoplimit, EMPTY_COMMENT);
+}
+
+//--- Stop Limit Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::BuyStopLimitOrderRequest(const double volume, const double price, const double stoplimit, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_PENDING;
@@ -230,12 +264,13 @@ MqlTradeRequestWrapper *ConstructFactory::BuyStopLimitOrderRequest(const double 
    request.volume    = volume;
    request.price     = NormalizeDouble(price, Digits());
    request.stoplimit = NormalizeDouble(price, Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Stop Limit Entry Orders
-MqlTradeRequestWrapper *ConstructFactory::SellStopLimitOrderRequest(const double volume, const double price, const double stoplimit) {
+MqlTradeRequestWrapper *ConstructFactory::SellStopLimitOrderRequest(const double volume, const double price, const double stoplimit, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_PENDING;
@@ -247,12 +282,23 @@ MqlTradeRequestWrapper *ConstructFactory::SellStopLimitOrderRequest(const double
    request.volume    = volume;
    request.price     = NormalizeDouble(price, Digits());
    request.stoplimit = NormalizeDouble(price, Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Stop Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyStopOrderRequest(const double volume, const double price) {
+   return BuyStopOrderRequest(volume, price, EMPTY_COMMENT);
+}
+
+//--- Stop Orders
+MqlTradeRequestWrapper *ConstructFactory::SellStopOrderRequest(const double volume, const double price) {
+   return SellStopOrderRequest(volume, price, EMPTY_COMMENT);
+}
+
+//--- Stop Orders
+MqlTradeRequestWrapper *ConstructFactory::BuyStopOrderRequest(const double volume, const double price, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_PENDING;
@@ -263,12 +309,13 @@ MqlTradeRequestWrapper *ConstructFactory::BuyStopOrderRequest(const double volum
    
    request.volume    = volume;
    request.price     = NormalizeDouble(price, Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Stop Orders
-MqlTradeRequestWrapper *ConstructFactory::SellStopOrderRequest(const double volume, const double price) {
+MqlTradeRequestWrapper *ConstructFactory::SellStopOrderRequest(const double volume, const double price, const string &comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_PENDING;
@@ -279,6 +326,7 @@ MqlTradeRequestWrapper *ConstructFactory::SellStopOrderRequest(const double volu
    
    request.volume    = volume;
    request.price     = NormalizeDouble(price, Digits());
+   request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }

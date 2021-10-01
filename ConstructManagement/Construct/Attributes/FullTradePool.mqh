@@ -4,6 +4,7 @@
 #include <Generic\ArrayList.mqh>
 #include <Generic\HashMap.mqh>
 
+#include "../../../General/GlobalConstants.mqh"
 #include "../../../Wrapper/MqlTradeRequestWrapper.mqh"
 #include "CompletionBoundary.mqh"
 #include "ExecutionBoundary.mqh"
@@ -12,7 +13,6 @@
 //| Trades That Are Executed If Execution Price Is Greater Than Or   |
 //| Equal To The Current Price, Goes To The UpperTradePool           |
 //+------------------------------------------------------------------+
-
 class ConstructFullTradePool
 {
 public:
@@ -22,18 +22,23 @@ public:
    //--- Destructor
    ~ConstructFullTradePool(void);
    
-   //--- Operations
+   //--- Operations: Create Objects
    void AddOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddRecurrentRequest(ExecutionBoundary *InputExecutionBoundary, MqlTradeRequestWrapper *Request, CompletionBoundary *InputCompletionBoundary);
-   void AddRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request); //--- TODO: Move To Private
+   void AddRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);             //--- TODO: Move To Private
+   void AddRecurrentRequestBoomerang(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);   //--- TODO: Move To Private
    
+   //--- Operations: Monitoring
    CArrayList<MqlTradeRequestWrapper*> *GetOneTimeRequest(const double ExecutionPrice);
    CArrayList<MqlTradeRequestWrapper*> *GetRecurrentRequest(const double ExecutionPrice);
+   void UpdateRecurrentTradeBoomerangStatus(const double CurrentPrice);
 
 private:
    CHashMap<ExecutionBoundary* , CArrayList<MqlTradeRequestWrapper*>*> OneTimeTradePool;
+   CHashMap<MqlTradeRequestWrapper*, bool>                             OneTimeTradeBoomerangStatus;
    CHashMap<ExecutionBoundary* , CArrayList<MqlTradeRequestWrapper*>*> RecurrentTradePool;
    CHashMap<CompletionBoundary*, CArrayList<MqlTradeRequestWrapper*>*> RecurrentTradePoolBoomerang; 
+   CHashMap<MqlTradeRequestWrapper*, bool>                             RecurrentTradeBoomerangStatus;
    
    //--- Helper Functions: AddOneTimeRequest
    void AddExistedBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
@@ -45,9 +50,23 @@ private:
    void AddExistedCompletionBoundaryRecurrentRequest(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddNewCompletionBoundaryRecurrentRequest(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    
+   //--- Helper Functions: GetOneTimeRequest
+   void TransferOneTimeRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To);
+   bool IsOneTimeBoomerangStatus(MqlTradeRequestWrapper *Request);
+   void SetOneTimeBoomerangStatus(MqlTradeRequestWrapper *Request, const bool InputBoomerangStatus);
+   
+   //--- Helper Functions: GetRecurrentRequest
+   void TransferRecurrentRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To);
+   bool IsRecurrentBoomerangStatus(MqlTradeRequestWrapper *Request);
+   void SetRecurrentBoomerangStatus(MqlTradeRequestWrapper *Request, const bool InputBoomerangStatus);
+   
+   //--- Helper Functions: UpdateRecurrentTradeBoomerangStatus
+   bool IsInCompletionZone(CompletionBoundary *InputBoundary, const double InputPrice);
+   void SetRecurrentBoomerangStatus(CArrayList<MqlTradeRequestWrapper*> *RequestList, const bool InputBoomerangStatus);
+   
    //--- Auxilary Functions
-   bool IsInExecutionZone(ExecutionBoundary *InputBoundary, const double ExecutionBoundary);
-   void TransferRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To);
+   bool IsInExecutionZone(ExecutionBoundary *InputBoundary, const double InputPrice);
+   
 };
 
 #endif
