@@ -49,13 +49,5 @@ enum ENUM_CONSTRUCT_CLASS {
 
 string EMPTY_COMMENT    = "";
 
-string UNIQUE_COMMENT_1 = "7RTG5pHHdue6u5aFWJEm";
-string UNIQUE_COMMENT_2 = "i9wazt9wkAWGsxNVsT2r";
-string UNIQUE_COMMENT_3 = "PDZI2Q2iLI3BRtj3F8Tk";
-string UNIQUE_COMMENT_4 = "iF9GPSWwpXtpFxOqyIF7";
-string UNIQUE_COMMENT_5 = "SHwfZ7hsdNxKK2mW8Gq1";
-string UNIQUE_COMMENT_6 = "ktfnkI5CRZs6RzDrJT0M";
-string UNIQUE_COMMENT_7 = "wiCxMaU7FZywbYOInsdi";
-
 //--- Error Message
 string CONSTRUCT_TYPE_DOES_NOT_EXIST = "Construct Type Does Not Exist";

@@ -3,6 +3,7 @@
 
 #include "../../../Construct/BigHedge/Short/Seven.mqh"
 #include "../../ConstructFactory.mqh"
+#include "../UniqueComments.mqh"
 
 class SevenLevelNetShortBigHedgeFactory : public ConstructFactory
 {

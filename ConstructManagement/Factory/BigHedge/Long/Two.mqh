@@ -3,6 +3,7 @@
 
 #include "../../../Construct/BigHedge/Long/Two.mqh"
 #include "../../ConstructFactory.mqh"
+#include "../UniqueComments.mqh"
 
 class TwoLevelNetLongBigHedgeFactory : public ConstructFactory
 {

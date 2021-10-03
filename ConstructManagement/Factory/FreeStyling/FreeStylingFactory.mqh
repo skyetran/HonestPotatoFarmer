@@ -2,6 +2,7 @@
 #define FREE_STYLING_FACTORY_H
 
 #include "../ConstructFactory.mqh"
+#include "UniqueComments.mqh"
 
 class FreeStylingFactory : public ConstructFactory
 {

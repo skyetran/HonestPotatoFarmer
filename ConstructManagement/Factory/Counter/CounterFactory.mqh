@@ -2,6 +2,7 @@
 #define COUNTER_FACTORY_H
 
 #include "../ConstructFactory.mqh"
+#include "UniqueComments.mqh"
 
 class CounterFactory : public ConstructFactory
 {

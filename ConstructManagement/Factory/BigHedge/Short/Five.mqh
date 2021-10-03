@@ -3,6 +3,7 @@
 
 #include "../../../Construct/BigHedge/Short/Five.mqh"
 #include "../../ConstructFactory.mqh"
+#include "../UniqueComments.mqh"
 
 class FiveLevelNetShortBigHedgeFactory : public ConstructFactory
 {
