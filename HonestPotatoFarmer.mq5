@@ -12,6 +12,9 @@
 #include "MarketState/Ranging.mqh"
 #include "MarketWatcher.mqh"
 
+#include <Trade\OrderInfo.mqh>
+#include <Trade\DealInfo.mqh>
+
 extern string           Text1                               = "Indicators Settings";
 input  double           FastMAMA_FastLimit                  = 0.5;
 input  double           FastMAMA_SlowLimit                  = 0.5;
@@ -109,7 +112,7 @@ void OnTick()
 
    //Construct *Test = Construct::Create(TestType, TestParameters, 1);
    //ConstructFullTradePool *TestPool = Test.GetFullConstructTradePool();
-   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRecurrentRequest(1);
+   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(1);
    //for (int i = 0; i < RequestList.Count(); i++) {
    //   MqlTradeRequestWrapper *Request;
    //   RequestList.TryGetValue(i, Request);
@@ -120,6 +123,104 @@ void OnTick()
    //DebugMsg += DoubleToString(TestPreCheck.GetMaxLotSizeExposure()) + "\n";
    //DebugMsg += DoubleToString(TestPreCheck.GetPersistingLotSizeExposure()) + "\n";
    //DebugMsg += IntegerToString(TestPreCheck.GetMaxPotentialLossInMinLotPointValue()) + "\n";
+   
+   static MqlTradeRequest request1 = {};
+   static MqlTradeResult  result1  = {};
+   static MqlTradeRequest request2 = {};
+   static MqlTradeResult  result2  = {};
+   static MqlTradeRequest request3 = {};
+   static MqlTradeResult  result3  = {};
+   static MqlTradeRequest request4 = {};
+   static MqlTradeResult  result4  = {};
+   static MqlTradeRequest request5 = {};
+   static MqlTradeResult  result5  = {};
+   
+   static bool OneTime = true;
+   if (OneTime) {
+      OneTime = false;
+      
+      request1.action    = TRADE_ACTION_PENDING;
+      request1.magic     = GS.GetMagicNumber();
+      request1.symbol    = Symbol();
+      request1.deviation = PMHP.GetSlippageInPts();
+      request1.type      = ORDER_TYPE_BUY_STOP_LIMIT;
+      
+      request1.volume    = 1;
+      request1.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) + 0.0003, Digits());
+      request1.stoplimit = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
+      
+      request2.action    = TRADE_ACTION_PENDING;
+      request2.magic     = GS.GetMagicNumber();
+      request2.symbol    = Symbol();
+      request2.deviation = PMHP.GetSlippageInPts();
+      request2.type      = ORDER_TYPE_SELL_LIMIT;
+      
+      request2.volume    = 1;
+      request2.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) + 0.0003, Digits());
+      
+      request3.action    = TRADE_ACTION_PENDING;
+      request3.magic     = GS.GetMagicNumber();
+      request3.symbol    = Symbol();
+      request3.deviation = PMHP.GetSlippageInPts();
+      request3.type      = ORDER_TYPE_BUY_STOP;
+      
+      request3.volume    = 1;
+      request3.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) + 0.0003, Digits());
+      
+      request4.action    = TRADE_ACTION_PENDING;
+      request4.magic     = GS.GetMagicNumber();
+      request4.symbol    = Symbol();
+      request4.deviation = PMHP.GetSlippageInPts();
+      request4.type      = ORDER_TYPE_SELL_STOP_LIMIT;
+      
+      request4.volume    = 1;
+      request4.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) - 0.0003, Digits());
+      request4.stoplimit = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR), Digits());
+      
+      request5.action    = TRADE_ACTION_PENDING;
+      request5.magic     = GS.GetMagicNumber();
+      request5.symbol    = Symbol();
+      request5.deviation = PMHP.GetSlippageInPts();
+      request5.type      = ORDER_TYPE_BUY_LIMIT;
+      
+      request5.volume    = 1;
+      request5.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) - 0.0003, Digits());
+      
+      OrderSend(request1, result1);
+      OrderSend(request2, result2);
+      OrderSend(request3, result3);
+      OrderSend(request4, result4);
+      OrderSend(request5, result5);
+   }
+   
+   DebugMsg += request1.price     + "\n";
+   DebugMsg += request1.stoplimit + "\n";
+   
+   DebugMsg += HistoryOrderSelect(result1.order)                      + "\n";
+   DebugMsg += HistoryOrderGetDouble(result1.order, ORDER_PRICE_OPEN) + "\n";
+   
+   DebugMsg += "\n";
+   
+   DebugMsg += request2.price     + "\n";
+   DebugMsg += request2.stoplimit + "\n";
+   
+   DebugMsg += HistoryOrderSelect(result2.order)                      + "\n";
+   DebugMsg += HistoryOrderGetDouble(result2.order, ORDER_PRICE_OPEN) + "\n";
+   
+   DebugMsg += "\n";
+   
+   DebugMsg += request3.price     + "\n";
+   DebugMsg += request3.stoplimit + "\n";
+
+   DebugMsg += HistoryOrderSelect(result3.order)                      + "\n";
+   DebugMsg += HistoryOrderGetDouble(result3.order, ORDER_PRICE_OPEN) + "\n";
+   
+   DebugMsg += "\n";
+   
+   DebugMsg += request4.price     + "\n";
+   DebugMsg += request4.stoplimit + "\n";
+   DebugMsg += HistoryOrderSelect(result4.order)                      + "\n";
+   DebugMsg += HistoryOrderGetDouble(result4.order, ORDER_PRICE_OPEN) + "\n";
    
    Comment(DebugMsg);
 }

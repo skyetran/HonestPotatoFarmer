@@ -25,12 +25,9 @@ public:
    //--- Operations: Create Objects
    void AddOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddRecurrentRequest(ExecutionBoundary *InputExecutionBoundary, MqlTradeRequestWrapper *Request, CompletionBoundary *InputCompletionBoundary);
-   void AddRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);             //--- TODO: Move To Private
-   void AddRecurrentRequestBoomerang(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);   //--- TODO: Move To Private
    
    //--- Operations: Monitoring
-   CArrayList<MqlTradeRequestWrapper*> *GetOneTimeRequest(const double ExecutionPrice);
-   CArrayList<MqlTradeRequestWrapper*> *GetRecurrentRequest(const double ExecutionPrice);
+   CArrayList<MqlTradeRequestWrapper*> *GetRequest(const double CurrentPrice);
    void UpdateRecurrentTradeBoomerangStatus(const double CurrentPrice);
 
 private:
@@ -40,15 +37,21 @@ private:
    CHashMap<CompletionBoundary*, CArrayList<MqlTradeRequestWrapper*>*> RecurrentTradePoolBoomerang; 
    CHashMap<MqlTradeRequestWrapper*, bool>                             RecurrentTradeBoomerangStatus;
    
-   //--- Helper Functions: AddOneTimeRequest
+   //--- Helper Functions: GetRequest
    void AddExistedBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddNewBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    
    //--- Helper Functions: AddRecurrentRequest
+   void AddRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddExistedExecutionBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddNewExecutionBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddExistedCompletionBoundaryRecurrentRequest(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddNewCompletionBoundaryRecurrentRequest(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
+   void AddRecurrentRequestBoomerang(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
+   
+   //--- Helper Functions: GetRequest
+   CArrayList<MqlTradeRequestWrapper*> *GetOneTimeRequest(const double CurrentPrice);
+   CArrayList<MqlTradeRequestWrapper*> *GetRecurrentRequest(const double CurrentPrice);
    
    //--- Helper Functions: GetOneTimeRequest
    void TransferOneTimeRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To);

@@ -44,7 +44,6 @@ public:
 
 private:
    IndicatorProcessor *IP;
-   MqlTradeRequest     Request;
 };
 
 #endif

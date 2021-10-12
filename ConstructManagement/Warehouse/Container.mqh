@@ -7,6 +7,8 @@
 #include "../Construct/Attributes/Parameters.mqh"
 #include "../Construct/Attributes/Type.mqh"
 
+#define BASE_MULTIPLIER 1
+
 class Container
 {
 public:
@@ -19,25 +21,28 @@ public:
    //--- Destructor
    ~Container(void);
    
-   //--- Add New Construct To The Inventory
-   void Add(Construct *NewConstruct);
+   //--- Clear All Container
+   void Clear(void);
+   
+   //--- Getters
+   ConstructType *GetContainerType(void) const;
+   
+   //--- Add Input Construct To The Inventory
+   void Add(Construct *InputConstruct);
    
    //--- Retrieve Construct With The Corresponding Parameters
-   Construct *RetrieveConstruct(ConstructParameters *Parameters);
-   
-   //--- Retrieve Construct Multiplier With The Corresponding Parameters
-   int RetrieveMultiplier(ConstructParameters *Parameters);
-   
-   //--- Clear All Inventory
-   void Clear(void);
+   Construct *RetrieveConstruct(ConstructParameters *InputParameters);
    
 private:
    //--- Map The Parameter Set To The Corresponding Constructs
-   CHashMap<ConstructParameters*, Construct*> ConstructContainer;
-   CHashMap<ConstructParameters*, int>        Multiplier;
+   CHashMap<ConstructParameters*, Construct*> *ConstructContainer;
    
    //--- Inventory Attributes
    ConstructType *ContainerType;
+   
+   //--- Helper Functions: Add
+   void AddExistedConstruct(Construct *InputConstruct);
+   void AddNewConstruct(Construct *InputConstruct);
 };
 
 #endif

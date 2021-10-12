@@ -26,7 +26,7 @@ void ConstructFullTradePool::AddOneTimeRequest(ExecutionBoundary *InputBoundary,
 
 //--- Helper Functions: AddOneTimeRequest
 void ConstructFullTradePool::AddExistedBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
-   CArrayList<MqlTradeRequestWrapper*> *RequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   CArrayList<MqlTradeRequestWrapper*> *RequestList;
    OneTimeTradePool.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
    OneTimeTradePool.Add(InputBoundary, RequestList);
@@ -57,7 +57,7 @@ void ConstructFullTradePool::AddRecurrentRequest(ExecutionBoundary *InputBoundar
 
 //--- Helper Functions: AddRecurrentRequest
 void ConstructFullTradePool::AddExistedExecutionBoundaryRecurrentRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
-   CArrayList<MqlTradeRequestWrapper*> *RequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   CArrayList<MqlTradeRequestWrapper*> *RequestList;
    RecurrentTradePool.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
    RecurrentTradePool.Add(InputBoundary, RequestList);
@@ -81,7 +81,7 @@ void ConstructFullTradePool::AddRecurrentRequestBoomerang(CompletionBoundary *In
 
 //--- Helper Functions: AddRecurrentRequestBoomerang
 void ConstructFullTradePool::AddExistedCompletionBoundaryRecurrentRequest(CompletionBoundary *InputBoundary, MqlTradeRequestWrapper *Request) {
-   CArrayList<MqlTradeRequestWrapper*> *RequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   CArrayList<MqlTradeRequestWrapper*> *RequestList;
    RecurrentTradePoolBoomerang.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
    RecurrentTradePoolBoomerang.Add(InputBoundary, RequestList);
@@ -95,7 +95,19 @@ void ConstructFullTradePool::AddNewCompletionBoundaryRecurrentRequest(Completion
 }
 
 //--- Operations: Monitoring
-CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetOneTimeRequest(const double ExecutionPrice) {
+CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetRequest(const double CurrentPrice) {
+   CArrayList<MqlTradeRequestWrapper*> *OneTimeRequestList   = GetOneTimeRequest(CurrentPrice);
+   CArrayList<MqlTradeRequestWrapper*> *RecurrentRequestList = GetRecurrentRequest(CurrentPrice);
+   CArrayList<MqlTradeRequestWrapper*> *FinalRequestList     = new CArrayList<MqlTradeRequestWrapper*>();
+   
+   FinalRequestList.AddRange(OneTimeRequestList);
+   FinalRequestList.AddRange(RecurrentRequestList);
+   
+   return FinalRequestList;
+}
+
+//--- Helper Functions: GetRequest
+CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetOneTimeRequest(const double CurrentPrice) {
    CArrayList<MqlTradeRequestWrapper*> *ExecutingRequest = new CArrayList<MqlTradeRequestWrapper*>();
    
    ExecutionBoundary                   *BoundaryList[];
@@ -103,7 +115,7 @@ CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetOneTimeRequest(c
    OneTimeTradePool.CopyTo(BoundaryList, RequestList);
    
    for (int i = 0; i < ArraySize(BoundaryList); i++) {
-      if (IsInExecutionZone(BoundaryList[i], ExecutionPrice)) {
+      if (IsInExecutionZone(BoundaryList[i], CurrentPrice)) {
          TransferOneTimeRequest(RequestList[i], ExecutingRequest);
       }
    }
@@ -137,8 +149,8 @@ void ConstructFullTradePool::SetOneTimeBoomerangStatus(MqlTradeRequestWrapper *R
    OneTimeTradeBoomerangStatus.Add(Request, BoomerangStatus);
 }
 
-//--- Operations: Monitoring
-CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetRecurrentRequest(const double ExecutionPrice) {
+//--- Helper Functions: GetRequest
+CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetRecurrentRequest(const double CurrentPrice) {
    CArrayList<MqlTradeRequestWrapper*> *ExecutingRequest = new CArrayList<MqlTradeRequestWrapper*>();
    
    ExecutionBoundary                    *BoundaryList[];
@@ -146,7 +158,7 @@ CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetRecurrentRequest
    RecurrentTradePool.CopyTo(BoundaryList, RequestList);
    
    for (int i = 0; i < ArraySize(BoundaryList); i++) {
-      if (IsInExecutionZone(BoundaryList[i], ExecutionPrice)) {
+      if (IsInExecutionZone(BoundaryList[i], CurrentPrice)) {
          TransferRecurrentRequest(RequestList[i], ExecutingRequest);
       }
    }

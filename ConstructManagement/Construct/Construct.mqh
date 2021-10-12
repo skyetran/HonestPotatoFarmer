@@ -51,12 +51,14 @@ public:
    ConstructRollingInfo   *GetConstructRollingInfo(void)   const;
    ConstructResultInfo    *GetConstructResultInfo(void)    const;
    int                     GetEntryPositionID(void)        const;
+   int                     GetMultiplier(void)             const;
    
    //--- Setters
    void SetConstructKey(ConstructKey *InputConstructKey);
    void SetConstructParameters(ConstructParameters *InputConstructParameters);
    void SetEntryPositionID(const int InputEntryPositionID);
    void SetFullTradePool(ConstructFullTradePool *InputFullTradePool);
+   void SetMultiplier(const int InputMultiplier);
 
    //--- Main Operations
    //--- Find The Right Monitor And Run OnTick Update
@@ -80,6 +82,7 @@ protected:
    ConstructRollingInfo   *RollingInfo;
    ConstructResultInfo    *ResultInfo;
    int                     EntryPositionID;
+   int                     Multiplier;
    
 private:
    static CHashMap<ConstructType*, ConstructFactory*> *ConstructFactories;

@@ -74,12 +74,14 @@ ConstructParameters    *Construct::GetConstructParameters(void)    const { retur
 ConstructRollingInfo   *Construct::GetConstructRollingInfo(void)   const { return RollingInfo;     }
 ConstructResultInfo    *Construct::GetConstructResultInfo(void)    const { return ResultInfo;      }
 int                     Construct::GetEntryPositionID(void)        const { return EntryPositionID; }
+int                     Construct::GetMultiplier(void)             const { return Multiplier;      }
 
 //--- Setters
 void Construct::SetConstructKey(ConstructKey *InputConstructKey)                      { Key             = InputConstructKey;        }
 void Construct::SetConstructParameters(ConstructParameters *InputConstructParameters) { Parameters      = InputConstructParameters; }
 void Construct::SetEntryPositionID(const int InputEntryPositionID)                    { EntryPositionID = InputEntryPositionID;     }
 void Construct::SetFullTradePool(ConstructFullTradePool *InputFullTradePool)          { FullTradePool   = InputFullTradePool;       }
+void Construct::SetMultiplier(const int InputMultiplier)                              { Multiplier      = InputMultiplier;          }
 
 //--- Main Operations
 //--- Find The Right Monitor And Run OnTick Update

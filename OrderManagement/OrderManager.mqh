@@ -2,8 +2,8 @@
 #define RAW_ORDER_MANAGER_H
 
 #include <Generic\ArrayList.mqh>
+#include <Generic\HashMap.mqh>
 
-#include "CombinedTradeRequest.mqh"
 #include "ConstructTradePool.mqh"
 
 class OrderManager
@@ -18,24 +18,28 @@ public:
    //--- OnTick Function
    void Managing(void);
    
-   //--- Add Trade Pool To Manage
+   //--- Operations
    void AddTradePool(ConstructTradePool *InputTradePool);
    
-   //--- Getters
-   CArrayList<CombinedTradeRequest*> *GetMarketOrderRequestList(void);
-   CArrayList<CombinedTradeRequest*> *GetPendingOrderRequestList(void);
+   CArrayList<MqlTradeRequestWrapper*> *PoolRawMarketRequest(void) const;
+   CArrayList<MqlTradeRequestWrapper*> *PoolLimitRequest(void)     const;
+   CArrayList<MqlTradeRequestWrapper*> *PoolStopLimitRequest(void) const;
+   CArrayList<MqlTradeRequestWrapper*> *PoolStopRequest(void)      const;
+   
+   void LogExecutedRequest(MqlTradeRequestWrapper *InputRequest, MqlTradeResultWrapper *InputResult);
    
 private:   
    //--- Subcribe To A List Of Trade Pools
    CArrayList<ConstructTradePool*> TradePoolList;
    
-   //--- Final Request: Ready For Execution
-   CArrayList<CombinedTradeRequest*> *MarketOrderList, *PendingOrderList;
+   //--- Log Combined Trade Requests
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> CombinedTradeRequestNav;
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>              CombinedTradeRequestVol;
    
    //--- Scan Over All Trade Pool And Create Combined Trade Request
    void CombineRequest(void);
    
-   //--- Wait For Executer To Flag And Send Back Trade Result
+   //--- Send Back Trade Result
    void SendResult(void);
 };
 

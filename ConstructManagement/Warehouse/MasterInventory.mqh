@@ -12,20 +12,17 @@ public:
    //--- Destructor
    ~MasterInventory(void);
 
+   //--- Clear All Master Inventory
+   void Clear(void);
+   
    //--- Get Singleton Instance
    static MasterInventory *GetInstance(void);
    
    //--- Add New Construct To The Master Inventory
-   void Insert(Construct *NewConstruct);
+   void Add(Construct *InputConstruct);
    
    //--- Retrieve Construct With The Corresponding Key
-   Construct *RetrieveConstruct(ConstructKey *RetrievedKey);
-   
-   //--- Retrieve Construct Multiplier With The Corresponding Key
-   int RetrieveMultiplier(ConstructKey *RetrieveKey);
-   
-   //--- Clear All Construct
-   void Clear(void);
+   Construct *RetrieveConstruct(ConstructKey *InputKey);
 
 private:
    //--- Main Constructor --- Singleton
@@ -35,7 +32,11 @@ private:
    static MasterInventory* Instance;
    
    //--- Map From The Entry Position ID To The Right Inventory
-   CHashMap<int, Inventory*> ConstructMasterInventory;
+   CHashMap<int, Inventory*> *ConstructMasterInventory;
+   
+   //--- Helper Functions: Add
+   void CheckAndHandleNewEntryPositionID(Construct *InputConstruct);
+   void LocateInventoryAndAddConstruct(Construct *InputConstruct);
 };
 
 MasterInventory* MasterInventory::Instance = NULL;

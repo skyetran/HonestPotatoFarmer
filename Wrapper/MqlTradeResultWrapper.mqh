@@ -14,6 +14,9 @@ public:
    //--- Main Constructor
    MqlTradeResultWrapper(MqlTradeResult &result);
    
+   //--- Main Constructor
+   MqlTradeResultWrapper(MqlTradeResult &result, const double InputVolumeRatio);
+   
    //--- Revert Back To Struct Format
    void Unwrap(MqlTradeResult &result);
    
@@ -22,7 +25,10 @@ public:
    bool Equals(MqlTradeResultWrapper* Other) override;
    int  HashCode() override;
    
-   //--- Attributes   
+   //--- Getters
+   double GetRealVolume(void) const;
+   
+   //--- Attributes
    uint     retcode;
    ulong    deal;
    ulong    order;
@@ -33,6 +39,9 @@ public:
    string   comment;
    uint     request_id;
    uint     retcode_external;
+
+private:
+   double   volume_ratio;
 };
 
 #endif
