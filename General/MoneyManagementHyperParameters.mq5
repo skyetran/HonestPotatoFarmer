@@ -24,6 +24,7 @@ bool MoneyManagementHyperParameters::LogTimidFractionalKelly(const double &Input
    return false;
 }
 
+//--- Setters And Validation
 bool MoneyManagementHyperParameters::LogBoldFractionalKelly(const double &InputBoldFractionalKelly) {
    if (IsFractionalKellyValid(InputBoldFractionalKelly)) {
       BoldFractionalKelly = InputBoldFractionalKelly;
@@ -32,6 +33,7 @@ bool MoneyManagementHyperParameters::LogBoldFractionalKelly(const double &InputB
    return false;
 }
 
+//--- Setters And Validation
 bool MoneyManagementHyperParameters::LogCommissionPerStandardLot(const double &InputCommissionPerStandardLot) {
    if (IsCommissionPerStandardLotValid(InputCommissionPerStandardLot)) {
       CommissionPerStandardLot = InputCommissionPerStandardLot;
@@ -45,6 +47,7 @@ bool MoneyManagementHyperParameters::IsFractionalKellyValid(const double &InputF
    return MIN_FRACTIONAL_KELLY < InputFractionalKelly && InputFractionalKelly < MAX_FRACTIONAL_KELLY; 
 }
 
+//--- Validation
 bool MoneyManagementHyperParameters::IsCommissionPerStandardLotValid(const double &InputCommissionPerStandardLot) const {
    return InputCommissionPerStandardLot >= MIN_COMMISSION_PER_STANDARD_LOT;
 }

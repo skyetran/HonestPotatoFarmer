@@ -5,6 +5,7 @@
 #include <Generic\HashMap.mqh>
 
 #include "../../../General/GlobalConstants.mqh"
+#include "../../../General/IndicatorProcessor.mqh"
 #include "../../../Wrapper/MqlTradeRequestWrapper.mqh"
 #include "CompletionBoundary.mqh"
 #include "ExecutionBoundary.mqh"
@@ -31,6 +32,9 @@ public:
    void UpdateRecurrentTradeBoomerangStatus(const double CurrentPrice);
 
 private:
+   //--- External Entities
+   IndicatorProcessor *IP;
+   
    CHashMap<ExecutionBoundary* , CArrayList<MqlTradeRequestWrapper*>*> OneTimeTradePool;
    CHashMap<MqlTradeRequestWrapper*, bool>                             OneTimeTradeBoomerangStatus;
    CHashMap<ExecutionBoundary* , CArrayList<MqlTradeRequestWrapper*>*> RecurrentTradePool;

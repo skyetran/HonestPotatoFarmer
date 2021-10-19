@@ -39,6 +39,7 @@ extern string           Text4                               = "Trade Settings (P
 input  int              Slippage                            = 5;
 input  int              IntervalSizeIncrement               = 5;
 input  int              OutOfBoundBuffer                    = 40;
+input  int              MinIntervalSize                     = 30;
 
 extern string           Text5                               = "Execution Settings";
 input  int              RateOfOperationsPerSecond           = 50;
@@ -91,7 +92,8 @@ bool InitMoneyManagement(void) {
 bool InitPositionManagement(void) {
    return PMHP.LogSlippage(Slippage)                           &&
           PMHP.LogIntervalSizeIncrement(IntervalSizeIncrement) &&
-          PMHP.LogOutOfBoundBuffer(OutOfBoundBuffer)            ;
+          PMHP.LogOutOfBoundBuffer(OutOfBoundBuffer)           &&
+          PMHP.LogMinIntervalSize(MinIntervalSize)              ;
 }
 
 //--- Set General Settings
@@ -105,7 +107,7 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   //DebugMsg += MW.GetDebugMessage();
+   DebugMsg += MW.GetDebugMessage();
 
    //ConstructType         *TestType           = new ConstructType(BIG_HEDGE_LONG, FOUR_LEVEL);
    //ConstructParameters   *TestParameters     = new ConstructParameters(1, 1, 0.99700, 50);
@@ -186,41 +188,41 @@ void OnTick()
       request5.volume    = 1;
       request5.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) - 0.0003, Digits());
       
-      OrderSend(request1, result1);
-      OrderSend(request2, result2);
-      OrderSend(request3, result3);
-      OrderSend(request4, result4);
-      OrderSend(request5, result5);
+      //OrderSend(request1, result1);
+      //OrderSend(request2, result2);
+      //OrderSend(request3, result3);
+      //OrderSend(request4, result4);
+      //OrderSend(request5, result5);
    }
    
-   DebugMsg += request1.price     + "\n";
-   DebugMsg += request1.stoplimit + "\n";
+   //DebugMsg += request1.price     + "\n";
+   //DebugMsg += request1.stoplimit + "\n";
    
-   DebugMsg += HistoryOrderSelect(result1.order)                      + "\n";
-   DebugMsg += HistoryOrderGetDouble(result1.order, ORDER_PRICE_OPEN) + "\n";
+   //DebugMsg += HistoryOrderSelect(result1.order)                      + "\n";
+   //DebugMsg += HistoryOrderGetDouble(result1.order, ORDER_PRICE_OPEN) + "\n";
    
-   DebugMsg += "\n";
+   //DebugMsg += "\n";
    
-   DebugMsg += request2.price     + "\n";
-   DebugMsg += request2.stoplimit + "\n";
+   //DebugMsg += request2.price     + "\n";
+   //DebugMsg += request2.stoplimit + "\n";
    
-   DebugMsg += HistoryOrderSelect(result2.order)                      + "\n";
-   DebugMsg += HistoryOrderGetDouble(result2.order, ORDER_PRICE_OPEN) + "\n";
+   //DebugMsg += HistoryOrderSelect(result2.order)                      + "\n";
+   //DebugMsg += HistoryOrderGetDouble(result2.order, ORDER_PRICE_OPEN) + "\n";
    
-   DebugMsg += "\n";
+   //DebugMsg += "\n";
    
-   DebugMsg += request3.price     + "\n";
-   DebugMsg += request3.stoplimit + "\n";
+   //DebugMsg += request3.price     + "\n";
+   //DebugMsg += request3.stoplimit + "\n";
 
-   DebugMsg += HistoryOrderSelect(result3.order)                      + "\n";
-   DebugMsg += HistoryOrderGetDouble(result3.order, ORDER_PRICE_OPEN) + "\n";
+   //DebugMsg += HistoryOrderSelect(result3.order)                      + "\n";
+   //DebugMsg += HistoryOrderGetDouble(result3.order, ORDER_PRICE_OPEN) + "\n";
    
-   DebugMsg += "\n";
+   //DebugMsg += "\n";
    
-   DebugMsg += request4.price     + "\n";
-   DebugMsg += request4.stoplimit + "\n";
-   DebugMsg += HistoryOrderSelect(result4.order)                      + "\n";
-   DebugMsg += HistoryOrderGetDouble(result4.order, ORDER_PRICE_OPEN) + "\n";
+   //DebugMsg += request4.price     + "\n";
+   //DebugMsg += request4.stoplimit + "\n";
+   //DebugMsg += HistoryOrderSelect(result4.order)                      + "\n";
+   //DebugMsg += HistoryOrderGetDouble(result4.order, ORDER_PRICE_OPEN) + "\n";
    
    Comment(DebugMsg);
 }
@@ -228,6 +230,5 @@ void OnTick()
 //--- Run All OnTick Functions
 void Update(void) {
    IP.Update();
-   MW.MonitorStateTransition();
-   MW.UpdateTrackingVariables();
+   MW.Monitor();
 }

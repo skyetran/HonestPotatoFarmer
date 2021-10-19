@@ -3,6 +3,7 @@
 
 #include "../General/GlobalConstants.mqh"
 #include "../General/IndicatorProcessor.mqh"
+#include "../General/PositionManagementHyperParameters.mqh"
 
 class MarketWatcher;
 
@@ -15,20 +16,48 @@ public:
    //--- Set Reference Back To The Main Cordinator
    void SetMarketWatcher(MarketWatcher *Watcher);
    
-   //--- Tracking Functions
-   int GetEntryPosition(void);
-   void IncrementEntryPosition(void);
-   bool IsFirstPosition(void);
+   //--- Getters
+   int    GetEntryPositionID(void);
+   bool   IsFirstPosition(void);
+   string GetStateName(void);
+   double GetMaxFullyDefensiveAccumulationLevel(void);
+   double GetCapstoneLevel(void);
+   double GetBullishStopLossLevel(void);
+   double GetBearishStopLossLevel(void);
+   
+   //--- Update: OnTick Functions
+   void Monitor(void);
+   
+protected:
+   //--- External Entities
+   IndicatorProcessor* IP;
+   PositionManagementHyperParameters *PMHP;
+   
+   //--- Attributes
+   int    EntryPositionID;
+   string StateName;
+   double CapstoneLevel;
+   double MaxFullyDefensiveAccumulationLevel;
+   double BullishStopLossLevel;
+   double BearishStopLossLevel;
+   double BoomerangLevel;
+   bool   BoomerangStatus;
    
    //--- Behavioral Logics
    virtual void MonitorStateTransition(void) = NULL;
-   virtual string GetStateName(void)         = NULL;
+   virtual void MonitorCurrentState(void)    = NULL;
+   virtual void MonitorBoomerang(void)       = NULL;
    
-protected:
-   MarketWatcher* MW;
-   IndicatorProcessor* IP;
+   //--- Helper Functions: MonitorCurrentState
+   virtual void MonitorCapstoneLevel(void)                      = NULL;
+   virtual void MonitorMaxFullyDefensiveAccumulationLevel(void) = NULL;
+   virtual void MonitorBullishStopLossLevel(void)               = NULL;
+   virtual void MonitorBearishStopLossLevel(void)               = NULL;
    
-   int EntryPositionID;
+   //--- Helper Functions
+   void NewEntryProtocol(const double InputBoomerangLevel);
+   void IncrementEntryPosition(void);
+   virtual bool IsNewEntry(void) = NULL;
 };
 
 #endif

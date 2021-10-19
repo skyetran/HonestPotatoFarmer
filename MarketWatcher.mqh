@@ -32,8 +32,13 @@ public:
    void ChangeState(MarketState* State);
    
    //--- Delegation Behavioral Logics To The Current State
-   void MonitorStateTransition(void);
+   void   Monitor(void);
    string GetStateName(void);
+   int    GetEntryPositionID(void);
+   double GetMaxFullyDefensiveAccumulationLevel(void);
+   double GetCapstoneLevel(void);
+   double GetBullishStopLossLevel(void);
+   double GetBearishStopLossLevel(void);
    
    //--- Services For State Class To Use
    int GetInChannelBuffer(void);
@@ -58,6 +63,7 @@ public:
    void ResetTrackingVariables(void);
 
 private:
+   //--- External Entities
    IndicatorProcessor *IP;
    
    //--- Hyperparameters

@@ -3,19 +3,25 @@
 #include "../../../ConstructManagement/Construct/Attributes/ExecutionBoundary.mqh"
 
 //--- Default Constructor
-ExecutionBoundary::ExecutionBoundary(void) { }
+ExecutionBoundary::ExecutionBoundary(void) {
+   IP = IndicatorProcessor::GetInstance();
+}
 
 //--- Main Constructor
 ExecutionBoundary::ExecutionBoundary(const double InputLowerBound, const double InputUpperBound) {
-   LowerBound = MathMin(InputLowerBound, InputUpperBound);
-   UpperBound = MathMax(InputLowerBound, InputUpperBound);
+   BidLowerBound = MathMin(InputLowerBound, InputUpperBound);
+   BidUpperBound = MathMax(InputLowerBound, InputUpperBound);
+   AskLowerBound = BidLowerBound + IP.GetAverageSpreadInPrice(CURRENT_BAR);
+   AskUpperBound = BidUpperBound + IP.GetAverageSpreadInPrice(CURRENT_BAR);
    
    HashString = DoubleToString(InputLowerBound) + DoubleToString(InputUpperBound);
 }
 
 //--- Getters
-double ExecutionBoundary::GetLowerBound(void) const { return LowerBound; }
-double ExecutionBoundary::GetUpperBound(void) const { return UpperBound; }
+double ExecutionBoundary::GetBidLowerBound(void) const { return BidLowerBound; }
+double ExecutionBoundary::GetBidUpperBound(void) const { return BidUpperBound; }
+double ExecutionBoundary::GetAskLowerBound(void) const { return AskLowerBound; }
+double ExecutionBoundary::GetAskUpperBound(void) const { return AskUpperBound; }
 
 //--- Required ADT Functions
 int ExecutionBoundary::Compare(ExecutionBoundary *Other) {
@@ -24,8 +30,10 @@ int ExecutionBoundary::Compare(ExecutionBoundary *Other) {
 }
 
 bool ExecutionBoundary::Equals(ExecutionBoundary *Other) {
-   return LowerBound == Other.GetLowerBound() &&
-          UpperBound == Other.GetUpperBound()  ;
+   return BidLowerBound == Other.GetBidLowerBound() &&
+          BidUpperBound == Other.GetBidUpperBound() &&
+          AskLowerBound == Other.GetAskLowerBound() &&
+          AskUpperBound == Other.GetAskUpperBound()  ;
 }
 
 int ExecutionBoundary::HashCode(void) {

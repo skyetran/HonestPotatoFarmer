@@ -3,7 +3,9 @@
 #include "../../../ConstructManagement/Construct/Attributes/FullTradePool.mqh"
 
 //--- Main Constructor
-ConstructFullTradePool::ConstructFullTradePool(void) { }
+ConstructFullTradePool::ConstructFullTradePool(void) {
+   IP = IndicatorProcessor::GetInstance();
+}
 
 //--- Destructor
 ConstructFullTradePool::~ConstructFullTradePool(void) {
@@ -207,7 +209,9 @@ void ConstructFullTradePool::UpdateRecurrentTradeBoomerangStatus(const double Cu
 
 //--- Helper Functions: UpdateRecurrentTradeBoomerangStatus
 bool ConstructFullTradePool::IsInCompletionZone(CompletionBoundary *InputBoundary, const double InputPrice) {
-   return InputBoundary.GetLowerBound() <= InputPrice && InputPrice <= InputBoundary.GetUpperBound();
+   return InputBoundary.GetBidLowerBound() <= InputPrice && InputPrice <= InputBoundary.GetBidUpperBound() &&
+          InputBoundary.GetAskLowerBound() <= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)           &&
+          InputBoundary.GetAskUpperBound() >= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)            ;
 }
 
 //--- Helper Functions: UpdateRecurrentTradeBoomerangStatus
@@ -221,5 +225,7 @@ void ConstructFullTradePool::SetRecurrentBoomerangStatus(CArrayList<MqlTradeRequ
 
 //--- Auxilary Function
 bool ConstructFullTradePool::IsInExecutionZone(ExecutionBoundary *InputBoundary, const double InputPrice) {
-   return InputBoundary.GetLowerBound() <= InputPrice && InputPrice <= InputBoundary.GetUpperBound();
+   return InputBoundary.GetBidLowerBound() <= InputPrice && InputPrice <= InputBoundary.GetBidUpperBound() &&
+          InputBoundary.GetAskLowerBound() <= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)           &&
+          InputBoundary.GetAskUpperBound() >= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)            ;
 }

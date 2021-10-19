@@ -36,7 +36,11 @@ string MarketWatcher::GetDebugMessage(void) {
    Msg += "Difference Fast FAMA --- Highest Fast FAMA: " + IntegerToString(GetCurrentDiffFastFAMA_HighestFastFAMA_Pts()) + "\n";
    Msg += "Difference Fast FAMA --- Lowest Fast FAMA: "  + IntegerToString(GetCurrentDiffFastFAMA_LowestFastFAMA_Pts())  + "\n";
    Msg += "\n";
-   Msg += "Market State Name: " + GetStateName() + "\n";
+   Msg += "Market State Name: " + GetStateName()                                                               + "\n";
+   Msg += "Entry Position ID: " + IntegerToString(GetEntryPositionID())                                        + "\n";
+   Msg += "Max Fully Defensive Accumulation Level: " + DoubleToString(GetMaxFullyDefensiveAccumulationLevel()) + "\n";
+   Msg += "Bullish Stop Loss Level: " + DoubleToString(GetBullishStopLossLevel())                              + "\n";
+   Msg += "Bearish Stop Loss Level: " + DoubleToString(GetBearishStopLossLevel())                              + "\n";
    return Msg;
 }
 
@@ -78,8 +82,13 @@ void MarketWatcher::ChangeState(MarketState *State) {
 }
 
 //--- Execution Logics From The Current State
-void   MarketWatcher::MonitorStateTransition(void) { CurrentState.MonitorStateTransition(); }
-string MarketWatcher::GetStateName(void)           { return CurrentState.GetStateName();    }
+void   MarketWatcher::Monitor(void)                               { CurrentState.Monitor();                                      }
+string MarketWatcher::GetStateName(void)                          { return CurrentState.GetStateName();                          }
+int    MarketWatcher::GetEntryPositionID(void)                    { return CurrentState.GetEntryPositionID();                    }
+double MarketWatcher::GetCapstoneLevel(void)                      { return CurrentState.GetCapstoneLevel();                      }
+double MarketWatcher::GetMaxFullyDefensiveAccumulationLevel(void) { return CurrentState.GetMaxFullyDefensiveAccumulationLevel(); }
+double MarketWatcher::GetBullishStopLossLevel(void)               { return CurrentState.GetBullishStopLossLevel();               }
+double MarketWatcher::GetBearishStopLossLevel(void)               { return CurrentState.GetBearishStopLossLevel();               }
 
 //--- Services For State Class To Use
 int MarketWatcher::GetInChannelBuffer(void)  { return InChannelBuffer;  }

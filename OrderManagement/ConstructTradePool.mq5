@@ -94,7 +94,7 @@ CArrayList<MqlTradeResultWrapper*> *ConstructTradePool::GetNetDealList(void) con
 
 //--- Getters
 double ConstructTradePool::GetCurrentPnL(void) {
-   double PnL;
+   double PnL = 0;
    
    MqlTradeRequestWrapper *RequestList[];
    MqlTradeResultWrapper  *ResultList[];
@@ -122,7 +122,7 @@ int ConstructTradePool::GetPnLInPts(MqlTradeRequestWrapper *InputRequest) {
 
 //--- Getters
 double ConstructTradePool::GetPositiveSlippagePnL(void) {
-   double SlippagePnL;
+   double SlippagePnL = 0;
    
    MqlTradeRequestWrapper *RequestList[];
    MqlTradeResultWrapper  *ResultList[];
@@ -218,6 +218,11 @@ bool ConstructTradePool::IsFullHedged(void) const {
 }
 
 //--- Auxilary Functions
+bool ConstructTradePool::IsOrderPlaced(MqlTradeRequestWrapper *InputRequest) {
+   return GetOrderState(InputRequest) == ORDER_STATE_PLACED;
+}
+
+//--- Auxilary Functions
 bool ConstructTradePool::IsOrderFilled(MqlTradeRequestWrapper *InputRequest) {
    return GetOrderState(InputRequest) == ORDER_STATE_FILLED;
 }
@@ -230,8 +235,13 @@ MqlTradeResultWrapper *ConstructTradePool::GetTradeResult(MqlTradeRequestWrapper
 }
 
 //--- Auxilary Functions: Get Raw Info
+ulong ConstructTradePool::GetOrderTicket(MqlTradeRequestWrapper *InputRequest) {
+   return GetTradeResult(InputRequest).order;
+}
+
+//--- Auxilary Functions: Get Raw Info
 ENUM_ORDER_STATE ConstructTradePool::GetOrderState(MqlTradeRequestWrapper *InputRequest) {
-   if (HistoryOrderSelect(GetTradeResult(InputRequest).order)) {
+   if (HistoryOrderSelect(GetOrderTicket(InputRequest))) {
       return (ENUM_ORDER_STATE) OrderGetInteger(ORDER_STATE);
    }
    return ORDER_STATE_REJECTED;
@@ -239,12 +249,16 @@ ENUM_ORDER_STATE ConstructTradePool::GetOrderState(MqlTradeRequestWrapper *Input
 
 //--- Auxilary Functions: Get Raw Info
 double ConstructTradePool::GetDesiredPrice(MqlTradeRequestWrapper *InputRequest) {
+   if (IsBuyStopLimitRequest(InputRequest) || IsSellStopLimitRequest(InputRequest)) {
+      return InputRequest.stoplimit;
+   }
    return InputRequest.price;
 }
 
 //--- Auxilary Functions: Get Raw Info
 double ConstructTradePool::GetRealPrice(MqlTradeRequestWrapper *InputRequest) {
-   return GetTradeResult(InputRequest).price;
+   HistoryOrderSelect(GetOrderTicket(InputRequest));
+   return HistoryOrderGetDouble(GetOrderTicket(InputRequest), ORDER_PRICE_OPEN);
 }
 
 //--- Auxilary Functions: Get Raw Info

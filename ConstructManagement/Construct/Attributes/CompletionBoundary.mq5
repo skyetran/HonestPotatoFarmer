@@ -3,19 +3,25 @@
 #include "../../../ConstructManagement/Construct/Attributes/CompletionBoundary.mqh"
 
 //--- Default Constructor
-CompletionBoundary::CompletionBoundary(void) { }
+CompletionBoundary::CompletionBoundary(void) {
+   IP = IndicatorProcessor::GetInstance();
+}
 
 //--- Main Constructor
 CompletionBoundary::CompletionBoundary(const double InputLowerBound, const double InputUpperBound) {
-   LowerBound = MathMin(InputLowerBound, InputUpperBound);
-   UpperBound = MathMax(InputLowerBound, InputUpperBound);
+   BidLowerBound = MathMin(InputLowerBound, InputUpperBound);
+   BidUpperBound = MathMax(InputLowerBound, InputUpperBound);
+   AskLowerBound = BidLowerBound + IP.GetAverageSpreadInPrice(CURRENT_BAR);
+   AskUpperBound = BidUpperBound + IP.GetAverageSpreadInPrice(CURRENT_BAR);
    
    HashString = DoubleToString(InputLowerBound) + DoubleToString(InputUpperBound);
 }
 
 //--- Getters
-double CompletionBoundary::GetLowerBound(void) const { return LowerBound; }
-double CompletionBoundary::GetUpperBound(void) const { return UpperBound; }
+double CompletionBoundary::GetBidLowerBound(void) const { return BidLowerBound; }
+double CompletionBoundary::GetBidUpperBound(void) const { return BidUpperBound; }
+double CompletionBoundary::GetAskLowerBound(void) const { return AskLowerBound; }
+double CompletionBoundary::GetAskUpperBound(void) const { return AskUpperBound; }
 
 //--- Required ADT Functions
 int CompletionBoundary::Compare(CompletionBoundary *Other) {
@@ -24,8 +30,10 @@ int CompletionBoundary::Compare(CompletionBoundary *Other) {
 }
 
 bool CompletionBoundary::Equals(CompletionBoundary *Other) {
-   return LowerBound == Other.GetLowerBound() &&
-          UpperBound == Other.GetUpperBound()  ;
+   return BidLowerBound == Other.GetBidLowerBound() &&
+          BidUpperBound == Other.GetBidUpperBound() &&
+          AskLowerBound == Other.GetAskLowerBound() &&
+          AskUpperBound == Other.GetAskUpperBound()  ;
 }
 
 int CompletionBoundary::HashCode(void) {

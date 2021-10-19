@@ -3,6 +3,8 @@
 
 #include <Generic/Interfaces/IComparable.mqh>
 
+#include "../../../General/IndicatorProcessor.mqh"
+
 class ExecutionBoundary : public IComparable<ExecutionBoundary*>
 {
 public:
@@ -13,8 +15,10 @@ public:
    ExecutionBoundary(const double InputLowerBound, const double InputUpperBound);
    
    //--- Getter
-   double GetLowerBound(void) const;
-   double GetUpperBound(void) const;
+   double GetBidLowerBound(void) const;
+   double GetBidUpperBound(void) const;
+   double GetAskLowerBound(void) const;
+   double GetAskUpperBound(void) const;
 
    //--- Required ADT Functions
    int  Compare(ExecutionBoundary* Other) override;
@@ -22,8 +26,13 @@ public:
    int  HashCode(void)                    override;
 
 private:
-   double LowerBound;
-   double UpperBound;
+   //--- External Entities
+   IndicatorProcessor *IP;
+   
+   double BidLowerBound;
+   double BidUpperBound;
+   double AskLowerBound;
+   double AskUpperBound;
    
    string HashString;
 };

@@ -18,6 +18,7 @@ public:
    bool LogSlippage(const int &InputSlippage);
    bool LogIntervalSizeIncrement(const int &InputIntervalSizeIncrement);
    bool LogOutOfBoundBuffer(const int &InputOutOfBoundBuffer);
+   bool LogMinIntervalSize(const int &InputMinIntervalSize);
 
    //--- Getters
    int    GetSlippageInPts(void)           const;
@@ -25,6 +26,8 @@ public:
    int    GetIntervalSizeIncrement(void)   const;
    int    GetOutOfBoundBufferInPts(void)   const;
    double GetOutOfBoundBufferInPrice(void) const;
+   int    GetMinIntervalSizeInPts(void)    const;
+   double GetMinIntervalSizeInPrice(void)  const;
 
 private:
    //--- Main Constructor --- Singleton
@@ -34,6 +37,7 @@ private:
    int Slippage;
    int IntervalSizeIncrement;
    int OutOfBoundBuffer;
+   int MinIntervalSize;
    
    static PositionManagementHyperParameters *Instance;
    
@@ -41,6 +45,7 @@ private:
    bool IsSlippageValid(const int &InputSlippage)                           const;
    bool IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement) const;
    bool IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer)           const;
+   bool IsMinIntervalSizeValid(const int &InputMinIntervalSize)             const;
 };
 
 PositionManagementHyperParameters* PositionManagementHyperParameters::Instance = NULL;

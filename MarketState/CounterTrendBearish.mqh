@@ -9,23 +9,32 @@ public:
    //--- Main Constructor
    CounterTrendBearish(void);
    
-   //--- Behavioural Logics
-   void MonitorStateTransition(void) override;
-   string GetStateName(void) override;
-   
-private:   
-   bool IsCounterTrendBearishToWithTrendBearish(void);
-   bool IsCounterTrendBearishToRanging(void);
-   bool IsCounterTrendBearishToWithTrendBullish(void);
-   
+private:
    bool OneTimeExecutionFlag;
+   
+   //--- Behavioral Logics
+   void   MonitorStateTransition(void) override;
+   void   MonitorCurrentState(void)    override;
+   void   MonitorBoomerang(void)       override;
+   
+   //--- Helper Functions: State Transition
+   bool   IsCounterTrendBearishToWithTrendBearish(void);
+   bool   IsCounterTrendBearishToRanging(void);
+   bool   IsCounterTrendBearishToWithTrendBullish(void);
    double GetLastLowestFastFAMA(void);
    
-   int GetMaxIntervalSize(void);
-   int GetStopLossSize(void);
+   //--- Helper Functions: MonitorCurrentState
+   void   MonitorCapstoneLevel(void)                      override;
+   void   MonitorMaxFullyDefensiveAccumulationLevel(void) override;
+   void   MonitorBullishStopLossLevel(void)               override;
+   void   MonitorBearishStopLossLevel(void)               override;
    
-   double GetStopLossLevel(void);
-   double GetCapstoneLevel(void);
+   //--- Helper Functions: GetMaxFullyDefensiveAccumulationLevel
+   double GetMaxIntervalSizeInPrice(void);
+   int    GetMaxIntervalSizeInPts(void);
+   
+   //--- Helper Functions
+   bool   IsNewEntry(void) override;
 };
 
 #endif

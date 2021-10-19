@@ -22,6 +22,7 @@ bool PositionManagementHyperParameters::LogSlippage(const int &InputSlippage) {
    return false;
 }
 
+//--- Setter And Validation
 bool PositionManagementHyperParameters::LogIntervalSizeIncrement(const int &InputIntervalSizeIncrement) {
    if (IsIntervalSizeIncrementValid(InputIntervalSizeIncrement)) {
       IntervalSizeIncrement = InputIntervalSizeIncrement;
@@ -30,9 +31,19 @@ bool PositionManagementHyperParameters::LogIntervalSizeIncrement(const int &Inpu
    return false;
 }
 
+//--- Setter And Validation
 bool PositionManagementHyperParameters::LogOutOfBoundBuffer(const int &InputOutOfBoundBuffer) {
    if (IsOutOfBoundBufferValid(InputOutOfBoundBuffer)) {
       OutOfBoundBuffer = InputOutOfBoundBuffer;
+      return true;
+   }
+   return false;
+}
+
+//--- Setter And Validation
+bool PositionManagementHyperParameters::LogMinIntervalSize(const int &InputMinIntervalSize) {
+   if (IsMinIntervalSizeValid(InputMinIntervalSize)) {
+      MinIntervalSize = InputMinIntervalSize;
       return true;
    }
    return false;
@@ -43,12 +54,19 @@ bool PositionManagementHyperParameters::IsSlippageValid(const int &InputSlippage
    return MIN_SLIPPAGE <= InputSlippage && InputSlippage <= MAX_SLIPPAGE;
 }
 
+//--- Validation
 bool PositionManagementHyperParameters::IsIntervalSizeIncrementValid(const int &InputIntervalSizeIncrement) const {
    return InputIntervalSizeIncrement >= MIN_INTERVAL_SIZE_INCREMENT;
 }
 
+//--- Validation
 bool PositionManagementHyperParameters::IsOutOfBoundBufferValid(const int &InputOutOfBoundBuffer) const {
    return InputOutOfBoundBuffer >= MIN_OUT_OF_BOUND_BUFFER;
+}
+
+//--- Validation
+bool PositionManagementHyperParameters::IsMinIntervalSizeValid(const int &InputMinIntervalSize) const {
+   return InputMinIntervalSize >= MathMax(SymbolInfoInteger(Symbol(), SYMBOL_TRADE_STOPS_LEVEL), SymbolInfoInteger(Symbol(), SYMBOL_TRADE_FREEZE_LEVEL));
 }
 
 //--- Getters
@@ -57,3 +75,5 @@ double PositionManagementHyperParameters::GetSlippageInPrice(void)         const
 int    PositionManagementHyperParameters::GetIntervalSizeIncrement(void)   const { return IntervalSizeIncrement;             }
 int    PositionManagementHyperParameters::GetOutOfBoundBufferInPts(void)   const { return OutOfBoundBuffer;                  }
 double PositionManagementHyperParameters::GetOutOfBoundBufferInPrice(void) const { return PointToPriceCvt(OutOfBoundBuffer); }
+int    PositionManagementHyperParameters::GetMinIntervalSizeInPts(void)    const { return MinIntervalSize;                   }
+double PositionManagementHyperParameters::GetMinIntervalSizeInPrice(void)  const { return PointToPriceCvt(MinIntervalSize);  }

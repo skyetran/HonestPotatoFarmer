@@ -3,12 +3,12 @@
 
 #include <Generic\ArrayList.mqh>
 #include <Generic\HashMap.mqh>
-#include <Trade\OrderInfo.mqh>
 
 #include "../General/IndicatorProcessor.mqh"
 #include "../General/PositionManagementHyperParameters.mqh"
 #include "../Wrapper/MqlTradeRequestWrapper.mqh"
 #include "../Wrapper/MqlTradeResultWrapper.mqh"
+#include "../MarketWatcher.mqh"
 
 class ConstructTradePool
 {
@@ -77,11 +77,13 @@ private:
    int  GetPositiveSlippageSellRequestPendingOrder(MqlTradeRequestWrapper *InputRequest);     
    
    //--- Auxilary Functions
+   bool IsOrderPlaced(MqlTradeRequestWrapper *InputRequest);
    bool IsOrderFilled(MqlTradeRequestWrapper *InputRequest);
    
    //--- Auxilary Functions: Get Raw Info
    MqlTradeResultWrapper *GetTradeResult(MqlTradeRequestWrapper *InputRequest);
    
+   ulong            GetOrderTicket(MqlTradeRequestWrapper *InputRequest);
    ENUM_ORDER_STATE GetOrderState(MqlTradeRequestWrapper *InputRequest);
    
    double GetDesiredPrice(MqlTradeRequestWrapper *InputRequest);

@@ -47,6 +47,8 @@ enum ENUM_CONSTRUCT_CLASS {
 #define BOOMERANG_ALLOWED     true
 #define BOOMERANG_NOT_ALLOWED false
 
+#define NOT_APPLICABLE        0
+
 string EMPTY_COMMENT    = "";
 
 //--- Error Message

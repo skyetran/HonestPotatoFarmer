@@ -2,6 +2,12 @@
 
 #include "../MarketState/Ranging.mqh"
 
+//--- Main Constructor
+Ranging::Ranging(void) {
+   StateName = "Ranging";
+}
+
+//--- Behavioral Logics
 void Ranging::MonitorStateTransition(void) {
    if (IsRangingToWithTrendBullish()) {
       MW.ResetTrackingVariables();
@@ -13,18 +19,41 @@ void Ranging::MonitorStateTransition(void) {
    }
 }
 
+//--- Helper Functions: State Transition
 bool Ranging::IsRangingToWithTrendBullish(void) {
    return IP.GetFastFAMA(CURRENT_BAR) > IP.GetSlowFAMA(CURRENT_BAR) &&
           IP.GetDiffFastFAMA_SlowFAMA_Pts(CURRENT_BAR) > MW.GetOutChannelBuffer();
 }
 
+//--- Helper Functions: State Transition
 bool Ranging::IsRangingToWithTrendBearish(void) {
    return IP.GetFastFAMA(CURRENT_BAR) < IP.GetSlowFAMA(CURRENT_BAR) &&
           IP.GetDiffFastFAMA_SlowFAMA_Pts(CURRENT_BAR) > MW.GetOutChannelBuffer();
 }
 
-string Ranging::GetStateName(void) {
-   return "Ranging";
+//--- Behavioral Logics
+void Ranging::MonitorCurrentState(void) {
+
+}
+
+//--- Helper Functions: MonitorCurrentState
+void Ranging::MonitorCapstoneLevel(void) {
+   
+}
+
+//--- Helper Functions: MonitorCurrentState
+void Ranging::MonitorMaxFullyDefensiveAccumulationLevel(void) {
+   
+}
+
+//--- Helper Functions: MonitorCurrentState
+void Ranging::MonitorBullishStopLossLevel(void) {
+   
+}
+
+//--- Helper Functions: MonitorCurrentState
+void Ranging::MonitorBearishStopLossLevel(void) {
+   
 }
 
 double Ranging::GetTopCapstoneLevel(void) {
