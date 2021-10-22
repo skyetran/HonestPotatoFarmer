@@ -5,6 +5,7 @@
 //--- Main Constructor
 CounterTrendBearish::CounterTrendBearish(void) {
    StateName = "Counter-Trend Bearish";
+   BoomerangStatus = BOOMERANG_ALLOWED;
    BearishStopLossLevel = NOT_APPLICABLE;
    OneTimeExecutionFlag = true;
 }
@@ -101,17 +102,34 @@ void CounterTrendBearish::MonitorBearishStopLossLevel(void) {
    //--- Intentionally Left Blank
 }
 
+//--- Behavioral Logics
+void CounterTrendBearish::MonitorBoomerang(void) {
+   if (IP.GetBidPrice(CURRENT_BAR) >= BoomerangLevel) {
+      BoomerangStatus = BOOMERANG_ALLOWED;
+   }
+}
+
 //--- Helper Functions
 bool CounterTrendBearish::IsNewEntry(void) {
-   if (IsFirstPosition()) {
-      if (IP.GetFastMAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() == IP.GetAskPrice(CURRENT_BAR)) {
-         IncrementEntryPosition();
+   if (BoomerangStatus == BOOMERANG_ALLOWED) {
+      if (IsFirstPositionNewEntry()) {
+         NewEntryProtocol(IP.GetFastMAMA(CURRENT_BAR) + PMHP.GetMinIntervalSizeInPrice());
+         return true;
+      }
+      if (IsOtherPositionNewEntry()) {
+         NewEntryProtocol(IP.GetFastFAMA(CURRENT_BAR) + PMHP.GetMinIntervalSizeInPrice());
          return true;
       }
    }
-   if (IP.GetFastFAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() == IP.GetAskPrice(CURRENT_BAR)) {
-      IncrementEntryPosition();
-      return true;
-   }
    return false;
+}
+
+//--- Helper Functions: IsNewEntry
+bool CounterTrendBearish::IsFirstPositionNewEntry(void) {
+   return  IsLookingForFirstPosition() && IP.GetFastMAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() >= IP.GetAskPrice(CURRENT_BAR);
+}
+
+//--- Helper Functions: IsNewEntry
+bool CounterTrendBearish::IsOtherPositionNewEntry(void) {
+   return !IsLookingForFirstPosition() && IP.GetFastFAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() >= IP.GetAskPrice(CURRENT_BAR);
 }

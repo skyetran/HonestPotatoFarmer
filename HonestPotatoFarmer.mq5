@@ -106,7 +106,7 @@ void OnTick()
 {
    Update();
    string DebugMsg;
-   //DebugMsg += IP.GetDebugMessage() + "\n";
+   DebugMsg += IP.GetDebugMessage() + "\n";
    DebugMsg += MW.GetDebugMessage();
 
    //ConstructType         *TestType           = new ConstructType(BIG_HEDGE_LONG, FOUR_LEVEL);

@@ -35,6 +35,10 @@ private:
    
    //--- Helper Functions
    bool   IsNewEntry(void) override;
+   
+   //--- Helper Functions: IsNewEntry
+   bool IsFirstPositionNewEntry(void);
+   bool IsOtherPositionNewEntry(void);
 };
 
 #endif

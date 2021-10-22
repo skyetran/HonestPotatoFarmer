@@ -4,6 +4,7 @@
 #include "General/GlobalConstants.mqh"
 #include "General/GlobalHelperFunctions.mqh"
 #include "General/IndicatorProcessor.mqh"
+#include "General/PositionManagementHyperParameters.mqh"
 #include "MarketState/MarketState.mqh"
 
 #define MIN_BUFFER_ZONE 0
@@ -32,13 +33,16 @@ public:
    void ChangeState(MarketState* State);
    
    //--- Delegation Behavioral Logics To The Current State
-   void   Monitor(void);
-   string GetStateName(void);
-   int    GetEntryPositionID(void);
-   double GetMaxFullyDefensiveAccumulationLevel(void);
-   double GetCapstoneLevel(void);
-   double GetBullishStopLossLevel(void);
-   double GetBearishStopLossLevel(void);
+   void     Monitor(void);
+   string   GetStateName(void);
+   int      GetEntryPositionID(void);
+   double   GetMaxFullyDefensiveAccumulationLevel(void);
+   double   GetCapstoneLevel(void);
+   double   GetBullishStopLossLevel(void);
+   double   GetBearishStopLossLevel(void);
+   double   GetBoomerangLevel(void);
+   bool     GetBoomerangStatus(void);
+   datetime GetEntryDateTime(void);
    
    //--- Services For State Class To Use
    int GetInChannelBuffer(void);
@@ -65,6 +69,7 @@ public:
 private:
    //--- External Entities
    IndicatorProcessor *IP;
+   PositionManagementHyperParameters *PMHP;
    
    //--- Hyperparameters
    int InChannelBuffer, OutChannelBuffer, WiggleBuffer;

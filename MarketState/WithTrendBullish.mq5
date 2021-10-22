@@ -5,7 +5,7 @@
 //--- Main Constructor
 WithTrendBullish::WithTrendBullish() { 
    StateName = "With-Trend Bullish";
-   BoomerangStatus = BOOMERANG_NOT_ALLOWED;
+   BoomerangStatus = BOOMERANG_ALLOWED;
    BearishStopLossLevel = NOT_APPLICABLE;
 }
 
@@ -105,10 +105,10 @@ bool WithTrendBullish::IsNewEntry(void) {
 
 //--- Helper Functions: IsNewEntry
 bool WithTrendBullish::IsFirstPositionNewEntry(void) {
-   return  IsFirstPosition() && IP.GetFastMAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() == IP.GetAskPrice(CURRENT_BAR);
+   return  IsLookingForFirstPosition() && IP.GetFastMAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() >= IP.GetAskPrice(CURRENT_BAR);
 }
 
 //--- Helper Functions: IsNewEntry
 bool WithTrendBullish::IsOtherPositionNewEntry(void) {
-   return !IsFirstPosition() && IP.GetFastFAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() == IP.GetAskPrice(CURRENT_BAR);
+   return !IsLookingForFirstPosition() && IP.GetFastFAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() >= IP.GetAskPrice(CURRENT_BAR);
 }

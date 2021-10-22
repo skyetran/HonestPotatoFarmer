@@ -9,6 +9,7 @@ MarketWatcher::MarketWatcher(void) { }
 MarketWatcher::MarketWatcher(MarketState *InitialState) {
    this.ChangeState(InitialState);
    IP = IndicatorProcessor::GetInstance();
+   PMHP = PositionManagementHyperParameters::GetInstance();
 }
 
 //--- Destructor
@@ -19,9 +20,11 @@ MarketWatcher::~MarketWatcher(void) {
 //--- Debug
 string MarketWatcher::GetDebugMessage(void) {
    string Msg;
-   Msg += "In-Channel Buffer: "  + IntegerToString(GetInChannelBuffer())  + "\n";
-   Msg += "Out-Channel Buffer: " + IntegerToString(GetOutChannelBuffer()) + "\n";
-   Msg += "Wiggle Buffer: "      + IntegerToString(GetWiggleBuffer())     + "\n";
+   Msg += "In-Channel Buffer: "  + IntegerToString(GetInChannelBuffer())                     + "\n";
+   Msg += "Out-Channel Buffer: " + IntegerToString(GetOutChannelBuffer())                    + "\n";
+   Msg += "Wiggle Buffer: "      + IntegerToString(GetWiggleBuffer())                        + "\n";
+   Msg += "Slippage In Price: "  + DoubleToString(PMHP.GetSlippageInPrice())                 + "\n";
+   Msg += "Min Interval Size In Price: "  + DoubleToString(PMHP.GetMinIntervalSizeInPrice()) + "\n";
    Msg += "\n";
    Msg += "Highest Fast FAMA: " + DoubleToString(GetHighestFastFAMA()) + "\n";
    Msg += "Highest Bid Price: " + DoubleToString(GetHighestBidPrice()) + "\n";
@@ -38,9 +41,13 @@ string MarketWatcher::GetDebugMessage(void) {
    Msg += "\n";
    Msg += "Market State Name: " + GetStateName()                                                               + "\n";
    Msg += "Entry Position ID: " + IntegerToString(GetEntryPositionID())                                        + "\n";
+   Msg += "Capstone Level: " + DoubleToString(GetCapstoneLevel())                                              + "\n";
    Msg += "Max Fully Defensive Accumulation Level: " + DoubleToString(GetMaxFullyDefensiveAccumulationLevel()) + "\n";
    Msg += "Bullish Stop Loss Level: " + DoubleToString(GetBullishStopLossLevel())                              + "\n";
    Msg += "Bearish Stop Loss Level: " + DoubleToString(GetBearishStopLossLevel())                              + "\n";
+   Msg += "Boomerang Level: " + DoubleToString(GetBoomerangLevel())                                            + "\n";
+   Msg += "Boomerang Status: " + GetBoomerangStatus()                                                          + "\n";
+   Msg += "Entry Date & Time: " + GetEntryDateTime()                                                           + "\n";
    return Msg;
 }
 
@@ -82,13 +89,20 @@ void MarketWatcher::ChangeState(MarketState *State) {
 }
 
 //--- Execution Logics From The Current State
-void   MarketWatcher::Monitor(void)                               { CurrentState.Monitor();                                      }
-string MarketWatcher::GetStateName(void)                          { return CurrentState.GetStateName();                          }
-int    MarketWatcher::GetEntryPositionID(void)                    { return CurrentState.GetEntryPositionID();                    }
-double MarketWatcher::GetCapstoneLevel(void)                      { return CurrentState.GetCapstoneLevel();                      }
-double MarketWatcher::GetMaxFullyDefensiveAccumulationLevel(void) { return CurrentState.GetMaxFullyDefensiveAccumulationLevel(); }
-double MarketWatcher::GetBullishStopLossLevel(void)               { return CurrentState.GetBullishStopLossLevel();               }
-double MarketWatcher::GetBearishStopLossLevel(void)               { return CurrentState.GetBearishStopLossLevel();               }
+void   MarketWatcher::Monitor(void) { 
+   CurrentState.Monitor();
+   UpdateTrackingVariables();                                    
+}
+
+string   MarketWatcher::GetStateName(void)                          { return CurrentState.GetStateName();                          }
+int      MarketWatcher::GetEntryPositionID(void)                    { return CurrentState.GetEntryPositionID();                    }
+double   MarketWatcher::GetCapstoneLevel(void)                      { return CurrentState.GetCapstoneLevel();                      }
+double   MarketWatcher::GetMaxFullyDefensiveAccumulationLevel(void) { return CurrentState.GetMaxFullyDefensiveAccumulationLevel(); }
+double   MarketWatcher::GetBullishStopLossLevel(void)               { return CurrentState.GetBullishStopLossLevel();               }
+double   MarketWatcher::GetBearishStopLossLevel(void)               { return CurrentState.GetBearishStopLossLevel();               }
+double   MarketWatcher::GetBoomerangLevel(void)                     { return CurrentState.GetBoomerangLevel();                     }
+bool     MarketWatcher::GetBoomerangStatus(void)                    { return CurrentState.GetBoomerangStatus();                    }
+datetime MarketWatcher::GetEntryDateTime(void)                      { return CurrentState.GetEntryDateTime();                      }
 
 //--- Services For State Class To Use
 int MarketWatcher::GetInChannelBuffer(void)  { return InChannelBuffer;  }

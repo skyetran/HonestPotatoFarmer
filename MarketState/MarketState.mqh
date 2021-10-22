@@ -17,16 +17,19 @@ public:
    void SetMarketWatcher(MarketWatcher *Watcher);
    
    //--- Getters
-   int    GetEntryPositionID(void);
-   bool   IsFirstPosition(void);
-   string GetStateName(void);
-   double GetMaxFullyDefensiveAccumulationLevel(void);
-   double GetCapstoneLevel(void);
-   double GetBullishStopLossLevel(void);
-   double GetBearishStopLossLevel(void);
+   int      GetEntryPositionID(void);
+   bool     IsFirstPosition(void);
+   string   GetStateName(void);
+   double   GetMaxFullyDefensiveAccumulationLevel(void);
+   double   GetCapstoneLevel(void);
+   double   GetBullishStopLossLevel(void);
+   double   GetBearishStopLossLevel(void);
+   double   GetBoomerangLevel(void);
+   bool     GetBoomerangStatus(void);
+   datetime GetEntryDateTime(void);
    
    //--- Update: OnTick Functions
-   void Monitor(void);
+   void   Monitor(void);
    
 protected:
    //--- External Entities
@@ -34,14 +37,15 @@ protected:
    PositionManagementHyperParameters *PMHP;
    
    //--- Attributes
-   int    EntryPositionID;
-   string StateName;
-   double CapstoneLevel;
-   double MaxFullyDefensiveAccumulationLevel;
-   double BullishStopLossLevel;
-   double BearishStopLossLevel;
-   double BoomerangLevel;
-   bool   BoomerangStatus;
+   int      EntryPositionID;
+   string   StateName;
+   double   CapstoneLevel;
+   double   MaxFullyDefensiveAccumulationLevel;
+   double   BullishStopLossLevel;
+   double   BearishStopLossLevel;
+   double   BoomerangLevel;
+   bool     BoomerangStatus;
+   datetime EntryDateTime;
    
    //--- Behavioral Logics
    virtual void MonitorStateTransition(void) = NULL;
@@ -57,6 +61,7 @@ protected:
    //--- Helper Functions
    void NewEntryProtocol(const double InputBoomerangLevel);
    void IncrementEntryPosition(void);
+   bool IsLookingForFirstPosition(void);
    virtual bool IsNewEntry(void) = NULL;
 };
 
