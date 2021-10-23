@@ -178,6 +178,7 @@ MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double 
    request.type      = ORDER_TYPE_BUY;
    
    request.volume    = volume;
+   request.price     = IP.GetAskPrice(CURRENT_BAR);
    request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
@@ -194,6 +195,7 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    request.type      = ORDER_TYPE_SELL;
    
    request.volume    = volume;
+   request.price     = IP.GetBidPrice(CURRENT_BAR);
    request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);

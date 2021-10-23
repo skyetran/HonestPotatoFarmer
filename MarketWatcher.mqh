@@ -43,6 +43,7 @@ public:
    double   GetBoomerangLevel(void);
    bool     GetBoomerangStatus(void);
    datetime GetEntryDateTime(void);
+   datetime GetStartCacheDateTime(void);
    
    //--- Services For State Class To Use
    int GetInChannelBuffer(void);
@@ -80,9 +81,10 @@ private:
    MarketState* CurrentState;
    
    //--- Tracking Variables
-   double HighestFastFAMA, LowestFastFAMA;
-   double HighestBidPrice, HighestAskPrice, LowestBidPrice, LowestAskPrice;
-   double LowestBuyStopLossLevel, HighestSellStopLossLevel;
+   double   HighestFastFAMA, LowestFastFAMA;
+   double   HighestBidPrice, HighestAskPrice, LowestBidPrice, LowestAskPrice;
+   double   LowestBuyStopLossLevel, HighestSellStopLossLevel;
+   datetime StartCacheDateTime, LastEntryDateTime, LastLastEntryDateTime;
 
    //--- Tracking Helper Functions
    void UpdateHighestFastFAMA(void);
@@ -104,6 +106,8 @@ private:
    void ResetLowestBidPrice(void);
    void ResetLowestAskPrice(void);
    void ResetLowestBuyStopLossLevel(void);
+   
+   void UpdateStartCacheDateTime(void);
 };
 
 #endif

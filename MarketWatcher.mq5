@@ -10,6 +10,8 @@ MarketWatcher::MarketWatcher(MarketState *InitialState) {
    this.ChangeState(InitialState);
    IP = IndicatorProcessor::GetInstance();
    PMHP = PositionManagementHyperParameters::GetInstance();
+   LastEntryDateTime     = TimeGMT();
+   LastLastEntryDateTime = TimeGMT();
 }
 
 //--- Destructor
@@ -39,6 +41,7 @@ string MarketWatcher::GetDebugMessage(void) {
    Msg += "Difference Fast FAMA --- Highest Fast FAMA: " + IntegerToString(GetCurrentDiffFastFAMA_HighestFastFAMA_Pts()) + "\n";
    Msg += "Difference Fast FAMA --- Lowest Fast FAMA: "  + IntegerToString(GetCurrentDiffFastFAMA_LowestFastFAMA_Pts())  + "\n";
    Msg += "\n";
+   Msg += "Start Entry Date & Time: " + GetStartCacheDateTime()                                                + "\n";
    Msg += "Market State Name: " + GetStateName()                                                               + "\n";
    Msg += "Entry Position ID: " + IntegerToString(GetEntryPositionID())                                        + "\n";
    Msg += "Capstone Level: " + DoubleToString(GetCapstoneLevel())                                              + "\n";
@@ -103,6 +106,7 @@ double   MarketWatcher::GetBearishStopLossLevel(void)               { return Cur
 double   MarketWatcher::GetBoomerangLevel(void)                     { return CurrentState.GetBoomerangLevel();                     }
 bool     MarketWatcher::GetBoomerangStatus(void)                    { return CurrentState.GetBoomerangStatus();                    }
 datetime MarketWatcher::GetEntryDateTime(void)                      { return CurrentState.GetEntryDateTime();                      }
+datetime MarketWatcher::GetStartCacheDateTime(void)                 { return StartCacheDateTime;                                   }
 
 //--- Services For State Class To Use
 int MarketWatcher::GetInChannelBuffer(void)  { return InChannelBuffer;  }
@@ -138,6 +142,8 @@ void MarketWatcher::UpdateTrackingVariables(void) {
    UpdateLowestBidPrice();
    UpdateLowestAskPrice();
    UpdateLowestBuyStopLossLevel();
+   
+   UpdateStartCacheDateTime();
 }
 
 void MarketWatcher::UpdateHighestFastFAMA(void)          { HighestFastFAMA = MathMax(HighestFastFAMA, IP.GetFastFAMA(CURRENT_BAR)); }
@@ -198,3 +204,11 @@ void MarketWatcher::ResetLowestFastFAMA(void)  { LowestFastFAMA  = IP.GetFastFAM
 void MarketWatcher::ResetLowestBidPrice(void)  { LowestBidPrice  = IP.GetCurrentBid();          }
 void MarketWatcher::ResetLowestAskPrice(void)  { LowestAskPrice  = IP.GetCurrentAsk();          }
 void MarketWatcher::ResetLowestBuyStopLossLevel(void)   { LowestBuyStopLossLevel   = IP.GetBuyStopLossLevel(CURRENT_BAR);  }
+
+void MarketWatcher::UpdateStartCacheDateTime(void) {
+   if (LastEntryDateTime < GetEntryDateTime()) {
+      StartCacheDateTime     = LastLastEntryDateTime;
+      LastLastEntryDateTime  = LastEntryDateTime;
+      LastEntryDateTime      = GetEntryDateTime();
+   }
+}

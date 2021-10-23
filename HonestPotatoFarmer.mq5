@@ -106,8 +106,8 @@ void OnTick()
 {
    Update();
    string DebugMsg;
-   DebugMsg += IP.GetDebugMessage() + "\n";
-   DebugMsg += MW.GetDebugMessage();
+   //DebugMsg += IP.GetDebugMessage() + "\n";
+   //DebugMsg += MW.GetDebugMessage();
 
    //ConstructType         *TestType           = new ConstructType(BIG_HEDGE_LONG, FOUR_LEVEL);
    //ConstructParameters   *TestParameters     = new ConstructParameters(1, 1, 0.99700, 50);
@@ -136,10 +136,14 @@ void OnTick()
    static MqlTradeResult  result4  = {};
    static MqlTradeRequest request5 = {};
    static MqlTradeResult  result5  = {};
+   static MqlTradeRequest request6 = {};
+   static MqlTradeResult  result6  = {};
    
-   static bool OneTime = true;
+   static bool     OneTime = true;
+   static datetime Start;
    if (OneTime) {
       OneTime = false;
+      Start = TimeCurrent();
       
       request1.action    = TRADE_ACTION_PENDING;
       request1.magic     = GS.GetMagicNumber();
@@ -188,41 +192,55 @@ void OnTick()
       request5.volume    = 1;
       request5.price     = NormalizeDouble(IP.GetBidPrice(CURRENT_BAR) - 0.0003, Digits());
       
-      //OrderSend(request1, result1);
-      //OrderSend(request2, result2);
-      //OrderSend(request3, result3);
-      //OrderSend(request4, result4);
-      //OrderSend(request5, result5);
+      request6.action    = TRADE_ACTION_DEAL;
+      request6.magic     = GS.GetMagicNumber();
+      request6.symbol    = Symbol();
+      request6.deviation = PMHP.GetSlippageInPts();
+      request6.type      = ORDER_TYPE_BUY;
+      
+      request6.volume    = 1;
+      request6.price     = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
+      
+      OrderSend(request1, result1);
+      OrderSend(request2, result2);
+      OrderSend(request3, result3);
+      OrderSend(request4, result4);
+      OrderSend(request5, result5);
+      OrderSend(request6, result6);
    }
-   
-   //DebugMsg += request1.price     + "\n";
-   //DebugMsg += request1.stoplimit + "\n";
-   
-   //DebugMsg += HistoryOrderSelect(result1.order)                      + "\n";
-   //DebugMsg += HistoryOrderGetDouble(result1.order, ORDER_PRICE_OPEN) + "\n";
-   
-   //DebugMsg += "\n";
-   
-   //DebugMsg += request2.price     + "\n";
-   //DebugMsg += request2.stoplimit + "\n";
-   
-   //DebugMsg += HistoryOrderSelect(result2.order)                      + "\n";
-   //DebugMsg += HistoryOrderGetDouble(result2.order, ORDER_PRICE_OPEN) + "\n";
-   
-   //DebugMsg += "\n";
-   
-   //DebugMsg += request3.price     + "\n";
-   //DebugMsg += request3.stoplimit + "\n";
+   ulong deal_ticket;            // deal ticket
+   ulong order_ticket;           // ticket of the order the deal was executed on
+   datetime transaction_time;    // time of a deal execution 
+   long deal_type ;              // type of a trade operation
+   long position_ID;             // position ID
+   string deal_description;      // operation description
+   double volume;                // operation volume
+   string symbol;                // symbol of the deal
+   datetime from_date=0;         
+   datetime to_date=TimeCurrent();
 
-   //DebugMsg += HistoryOrderSelect(result3.order)                      + "\n";
-   //DebugMsg += HistoryOrderGetDouble(result3.order, ORDER_PRICE_OPEN) + "\n";
+   HistorySelect(from_date,to_date);
+
+   int deals=HistoryDealsTotal();
+//--- now process each trade
+   for(int i=0;i<deals;i++)
+     {
+      deal_ticket=               HistoryDealGetTicket(i);
+      volume=                    HistoryDealGetDouble(deal_ticket,DEAL_VOLUME);
+      transaction_time=(datetime)HistoryDealGetInteger(deal_ticket,DEAL_TIME);
+      order_ticket=              HistoryDealGetInteger(deal_ticket,DEAL_ORDER);
+      deal_type=                 HistoryDealGetInteger(deal_ticket,DEAL_TYPE);
+      symbol=                    HistoryDealGetString(deal_ticket,DEAL_SYMBOL);
+      position_ID=               HistoryDealGetInteger(deal_ticket,DEAL_POSITION_ID);
+      //--- perform fine formatting for the deal number
+      string print_index=StringFormat("% 3d",i);
+      //--- show information on the deal
+      Print(print_index+": deal #",deal_ticket," at ",position_ID);
+     }
    
-   //DebugMsg += "\n";
-   
-   //DebugMsg += request4.price     + "\n";
-   //DebugMsg += request4.stoplimit + "\n";
-   //DebugMsg += HistoryOrderSelect(result4.order)                      + "\n";
-   //DebugMsg += HistoryOrderGetDouble(result4.order, ORDER_PRICE_OPEN) + "\n";
+   DebugMsg += HistoryOrderSelect(result6.order) + "\n";
+   DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_INITIAL) + "\n";
+   DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_CURRENT) + "\n";
    
    Comment(DebugMsg);
 }
