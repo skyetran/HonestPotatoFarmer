@@ -41,7 +41,7 @@ private:
    CHashMap<CompletionBoundary*, CArrayList<MqlTradeRequestWrapper*>*> RecurrentTradePoolBoomerang; 
    CHashMap<MqlTradeRequestWrapper*, bool>                             RecurrentTradeBoomerangStatus;
    
-   //--- Helper Functions: GetRequest
+   //--- Helper Functions: AddOneTimeRequest
    void AddExistedBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    void AddNewBoundaryOneTimeRequest(ExecutionBoundary *InputBoundary, MqlTradeRequestWrapper *Request);
    
@@ -69,6 +69,7 @@ private:
    
    //--- Helper Functions: UpdateRecurrentTradeBoomerangStatus
    bool IsInCompletionZone(CompletionBoundary *InputBoundary, const double InputPrice);
+   void UpdateRecurrentRequestListCreateDateTime(CArrayList<MqlTradeRequestWrapper*> *RequestList);
    void SetRecurrentBoomerangStatus(CArrayList<MqlTradeRequestWrapper*> *RequestList, const bool InputBoomerangStatus);
    
    //--- Auxilary Functions

@@ -6,6 +6,7 @@
 ConstructTradePool::ConstructTradePool(void) {
    IP   = IndicatorProcessor::GetInstance();
    PMHP = PositionManagementHyperParameters::GetInstance(); 
+   GS   = GeneralSettings::GetInstance();
    
    RequestResultSession = new CHashMap<MqlTradeRequestWrapper*, MqlTradeResultWrapper*>();
    
@@ -13,6 +14,8 @@ ConstructTradePool::ConstructTradePool(void) {
    LimitRequestList     = new CArrayList<MqlTradeRequestWrapper*>();
    StopLimitRequestList = new CArrayList<MqlTradeRequestWrapper*>();
    StopRequestList      = new CArrayList<MqlTradeRequestWrapper*>();
+   LongRequestList      = new CArrayList<MqlTradeRequestWrapper*>();
+   ShortRequestList     = new CArrayList<MqlTradeRequestWrapper*>();
 }
 
 //--- Destructor
@@ -39,7 +42,8 @@ void ConstructTradePool::AddNewRequest(CArrayList<MqlTradeRequestWrapper*> *Inpu
 //--- Operations
 void ConstructTradePool::AddNewRequest(MqlTradeRequestWrapper *InputRequest) {
    AddNewRequestByOrderType(InputRequest);
-   AddNewRequestByOrderDirection(InputRequest);   
+   AddNewRequestByOrderDirection(InputRequest);
+   RequestSessionExpiration.Add(InputRequest, UNPOOL);
 }
 
 //--- Helper Functions: AddNewRequest
@@ -85,240 +89,142 @@ void ConstructTradePool::AddNewRequestByOrderDirection(MqlTradeRequestWrapper *I
 }
 
 //--- Operations
-CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolRawMarketRequest(void) { return RawMarketRequestList; }
-CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolLimitRequest(void)     { return LimitRequestList;     }
-CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolStopLimitRequest(void) { return StopLimitRequestList; }
-CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolStopRequest(void)      { return StopRequestList;      }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolRawMarketRequest(void) { return GetUnpoolRequests(RawMarketRequestList); }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolLimitRequest(void)     { return GetUnpoolRequests(LimitRequestList);     }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolStopLimitRequest(void) { return GetUnpoolRequests(StopLimitRequestList); }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolStopRequest(void)      { return GetUnpoolRequests(StopRequestList);      }
+
+//--- Operations
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetLongRequest(void)       { return LongRequestList;                         }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetShortRequest(void)      { return ShortRequestList;                        }
+
+//--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetUnpoolRequests(CArrayList<MqlTradeRequestWrapper*> *RequestList) {
+   CArrayList<MqlTradeRequestWrapper*> *UnpoolRequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   
+   MqlTradeRequestWrapper *RequestTemp;
+
+   for (int i = 0; i < RequestList.Count(); i++) {
+      RequestList.TryGetValue(i, RequestTemp);
+      if (IsRequestUnpool(RequestTemp)) {
+         UnpoolRequestList.Add(RequestTemp);
+         SetRequestPoolingStatusToAlreadyPool(RequestTemp);
+      }
+   }
+   return UnpoolRequestList;
+}
+
+//--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
+bool ConstructTradePool::IsRequestUnpool(MqlTradeRequestWrapper *InputRequest) {
+   return GetPoolingStatus(InputRequest) == UNPOOL;
+}
+
+//--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
+bool ConstructTradePool::IsRequestAlreadyPool(MqlTradeRequestWrapper *InputRequest) {
+   return GetPoolingStatus(InputRequest) == ALREADY_POOL;
+}
+
+//--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
+ENUM_POOLING_STATUS ConstructTradePool::GetPoolingStatus(MqlTradeRequestWrapper *InputRequest) {
+   ENUM_POOLING_STATUS RequestPoolingStatus = ALREADY_POOL;
+   RequestSessionExpiration.TryGetValue(InputRequest, RequestPoolingStatus);
+   return RequestPoolingStatus;
+}
+
+//--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
+void ConstructTradePool::SetRequestPoolingStatusToAlreadyPool(MqlTradeRequestWrapper *InputRequest) {
+   RequestSessionExpiration.TrySetValue(InputRequest, ALREADY_POOL);
+}
 
 //--- Operations
 void ConstructTradePool::LogExecutedRequest(MqlTradeRequestWrapper *InputRequest, MqlTradeResultWrapper *InputResult) {
    RequestResultSession.Add(InputRequest, InputResult);
 }
 
-//--- Getters
-double ConstructTradePool::GetAbsRealUnhedgedNetVolume(void) {
-   return MathAbs(GetRealUnhedgedNetVolume());
+//--- Operations
+void ConstructTradePool::MakeFullyHedged(void) {
+   if (IsNetLong()) {
+      MakeNetLongFullyHedged();
+   } else if (IsNetShort()) {
+      MakeNetShortFullyHedged();
+   }
 }
 
-//--- Getters
-double ConstructTradePool::GetRealUnhedgedNetVolume(void) {
-   return GetUnhedgedNetVolume() - GetHedgedNetVolume();
+//--- Helper Functions: MakeFullyHedged
+void ConstructTradePool::MakeNetLongFullyHedged(void) {
+   MqlTradeRequest request = {};
+   
+   request.action    = TRADE_ACTION_DEAL;
+   request.magic     = GS.GetMagicNumber();
+   request.symbol    = Symbol();
+   request.deviation = PMHP.GetSlippageInPts();
+   request.type      = ORDER_TYPE_SELL;
+   
+   request.volume    = GetUnhedgedNetVolume();
+   request.price     = IP.GetBidPrice(CURRENT_BAR);
+   request.comment   = GetRandomString();
+   
+   AddNewRequest(new MqlTradeRequestWrapper(request));
 }
 
-//--- Getters
-double ConstructTradePool::GetAbsUnhedgedNetVolume(void) {
-   return MathAbs(GetUnhedgedNetVolume());
+//--- Helper Functions: MakeFullyHedged
+void ConstructTradePool::MakeNetShortFullyHedged(void) {
+   MqlTradeRequest request = {};
+   
+   request.action    = TRADE_ACTION_DEAL;
+   request.magic     = GS.GetMagicNumber();
+   request.symbol    = Symbol();
+   request.deviation = PMHP.GetSlippageInPts();
+   request.type      = ORDER_TYPE_BUY;
+   
+   request.volume    = GetUnhedgedNetVolume();
+   request.price     = IP.GetAskPrice(CURRENT_BAR);
+   request.comment   = GetRandomString();
+   
+   AddNewRequest(new MqlTradeRequestWrapper(request));
+}
+
+//--- Helper Functions: MakeFullyHedged
+string ConstructTradePool::GetRandomString(void) {
+   return IntegerToString(1 * MathRand()) + IntegerToString(2 * MathRand()) + IntegerToString(3 * MathRand()) +
+          IntegerToString(4 * MathRand()) + IntegerToString(5 * MathRand()) + IntegerToString(6 * MathRand()) +
+          IntegerToString(7 * MathRand()) + IntegerToString(8 * MathRand()) + IntegerToString(9 * MathRand()) +
+          IntegerToString(8 * MathRand()) + IntegerToString(7 * MathRand()) + IntegerToString(6 * MathRand());
 }
 
 //--- Getters
 double ConstructTradePool::GetUnhedgedNetVolume(void) {
-   CArrayList<ulong> *AllOrderTickets = GetAllOrderTickets();
-   double UnhedgedNetVolume = GetNetVolume(AllOrderTickets);
-   delete AllOrderTickets;
-   return UnhedgedNetVolume;
-}
-
-//--- Getters
-double ConstructTradePool::GetAbsHedgedNetVolume(void) {
-   return MathAbs(GetHedgedNetVolume());
+   double TotalLongVolume  = GetTotalLongVolume();
+   double TotalShortVolume = GetTotalShortVolume();
+   return MathMax(TotalLongVolume, TotalShortVolume) - MathMin(TotalLongVolume, TotalShortVolume);
 }
 
 //--- Getters
 double ConstructTradePool::GetHedgedNetVolume(void) {
-   CArrayList<ulong> *HedgedOrderTickets = GetHedgedOrderTickets();
-   double HedgedNetVolume = GetNetVolume(HedgedOrderTickets);
-   delete HedgedOrderTickets;
-   return HedgedNetVolume;
+   return MathMin(GetTotalLongVolume(), GetTotalShortVolume());
 }
 
-//--- Helper Functions: GetNetVolume
-double ConstructTradePool::GetNetVolume(CArrayList<ulong> *InputOrderTickets) {
-   double NetVolume = 0;
-   
-   ulong  OrderTicketTemp;
-   double OrderVolumeTemp;
-   
-   for (int i = 0; i < InputOrderTickets.Count(); i++) {
-      InputOrderTickets.TryGetValue(i, OrderTicketTemp);
-      OrderVolumeTemp = GetOrderVolume(OrderTicketTemp);
-      if (IsLongOrder(OrderTicketTemp)) {
-         NetVolume += OrderVolumeTemp;
-      } else if (IsShortOrder(OrderTicketTemp)) {
-         NetVolume -= OrderVolumeTemp;
-      }
-   }
-   return NetVolume;
-}
-
-//--- Helper Functions: GetNetVolume
-bool ConstructTradePool::IsLongOrder(ulong InputOrderTicket) {
-   ENUM_ORDER_TYPE OrderType = GetOrderType(InputOrderTicket);
-   return OrderType == ORDER_TYPE_BUY           ||
-          OrderType == ORDER_TYPE_BUY_LIMIT     ||
-          OrderType == ORDER_TYPE_BUY_STOP      ||
-          OrderType == ORDER_TYPE_BUY_STOP_LIMIT;
-}
-
-//--- Helper Functions: GetNetVolume
-bool ConstructTradePool::IsShortOrder(ulong InputOrderTicket) {
-   ENUM_ORDER_TYPE OrderType = GetOrderType(InputOrderTicket);
-   return OrderType == ORDER_TYPE_SELL           ||
-          OrderType == ORDER_TYPE_SELL_LIMIT     ||
-          OrderType == ORDER_TYPE_SELL_STOP      ||
-          OrderType == ORDER_TYPE_SELL_STOP_LIMIT;
-}
-
-//--- Getters
-CArrayList<ulong> *ConstructTradePool::GetUnhedgedOrderTickets(void) {
-   CArrayList<ulong> *UnhedgedOrderTickets = new CArrayList<ulong>();
-   CArrayList<ulong> *AllOrderTickets      = GetAllOrderTickets();
-   CArrayList<ulong> *HedgedOrderTickets   = GetHedgedOrderTickets();
-   
-   ulong OrderTicketTemp;
-   
-   for (int i = 0; i < AllOrderTickets.Count(); i++) {
-      AllOrderTickets.TryGetValue(i, OrderTicketTemp);
-      if (!HedgedOrderTickets.Contains(OrderTicketTemp)) {
-         UnhedgedOrderTickets.Add(OrderTicketTemp);
-      }
-   }
-   delete AllOrderTickets;
-   delete HedgedOrderTickets;
-   return UnhedgedOrderTickets;
-}
-   
-//--- Getters
-CArrayList<ulong> *ConstructTradePool::GetHedgedOrderTickets(void) {
-   CArrayList<ulong> *HedgedOrderTickets = new CArrayList<ulong>();
-   
-   if (IsNetLong()) {
-      HedgedOrderTickets = GetHedgedOrderTicketsOfNetLongConstruct();
-   } else if (IsNetShort()) {
-      HedgedOrderTickets = GetHedgedOrderTicketsOfNetShortConstruct();
-   } else if (IsFullyHedged()) {
-      HedgedOrderTickets = GetHedgedOrderTicketsOfFullyHedgedConstruct();
-   }
-   return HedgedOrderTickets;
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-CArrayList<ulong> *ConstructTradePool::GetHedgedOrderTicketsOfNetLongConstruct(void) {
-   CArrayList<ulong> *HedgedOrderTickets = new CArrayList<ulong>();
-   CArrayList<ulong> *LongOrderTickets   = GetAllLongOrderTickets();
-   CArrayList<ulong> *ShortOrderTickets  = GetAllShortOrderTickets();
-   
-   double HedgedVolume = GetTotalShortVolume();
-   double CurrentLongVolume = 0;
-   ulong LongOrderTicketTemp;
-   
-   HedgedOrderTickets.AddRange(ShortOrderTickets);
-   for (int i = 0; i < LongOrderTickets.Count(); i++) {
-      LongOrderTickets.TryGetValue(i, LongOrderTicketTemp);
-      HedgedOrderTickets.Add(LongOrderTicketTemp);
-      CurrentLongVolume += GetOrderVolume(LongOrderTicketTemp);
-      if (CurrentLongVolume >= HedgedVolume) {
-         break;
-      }
-   }
-   delete LongOrderTickets;
-   delete ShortOrderTickets;
-   return HedgedOrderTickets;
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-CArrayList<ulong> *ConstructTradePool::GetHedgedOrderTicketsOfNetShortConstruct(void) {
-   CArrayList<ulong> *HedgedOrderTickets = new CArrayList<ulong>();
-   CArrayList<ulong> *LongOrderTickets   = GetAllLongOrderTickets();
-   CArrayList<ulong> *ShortOrderTickets  = GetAllShortOrderTickets();
-   
-   double HedgedVolume = GetTotalLongVolume();
-   double CurrentShortVolume = 0;
-   ulong ShortOrderTicketTemp;
-   
-   HedgedOrderTickets.AddRange(LongOrderTickets);
-   for (int i = 0; i < ShortOrderTickets.Count(); i++) {
-      ShortOrderTickets.TryGetValue(i, ShortOrderTicketTemp);
-      HedgedOrderTickets.Add(ShortOrderTicketTemp);
-      CurrentShortVolume += GetOrderVolume(ShortOrderTicketTemp);
-      if (CurrentShortVolume >= HedgedVolume) {
-         break;
-      }
-   }
-   delete LongOrderTickets;
-   delete ShortOrderTickets;
-   return HedgedOrderTickets;
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-CArrayList<ulong> *ConstructTradePool::GetHedgedOrderTicketsOfFullyHedgedConstruct(void) {
-   return GetAllLongOrderTickets();
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-CArrayList<ulong> *ConstructTradePool::GetAllOrderTickets(void) {
-   CArrayList<ulong> *AllOrderTickets = new CArrayList<ulong>();
-   
-   MqlTradeRequestWrapper *RequestList[];
-   MqlTradeResultWrapper  *ResultList[];
-   RequestResultSession.CopyTo(RequestList, ResultList);
-   
-   for (int i = 0; i < ArraySize(RequestList); i++) {
-      if (IsOrderFilled(RequestList[i])) {
-         AllOrderTickets.Add(ResultList[i].order);
-      }
-   }
-   return AllOrderTickets;
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-CArrayList<ulong> *ConstructTradePool::GetAllLongOrderTickets(void) {
-   CArrayList<ulong> *AllLongOrderTickets = new CArrayList<ulong>();
-   
-   for (int i = 0; i < LongRequestList.Count(); i++) {
-      MqlTradeRequestWrapper *TempRequest;
-      LongRequestList.TryGetValue(i, TempRequest);
-      AllLongOrderTickets.Add(GetOrderTicket(TempRequest));
-   }
-   return AllLongOrderTickets;
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-CArrayList<ulong> *ConstructTradePool::GetAllShortOrderTickets(void) {
-   CArrayList<ulong> *AllShortOrderTickets = new CArrayList<ulong>();
-   
-   for (int i = 0; i < ShortRequestList.Count(); i++) {
-      MqlTradeRequestWrapper *TempRequest;
-      ShortRequestList.TryGetValue(i, TempRequest);
-      AllShortOrderTickets.Add(GetOrderTicket(TempRequest));
-   }
-   return AllShortOrderTickets;
-}
-
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
+//--- Helper Functions: Volume-Related Functions
 double ConstructTradePool::GetTotalLongVolume(void) {
    double TotalLongVolume = 0;
    
-   CArrayList<ulong> *AllLongOrderTickets = GetAllLongOrderTickets();
-   for (int i = 0; i < AllLongOrderTickets.Count(); i++) {
-      ulong LongOrderTicketTemp;
-      AllLongOrderTickets.TryGetValue(i, LongOrderTicketTemp);
-      TotalLongVolume += GetOrderVolume(LongOrderTicketTemp);
+   MqlTradeRequestWrapper *TempRequest;
+   for (int i = 0; i < LongRequestList.Count(); i++) {
+      LongRequestList.TryGetValue(i, TempRequest);
+      TotalLongVolume += GetRequestVolume(TempRequest);
    }
-   delete AllLongOrderTickets;
    return TotalLongVolume;
 }
 
-//--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
+//--- Helper Functions: Volume-Related Functions
 double ConstructTradePool::GetTotalShortVolume(void) {
    double TotalShortVolume = 0;
    
-   CArrayList<ulong> *AllShortOrderTickets = GetAllShortOrderTickets();
-   for (int i = 0; i < AllShortOrderTickets.Count(); i++) {
-      ulong ShortOrderTicketTemp;
-      AllShortOrderTickets.TryGetValue(i, ShortOrderTicketTemp);
-      TotalShortVolume += GetOrderVolume(ShortOrderTicketTemp);
+   MqlTradeRequestWrapper *TempRequest;
+   for (int i = 0; i < ShortRequestList.Count(); i++) {
+      ShortRequestList.TryGetValue(i, TempRequest);
+      TotalShortVolume += GetRequestVolume(TempRequest);
    }
-   delete AllShortOrderTickets;
    return TotalShortVolume;
 }
 

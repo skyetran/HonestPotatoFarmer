@@ -41,9 +41,14 @@ public:
    string                        comment;
    ulong                         position;
    ulong                         position_by;
+   
+   //--- Setters
+   void SetCreateDateTime(const datetime InputCreateDateTime);
 
 private:
    IndicatorProcessor *IP;
+   
+   datetime CreateDateTime;
 };
 
 #endif

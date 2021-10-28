@@ -107,7 +107,7 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   //DebugMsg += MW.GetDebugMessage();
+   DebugMsg += MW.GetDebugMessage();
 
    //ConstructType         *TestType           = new ConstructType(BIG_HEDGE_LONG, FOUR_LEVEL);
    //ConstructParameters   *TestParameters     = new ConstructParameters(1, 1, 0.99700, 50);
@@ -201,12 +201,12 @@ void OnTick()
       request6.volume    = 1;
       request6.price     = SymbolInfoDouble(Symbol(), SYMBOL_ASK);
       
-      OrderSend(request1, result1);
-      OrderSend(request2, result2);
-      OrderSend(request3, result3);
-      OrderSend(request4, result4);
-      OrderSend(request5, result5);
-      OrderSend(request6, result6);
+      //OrderSend(request1, result1);
+      //OrderSend(request2, result2);
+      //OrderSend(request3, result3);
+      //OrderSend(request4, result4);
+      //OrderSend(request5, result5);
+      //OrderSend(request6, result6);
    }
    ulong deal_ticket;            // deal ticket
    ulong order_ticket;           // ticket of the order the deal was executed on
@@ -235,12 +235,12 @@ void OnTick()
       //--- perform fine formatting for the deal number
       string print_index=StringFormat("% 3d",i);
       //--- show information on the deal
-      Print(print_index+": deal #",deal_ticket," at ",position_ID);
+      //Print(print_index+": deal #",deal_ticket," at ",position_ID);
      }
    
-   DebugMsg += HistoryOrderSelect(result6.order) + "\n";
-   DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_INITIAL) + "\n";
-   DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_CURRENT) + "\n";
+   //DebugMsg += HistoryOrderSelect(result6.order) + "\n";
+   //DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_INITIAL) + "\n";
+   //DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_CURRENT) + "\n";
    
    Comment(DebugMsg);
 }

@@ -4,11 +4,17 @@
 #include <Generic\ArrayList.mqh>
 #include <Generic\HashMap.mqh>
 
+#include "../General/GeneralSettings.mqh"
 #include "../General/IndicatorProcessor.mqh"
 #include "../General/PositionManagementHyperParameters.mqh"
 #include "../Wrapper/MqlTradeRequestWrapper.mqh"
 #include "../Wrapper/MqlTradeResultWrapper.mqh"
 #include "../MarketWatcher.mqh"
+
+enum ENUM_POOLING_STATUS {
+   ALREADY_POOL = 0,
+   UNPOOL       = 1,
+};
 
 class ConstructTradePool
 {
@@ -28,31 +34,28 @@ public:
    CArrayList<MqlTradeRequestWrapper*> *PoolStopLimitRequest(void);
    CArrayList<MqlTradeRequestWrapper*> *PoolStopRequest(void);
    
+   CArrayList<MqlTradeRequestWrapper*> *GetLongRequest(void);
+   CArrayList<MqlTradeRequestWrapper*> *GetShortRequest(void);
+   
    void LogExecutedRequest(MqlTradeRequestWrapper *InputRequest, MqlTradeResultWrapper *InputResult);
    
-   //--- Getters
-   double             GetAbsRealUnhedgedNetVolume(void);
-   double             GetAbsUnhedgedNetVolume(void);
-   double             GetAbsHedgedNetVolume(void);
-   double             GetRealUnhedgedNetVolume(void);
-   double             GetUnhedgedNetVolume(void);
-   double             GetHedgedNetVolume(void);
-   CArrayList<ulong> *GetUnhedgedOrderTickets(void);
-   CArrayList<ulong> *GetHedgedOrderTickets(void);
-   double             GetCurrentPnL(void);
-   double             GetPositiveSlippagePnL(void);
+   void MakeFullyHedged(void);
    
-   bool IsNetLong(void);
-   bool IsNetShort(void);
+   //--- Getters   
+   double GetCurrentPnL(void);
+   double GetPositiveSlippagePnL(void);
+   
    bool IsFullyHedged(void);
    
 private:
    //--- External Objects
    IndicatorProcessor *IP;
    PositionManagementHyperParameters *PMHP;
+   GeneralSettings *GS;
    
    //--- Session History
    CHashMap<MqlTradeRequestWrapper*, MqlTradeResultWrapper*> *RequestResultSession;
+   CHashMap<MqlTradeRequestWrapper*, ENUM_POOLING_STATUS>    *RequestSessionExpiration;
 
    //--- Current
    CArrayList<MqlTradeRequestWrapper*> *RawMarketRequestList;
@@ -71,26 +74,30 @@ private:
    bool IsStopLimitRequest(MqlTradeRequestWrapper *InputRequest);
    bool IsStopRequest(MqlTradeRequestWrapper *InputRequest);
    
-   //--- Helper Functions: GetAbsNetVolume/GetNetVolume
-   double GetNetVolume(CArrayList<ulong> *InputOrderTickets);
-   bool   IsLongOrder(ulong InputOrderTicket);
-   bool   IsShortOrder(ulong InputOrderTicket);
+   //--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
+   CArrayList<MqlTradeRequestWrapper*> *GetUnpoolRequests(CArrayList<MqlTradeRequestWrapper*> *RequestList);
+   bool IsRequestUnpool(MqlTradeRequestWrapper *InputRequest);
+   bool IsRequestAlreadyPool(MqlTradeRequestWrapper *InputRequest);
+   ENUM_POOLING_STATUS GetPoolingStatus(MqlTradeRequestWrapper *InputRequest);
+   void SetRequestPoolingStatusToAlreadyPool(MqlTradeRequestWrapper *InputRequest);
    
-   //--- Helper Functions: GetUnhedgedOrderTickets/GetHedgedOrderTickets
-   CArrayList<ulong> *GetHedgedOrderTicketsOfNetLongConstruct(void);
-   CArrayList<ulong> *GetHedgedOrderTicketsOfNetShortConstruct(void);
-   CArrayList<ulong> *GetHedgedOrderTicketsOfFullyHedgedConstruct(void);
+   //--- Helper Functions: MakeFullyHedged
+   void MakeNetLongFullyHedged(void);
+   void MakeNetShortFullyHedged(void);
+   string GetRandomString(void);
    
-   CArrayList<ulong> *GetAllOrderTickets(void);
-   CArrayList<ulong> *GetAllLongOrderTickets(void);
-   CArrayList<ulong> *GetAllShortOrderTickets(void);
+   bool IsNetLong(void);
+   bool IsNetShort(void);
    
-   double             GetTotalLongVolume(void);
-   double             GetTotalShortVolume(void);
+   double GetUnhedgedNetVolume(void);
+   double GetHedgedNetVolume(void);
+   
+   //--- Helper Functions: Volume-Related Functions
+   double GetTotalLongVolume(void);
+   double GetTotalShortVolume(void);
    
    //--- Helper Functions: GetCurrentPnL
    int  GetPnLInPts(MqlTradeRequestWrapper *InputRequest);
-   
    int  GetPnLBuyRequestInPts(MqlTradeRequestWrapper* InputRequest);
    int  GetPnLSellRequestInPts(MqlTradeRequestWrapper* InputRequest);
    

@@ -31,7 +31,7 @@ void ConstructFullTradePool::AddExistedBoundaryOneTimeRequest(ExecutionBoundary 
    CArrayList<MqlTradeRequestWrapper*> *RequestList;
    OneTimeTradePool.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
-   OneTimeTradePool.Add(InputBoundary, RequestList);
+   OneTimeTradePool.TrySetValue(InputBoundary, RequestList);
 }
 
 //--- Helper Functions: AddOneTimeRequest
@@ -62,7 +62,7 @@ void ConstructFullTradePool::AddExistedExecutionBoundaryRecurrentRequest(Executi
    CArrayList<MqlTradeRequestWrapper*> *RequestList;
    RecurrentTradePool.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
-   RecurrentTradePool.Add(InputBoundary, RequestList);
+   RecurrentTradePool.TrySetValue(InputBoundary, RequestList);
 }
 
 //--- Helper Functions: AddRecurrentRequest
@@ -86,7 +86,7 @@ void ConstructFullTradePool::AddExistedCompletionBoundaryRecurrentRequest(Comple
    CArrayList<MqlTradeRequestWrapper*> *RequestList;
    RecurrentTradePoolBoomerang.TryGetValue(InputBoundary, RequestList);
    RequestList.Add(Request);
-   RecurrentTradePoolBoomerang.Add(InputBoundary, RequestList);
+   RecurrentTradePoolBoomerang.TrySetValue(InputBoundary, RequestList);
 }
 
 //--- Helper Functions: AddRecurrentRequestBoomerang
@@ -105,6 +105,8 @@ CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetRequest(const do
    FinalRequestList.AddRange(OneTimeRequestList);
    FinalRequestList.AddRange(RecurrentRequestList);
    
+   delete OneTimeRequestList;
+   delete RecurrentRequestList;
    return FinalRequestList;
 }
 
@@ -138,17 +140,14 @@ void ConstructFullTradePool::TransferOneTimeRequest(CArrayList<MqlTradeRequestWr
 
 //--- Helper Functions: TransferOneTimeRequest
 bool ConstructFullTradePool::IsOneTimeBoomerangStatus(MqlTradeRequestWrapper *Request) {
-   bool BoomerangStatus = false;
+   bool BoomerangStatus = BOOMERANG_NOT_ALLOWED;
    OneTimeTradeBoomerangStatus.TryGetValue(Request, BoomerangStatus);
    return BoomerangStatus;
 }
 
 //--- Helper Functions: TransferOneTimeRequest
 void ConstructFullTradePool::SetOneTimeBoomerangStatus(MqlTradeRequestWrapper *Request, const bool InputBoomerangStatus) {
-   bool BoomerangStatus = false;
-   OneTimeTradeBoomerangStatus.TryGetValue(Request, BoomerangStatus);
-   BoomerangStatus = InputBoomerangStatus;
-   OneTimeTradeBoomerangStatus.Add(Request, BoomerangStatus);
+   OneTimeTradeBoomerangStatus.TrySetValue(Request, InputBoomerangStatus);
 }
 
 //--- Helper Functions: GetRequest
@@ -188,10 +187,7 @@ bool ConstructFullTradePool::IsRecurrentBoomerangStatus(MqlTradeRequestWrapper *
 
 //--- Helper Functions: TransferRecurrentRequest
 void ConstructFullTradePool::SetRecurrentBoomerangStatus(MqlTradeRequestWrapper *Request, const bool InputBoomerangStatus) {
-   bool BoomerangStatus = false;
-   RecurrentTradeBoomerangStatus.TryGetValue(Request, BoomerangStatus);
-   BoomerangStatus = InputBoomerangStatus;
-   RecurrentTradeBoomerangStatus.Add(Request, BoomerangStatus);
+   RecurrentTradeBoomerangStatus.TrySetValue(Request, InputBoomerangStatus);
 }
 
 //--- Operations: Monitoring
@@ -202,6 +198,7 @@ void ConstructFullTradePool::UpdateRecurrentTradeBoomerangStatus(const double Cu
    
    for (int i = 0; i < ArraySize(BoundaryList); i++) {
       if (IsInCompletionZone(BoundaryList[i], CurrentPrice)) {
+         UpdateRecurrentRequestListCreateDateTime(RequestList[i]);
          SetRecurrentBoomerangStatus(RequestList[i], BOOMERANG_ALLOWED);
       }
    }
@@ -212,6 +209,15 @@ bool ConstructFullTradePool::IsInCompletionZone(CompletionBoundary *InputBoundar
    return InputBoundary.GetBidLowerBound() <= InputPrice && InputPrice <= InputBoundary.GetBidUpperBound() &&
           InputBoundary.GetAskLowerBound() <= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)           &&
           InputBoundary.GetAskUpperBound() >= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)            ;
+}
+
+//--- Helper Functions: UpdateRecurrentTradeBoomerangStatus
+void ConstructFullTradePool::UpdateRecurrentRequestListCreateDateTime(CArrayList<MqlTradeRequestWrapper*> *RequestList) {
+   for (int i = 0; i < RequestList.Count(); i++) {
+      MqlTradeRequestWrapper *Request;
+      RequestList.TryGetValue(i, Request);
+      Request.SetCreateDateTime(TimeGMT());
+   }
 }
 
 //--- Helper Functions: UpdateRecurrentTradeBoomerangStatus

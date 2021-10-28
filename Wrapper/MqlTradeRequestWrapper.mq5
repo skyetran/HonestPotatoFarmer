@@ -5,6 +5,7 @@
 //--- Default Constructor
 MqlTradeRequestWrapper::MqlTradeRequestWrapper(void) {
    IP = IndicatorProcessor::GetInstance();
+   CreateDateTime = TimeGMT();
 }
 
 //--- Main Constructor
@@ -76,7 +77,7 @@ bool MqlTradeRequestWrapper::Equals(MqlTradeRequestWrapper* Other) {
 }
 
 int  MqlTradeRequestWrapper::HashCode() {
-   string HashString = DoubleToString(10 * action + order) + DoubleToString(volume) + DoubleToString(price) + DoubleToString(stoplimit) + comment;
+   string HashString = DoubleToString(10 * action + order) + DoubleToString(volume) + DoubleToString(price) + DoubleToString(stoplimit) + comment + TimeToString(CreateDateTime);
    int    Length     = StringLen(HashString);
    int    HashValue  = 0;
    
@@ -86,4 +87,8 @@ int  MqlTradeRequestWrapper::HashCode() {
       }
    } 
    return HashValue;
+}
+
+void MqlTradeRequestWrapper::SetCreateDateTime(const datetime InputCreateDateTime) {
+   CreateDateTime = InputCreateDateTime;
 }
