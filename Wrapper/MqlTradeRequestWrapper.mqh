@@ -12,6 +12,9 @@ public:
    //--- Default Constructor
    MqlTradeRequestWrapper(void);
    
+   //--- Copy Constructor
+   MqlTradeRequestWrapper(MqlTradeRequestWrapper *InputRequest);
+   
    //--- Main Constructor
    MqlTradeRequestWrapper(MqlTradeRequest &InputRequest);
    
@@ -19,8 +22,8 @@ public:
    void Unwrap(MqlTradeRequest &InputRequest);
    
    //--- Required ADT Functions
-   int  Compare(MqlTradeRequestWrapper* Other) override;
-   bool Equals(MqlTradeRequestWrapper* Other) override;
+   int  Compare(MqlTradeRequestWrapper *Other) override;
+   bool Equals(MqlTradeRequestWrapper *Other) override;
    int  HashCode() override;
    
    //--- Attributes
@@ -42,8 +45,33 @@ public:
    ulong                         position;
    ulong                         position_by;
    
+   //--- Getters
+   bool IsRawMarketRequest();
+   bool IsLimitRequest();
+   bool IsStopLimitRequest();
+   bool IsStopRequest();
+   
+   bool IsMarketRequest();
+   bool IsPendingRequest();
+   
+   bool IsBuyRequest();
+   bool IsBuyMarketRequest();
+   bool IsBuyLimitRequest();
+   bool IsBuyStopRequest();
+   bool IsBuyStopLimitRequest();
+   
+   bool IsSellRequest();
+   bool IsSellMarketRequest();
+   bool IsSellLimitRequest();
+   bool IsSellStopRequest();
+   bool IsSellStopLimitRequest();
+   
    //--- Setters
    void SetCreateDateTime(const datetime InputCreateDateTime);
+
+   //--- Operations
+   void Copy(MqlTradeRequestWrapper *InputRequest);
+   void AddVolume(const double InputVolume);
 
 private:
    IndicatorProcessor *IP;

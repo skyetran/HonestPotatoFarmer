@@ -34,6 +34,7 @@
 #define INVALID               -1
 
 #define MIN_LOT_SIZE          0.01
+#define LOT_SIZE_DIGITS       2
 
 enum ENUM_CONSTRUCT_CLASS {
    FREE_STYLING_LONG  = 0,

@@ -8,46 +8,51 @@ MqlTradeRequestWrapper::MqlTradeRequestWrapper(void) {
    CreateDateTime = TimeGMT();
 }
 
+//--- Copy Constructor
+MqlTradeRequestWrapper::MqlTradeRequestWrapper(MqlTradeRequestWrapper *InputRequest) {
+   Copy(InputRequest);
+}
+
 //--- Main Constructor
-MqlTradeRequestWrapper::MqlTradeRequestWrapper(MqlTradeRequest &request) {
-   action         = request.action;
-   magic          = request.magic;
-   order          = request.order;
-   symbol         = request.symbol;
-   volume         = request.volume;
-   price          = request.price;
-   stoplimit      = request.stoplimit;
-   sl             = request.sl;
-   tp             = request.tp;
-   deviation      = request.deviation;
-   type           = request.type;
-   type_filling   = request.type_filling;
-   type_time      = request.type_time;
-   expiration     = request.expiration;
-   comment        = request.comment;
-   position       = request.position;
-   position_by    = request.position_by;
+MqlTradeRequestWrapper::MqlTradeRequestWrapper(MqlTradeRequest &InputRequest) {
+   action         = InputRequest.action;
+   magic          = InputRequest.magic;
+   order          = InputRequest.order;
+   symbol         = InputRequest.symbol;
+   volume         = InputRequest.volume;
+   price          = InputRequest.price;
+   stoplimit      = InputRequest.stoplimit;
+   sl             = InputRequest.sl;
+   tp             = InputRequest.tp;
+   deviation      = InputRequest.deviation;
+   type           = InputRequest.type;
+   type_filling   = InputRequest.type_filling;
+   type_time      = InputRequest.type_time;
+   expiration     = InputRequest.expiration;
+   comment        = InputRequest.comment;
+   position       = InputRequest.position;
+   position_by    = InputRequest.position_by;
 }
 
 //--- Revert Back To Struct State
-void MqlTradeRequestWrapper::Unwrap(MqlTradeRequest &request) {
-   request.action       = action;
-   request.magic        = magic;
-   request.order        = order;
-   request.symbol       = symbol;
-   request.volume       = volume;
-   request.price        = price;
-   request.stoplimit    = stoplimit;
-   request.sl           = sl;
-   request.tp           = tp;
-   request.deviation    = deviation;
-   request.type         = type;
-   request.type_filling = type_filling;
-   request.type_time    = type_time;
-   request.expiration   = expiration;
-   request.comment      = comment;
-   request.position     = position;
-   request.position_by  = position_by;
+void MqlTradeRequestWrapper::Unwrap(MqlTradeRequest &InputRequest) {
+   InputRequest.action       = action;
+   InputRequest.magic        = magic;
+   InputRequest.order        = order;
+   InputRequest.symbol       = symbol;
+   InputRequest.volume       = volume;
+   InputRequest.price        = price;
+   InputRequest.stoplimit    = stoplimit;
+   InputRequest.sl           = sl;
+   InputRequest.tp           = tp;
+   InputRequest.deviation    = deviation;
+   InputRequest.type         = type;
+   InputRequest.type_filling = type_filling;
+   InputRequest.type_time    = type_time;
+   InputRequest.expiration   = expiration;
+   InputRequest.comment      = comment;
+   InputRequest.position     = position;
+   InputRequest.position_by  = position_by;
 }
 
 //--- Required ADT Functions
@@ -89,6 +94,66 @@ int  MqlTradeRequestWrapper::HashCode() {
    return HashValue;
 }
 
+//--- Getters
+bool MqlTradeRequestWrapper::IsRawMarketRequest() { return type == ORDER_TYPE_BUY || type == ORDER_TYPE_SELL;                       }
+bool MqlTradeRequestWrapper::IsLimitRequest()     { return type == ORDER_TYPE_BUY_LIMIT || type == ORDER_TYPE_SELL_LIMIT;           }
+bool MqlTradeRequestWrapper::IsStopLimitRequest() { return type == ORDER_TYPE_BUY_STOP_LIMIT || type == ORDER_TYPE_SELL_STOP_LIMIT; }
+bool MqlTradeRequestWrapper::IsStopRequest()      { return type == ORDER_TYPE_BUY_STOP || type == ORDER_TYPE_SELL_STOP;             }
+   
+bool MqlTradeRequestWrapper::IsMarketRequest()    { return action == TRADE_ACTION_DEAL;    }
+bool MqlTradeRequestWrapper::IsPendingRequest()   { return action == TRADE_ACTION_PENDING; }
+
+bool MqlTradeRequestWrapper::IsBuyRequest() { 
+   return IsBuyMarketRequest()   ||
+          IsBuyLimitRequest()    ||
+          IsBuyStopRequest()     ||
+          IsBuyStopLimitRequest();
+}
+
+bool MqlTradeRequestWrapper::IsBuyMarketRequest()    { return type == ORDER_TYPE_BUY;            }
+bool MqlTradeRequestWrapper::IsBuyLimitRequest()     { return type == ORDER_TYPE_BUY_LIMIT;      }
+bool MqlTradeRequestWrapper::IsBuyStopRequest()      { return type == ORDER_TYPE_BUY_STOP;       }
+bool MqlTradeRequestWrapper::IsBuyStopLimitRequest() { return type == ORDER_TYPE_BUY_STOP_LIMIT; }
+
+bool MqlTradeRequestWrapper::IsSellRequest() {
+   return IsSellMarketRequest()   ||
+          IsSellLimitRequest()    ||
+          IsSellStopRequest()     ||
+          IsSellStopLimitRequest();
+}
+
+bool MqlTradeRequestWrapper::IsSellMarketRequest()    { return type == ORDER_TYPE_SELL;            }
+bool MqlTradeRequestWrapper::IsSellLimitRequest()     { return type == ORDER_TYPE_SELL_LIMIT;      }
+bool MqlTradeRequestWrapper::IsSellStopRequest()      { return type == ORDER_TYPE_SELL_STOP;       }
+bool MqlTradeRequestWrapper::IsSellStopLimitRequest() { return type == ORDER_TYPE_SELL_STOP_LIMIT; }
+
+//--- Setters
 void MqlTradeRequestWrapper::SetCreateDateTime(const datetime InputCreateDateTime) {
    CreateDateTime = InputCreateDateTime;
+}
+
+//--- Operations
+void MqlTradeRequestWrapper::Copy(MqlTradeRequestWrapper *InputRequest) {
+   action       = InputRequest.action;
+   magic        = InputRequest.magic;
+   order        = InputRequest.order;
+   symbol       = InputRequest.symbol;
+   volume       = InputRequest.volume;
+   price        = InputRequest.price;
+   stoplimit    = InputRequest.stoplimit;
+   sl           = InputRequest.sl;
+   tp           = InputRequest.tp;
+   deviation    = InputRequest.deviation;
+   type         = InputRequest.type;
+   type_filling = InputRequest.type_filling;
+   type_time    = InputRequest.type_time;
+   expiration   = InputRequest.expiration;
+   comment      = InputRequest.comment;
+   position     = InputRequest.position;
+   position_by  = InputRequest.position_by;
+}
+
+//--- Operations
+void MqlTradeRequestWrapper::AddVolume(const double InputVolume) {
+   volume += InputVolume;
 }

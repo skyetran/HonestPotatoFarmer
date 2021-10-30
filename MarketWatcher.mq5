@@ -51,6 +51,7 @@ string MarketWatcher::GetDebugMessage(void) {
    Msg += "Boomerang Level: " + DoubleToString(GetBoomerangLevel())                                            + "\n";
    Msg += "Boomerang Status: " + GetBoomerangStatus()                                                          + "\n";
    Msg += "Entry Date & Time: " + GetEntryDateTime()                                                           + "\n";
+   Msg += "Start Cache Date & Time: " + GetStartCacheDateTime()                                                + "\n";
    return Msg;
 }
 
@@ -206,9 +207,11 @@ void MarketWatcher::ResetLowestAskPrice(void)  { LowestAskPrice  = IP.GetCurrent
 void MarketWatcher::ResetLowestBuyStopLossLevel(void)   { LowestBuyStopLossLevel   = IP.GetBuyStopLossLevel(CURRENT_BAR);  }
 
 void MarketWatcher::UpdateStartCacheDateTime(void) {
-   if (LastEntryDateTime < GetEntryDateTime()) {
+   static string CurrentStateName = "Ranging";  // Initial State
+   if (CurrentStateName != GetStateName()) {
       StartCacheDateTime     = LastLastEntryDateTime;
       LastLastEntryDateTime  = LastEntryDateTime;
-      LastEntryDateTime      = GetEntryDateTime();
+      LastEntryDateTime      = TimeGMT();
+      CurrentStateName       = GetStateName();  // Update State
    }
 }

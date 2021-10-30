@@ -71,9 +71,7 @@ int WithTrendBullish::GetMaxIntervalSizeInPts(void) {
 
 //--- Helper Functions: MonitorCurrentState
 void WithTrendBullish::MonitorBullishStopLossLevel(void) {
-   double FirstStopLossLevelOption = IP.GetBuyStopLossLevel(CURRENT_BAR);
-   double SecondStopLossLevelOption = GetCapstoneLevel() - IP.GetStopLossVolatilityInPrice(CURRENT_BAR);
-   BullishStopLossLevel = MathMin(FirstStopLossLevelOption, SecondStopLossLevelOption);
+   BullishStopLossLevel = GetBullishStopLossLevel();
 }
 
 //--- Helper Functions: MonitorCurrentState
@@ -88,15 +86,22 @@ void WithTrendBullish::MonitorBoomerang(void) {
    }
 }
 
+//--- Behavioral Logics
+void WithTrendBullish::MonitorDownsideBoomerang(void) {
+   if (IP.GetBidPrice(CURRENT_BAR) <= DownsideBoomerangLevel) {
+      BoomerangStatus = BOOMERANG_ALLOWED;
+   }
+}
+
 //--- Helper Functions
 bool WithTrendBullish::IsNewEntry(void) {
    if (BoomerangStatus == BOOMERANG_ALLOWED) {
       if (IsFirstPositionNewEntry()) {
-         NewEntryProtocol(IP.GetFastMAMA(CURRENT_BAR) + PMHP.GetMinIntervalSizeInPrice());
+         NewEntryProtocol(IP.GetFastMAMA(CURRENT_BAR) + PMHP.GetMinIntervalSizeInPrice(), GetBullishStopLossLevel() - IP.GetAverageSpreadInPrice(CURRENT_BAR));
          return true;
       }
       if (IsOtherPositionNewEntry()) {
-         NewEntryProtocol(IP.GetFastFAMA(CURRENT_BAR) + PMHP.GetMinIntervalSizeInPrice());
+         NewEntryProtocol(IP.GetFastFAMA(CURRENT_BAR) + PMHP.GetMinIntervalSizeInPrice(), GetBullishStopLossLevel() - IP.GetAverageSpreadInPrice(CURRENT_BAR));
          return true;
       }
    }
@@ -105,10 +110,21 @@ bool WithTrendBullish::IsNewEntry(void) {
 
 //--- Helper Functions: IsNewEntry
 bool WithTrendBullish::IsFirstPositionNewEntry(void) {
-   return  IsLookingForFirstPosition() && IP.GetFastMAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() >= IP.GetAskPrice(CURRENT_BAR);
+   return IsLookingForFirstPosition()                                                                &&
+          IP.GetAskPrice(CURRENT_BAR) <= IP.GetFastMAMA(CURRENT_BAR) - 1 * PMHP.GetSlippageInPrice() &&
+          IP.GetAskPrice(CURRENT_BAR) >= IP.GetFastMAMA(CURRENT_BAR) - 2 * PMHP.GetSlippageInPrice() ;
 }
 
 //--- Helper Functions: IsNewEntry
 bool WithTrendBullish::IsOtherPositionNewEntry(void) {
-   return !IsLookingForFirstPosition() && IP.GetFastFAMA(CURRENT_BAR) - PMHP.GetSlippageInPrice() >= IP.GetAskPrice(CURRENT_BAR);
+   return !IsLookingForFirstPosition()                                                               &&
+          IP.GetAskPrice(CURRENT_BAR) <= IP.GetFastFAMA(CURRENT_BAR) - 1 * PMHP.GetSlippageInPrice() &&
+          IP.GetAskPrice(CURRENT_BAR) >= IP.GetFastFAMA(CURRENT_BAR) - 2 * PMHP.GetSlippageInPrice() ;
+}
+
+//--- Utility Functions
+double WithTrendBullish::GetBullishStopLossLevel(void) {
+   double FirstStopLossLevelOption = IP.GetBuyStopLossLevel(CURRENT_BAR);
+   double SecondStopLossLevelOption = GetCapstoneLevel() - IP.GetStopLossVolatilityInPrice(CURRENT_BAR);
+   return MathMin(FirstStopLossLevelOption, SecondStopLossLevelOption);
 }

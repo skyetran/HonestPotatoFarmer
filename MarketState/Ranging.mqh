@@ -23,9 +23,10 @@ private:
    bool   LongBoomerangStatus, ShortBoomerangStatus;
 
    //--- Behavioral Logics
-   void   MonitorStateTransition(void) override;
-   void   MonitorCurrentState(void)    override;
-   void   MonitorBoomerang(void)       override;
+   void   MonitorStateTransition(void)   override;
+   void   MonitorCurrentState(void)      override;
+   void   MonitorBoomerang(void)         override;
+   void   MonitorDownsideBoomerang(void) override;
 
    //--- Helper Functions: MonitorStateTransition
    bool   IsRangingToWithTrendBullish(void);

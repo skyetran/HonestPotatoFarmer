@@ -44,13 +44,15 @@ protected:
    double   BullishStopLossLevel;
    double   BearishStopLossLevel;
    double   BoomerangLevel;
+   double   DownsideBoomerangLevel;
    bool     BoomerangStatus;
    datetime EntryDateTime;
    
    //--- Behavioral Logics
-   virtual void MonitorStateTransition(void) = NULL;
-   virtual void MonitorCurrentState(void)    = NULL;
-   virtual void MonitorBoomerang(void)       = NULL;
+   virtual void MonitorStateTransition(void)   = NULL;
+   virtual void MonitorCurrentState(void)      = NULL;
+   virtual void MonitorBoomerang(void)         = NULL;
+   virtual void MonitorDownsideBoomerang(void) = NULL;
    
    //--- Helper Functions: MonitorCurrentState
    virtual void MonitorCapstoneLevel(void)                      = NULL;
@@ -59,7 +61,7 @@ protected:
    virtual void MonitorBearishStopLossLevel(void)               = NULL;
    
    //--- Helper Functions
-   void NewEntryProtocol(const double InputBoomerangLevel);
+   void NewEntryProtocol(const double InputBoomerangLevel, const double InputDownsideBoomerangLevel);
    void IncrementEntryPosition(void);
    bool IsLookingForFirstPosition(void);
    virtual bool IsNewEntry(void) = NULL;

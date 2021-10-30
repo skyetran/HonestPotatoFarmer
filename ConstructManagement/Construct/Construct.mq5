@@ -16,8 +16,6 @@ Construct::~Construct(void) {
    delete Parameters;
    delete RollingInfo;
    delete ResultInfo;
-   GetConstructFactories().Clear();
-   GetConstructMonitors().Clear();
    delete GetConstructFactories();
    delete GetConstructMonitors();
 }

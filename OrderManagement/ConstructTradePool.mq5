@@ -8,7 +8,8 @@ ConstructTradePool::ConstructTradePool(void) {
    PMHP = PositionManagementHyperParameters::GetInstance(); 
    GS   = GeneralSettings::GetInstance();
    
-   RequestResultSession = new CHashMap<MqlTradeRequestWrapper*, MqlTradeResultWrapper*>();
+   RequestResultSession     = new CHashMap<MqlTradeRequestWrapper*, MqlTradeResultWrapper*>();
+   RequestSessionExpiration = new CHashMap<MqlTradeRequestWrapper*, ENUM_POOLING_STATUS>();
    
    RawMarketRequestList = new CArrayList<MqlTradeRequestWrapper*>();
    LimitRequestList     = new CArrayList<MqlTradeRequestWrapper*>();
@@ -21,6 +22,7 @@ ConstructTradePool::ConstructTradePool(void) {
 //--- Destructor
 ConstructTradePool::~ConstructTradePool(void) {
    delete RequestResultSession;
+   delete RequestSessionExpiration;
    
    delete RawMarketRequestList;
    delete LimitRequestList;
@@ -32,11 +34,12 @@ ConstructTradePool::~ConstructTradePool(void) {
 
 //--- Operations
 void ConstructTradePool::AddNewRequest(CArrayList<MqlTradeRequestWrapper*> *InputRequestList) {
+   MqlTradeRequestWrapper *Request;
    for (int i = 0; i < InputRequestList.Count(); i++) {
-      MqlTradeRequestWrapper *Request;
       InputRequestList.TryGetValue(i, Request);
       AddNewRequest(Request);
    }
+   delete InputRequestList;
 }
 
 //--- Operations
@@ -48,62 +51,86 @@ void ConstructTradePool::AddNewRequest(MqlTradeRequestWrapper *InputRequest) {
 
 //--- Helper Functions: AddNewRequest
 void ConstructTradePool::AddNewRequestByOrderType(MqlTradeRequestWrapper *InputRequest) {
-   if (IsRawMarketRequest(InputRequest)) {
+   if (InputRequest.IsRawMarketRequest()) {
       RawMarketRequestList.Add(InputRequest);
-   } else if (IsLimitRequest(InputRequest)) {
+   } else if (InputRequest.IsLimitRequest()) {
       LimitRequestList.Add(InputRequest);
-   } else if (IsStopLimitRequest(InputRequest)) {
+   } else if (InputRequest.IsStopLimitRequest()) {
       StopLimitRequestList.Add(InputRequest);
-   } else if (IsStopRequest(InputRequest)) {
+   } else if (InputRequest.IsStopRequest()) {
       StopRequestList.Add(InputRequest);
    }
 }
 
 //--- Helper Functions: AddNewRequest
-bool ConstructTradePool::IsRawMarketRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY || InputRequest.type == ORDER_TYPE_SELL;
-}
-
-//--- Helper Functions: AddNewRequest
-bool ConstructTradePool::IsLimitRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY_LIMIT || InputRequest.type == ORDER_TYPE_SELL_LIMIT;
-}
-
-//--- Helper Functions: AddNewRequest
-bool ConstructTradePool::IsStopLimitRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY_STOP_LIMIT || InputRequest.type == ORDER_TYPE_SELL_STOP_LIMIT;
-}
-
-//--- Helper Functions: AddNewRequest
-bool ConstructTradePool::IsStopRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY_STOP || InputRequest.type == ORDER_TYPE_SELL_STOP;
-}
-
-//--- Helper Functions: AddNewRequest
 void ConstructTradePool::AddNewRequestByOrderDirection(MqlTradeRequestWrapper *InputRequest) {
-   if (IsBuyRequest(InputRequest)) {
+   if (InputRequest.IsBuyRequest()) {
       LongRequestList.Add(InputRequest);
-   } else if (IsSellRequest(InputRequest)) {
+   } else if (InputRequest.IsSellRequest()) {
       ShortRequestList.Add(InputRequest);
    }
 }
 
 //--- Operations
+CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *ConstructTradePool::GetRawMarketRequestOriginMapping(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *RawMarketRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
+   CArrayList<MqlTradeRequestWrapper*> *UnpoolRawMarketRequest = PoolRawMarketRequest();
+   MakeOriginMapping(RawMarketRequestOriginMapping, UnpoolRawMarketRequest);   
+   delete UnpoolRawMarketRequest;
+   return RawMarketRequestOriginMapping;
+}
+
+//--- Operations
+CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *ConstructTradePool::GetLimitRequestOriginMapping(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *LimitRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
+   CArrayList<MqlTradeRequestWrapper*> *UnpoolLimitRequest = PoolLimitRequest();
+   MakeOriginMapping(LimitRequestOriginMapping, UnpoolLimitRequest);   
+   delete UnpoolLimitRequest;
+   return LimitRequestOriginMapping;
+}
+
+//--- Operations
+CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *ConstructTradePool::GetStopLimitRequestOriginMapping(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *StopLimitRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
+   CArrayList<MqlTradeRequestWrapper*> *UnpoolStopLimitRequest = PoolStopLimitRequest();
+   MakeOriginMapping(StopLimitRequestOriginMapping, UnpoolStopLimitRequest);   
+   delete UnpoolStopLimitRequest;
+   return StopLimitRequestOriginMapping;
+}
+
+//--- Operations
+CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *ConstructTradePool::GetStopRequestOriginMapping(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *StopRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
+   CArrayList<MqlTradeRequestWrapper*> *UnpoolStopRequest = PoolStopRequest();
+   MakeOriginMapping(StopRequestOriginMapping, UnpoolStopRequest);   
+   delete UnpoolStopRequest;
+   return StopRequestOriginMapping;
+}
+
+//--- Helper Functions: GetOriginMapping
 CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolRawMarketRequest(void) { return GetUnpoolRequests(RawMarketRequestList); }
 CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolLimitRequest(void)     { return GetUnpoolRequests(LimitRequestList);     }
 CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolStopLimitRequest(void) { return GetUnpoolRequests(StopLimitRequestList); }
 CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::PoolStopRequest(void)      { return GetUnpoolRequests(StopRequestList);      }
 
+//--- Helper Functions: GetOriginMapping
+void ConstructTradePool::MakeOriginMapping(CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputOriginMapping, CArrayList<MqlTradeRequestWrapper*> *InputUnpoolRequestList) {
+   MqlTradeRequestWrapper *TempRequest;
+   for (int i = 0; i < InputUnpoolRequestList.Count(); i++) {
+      InputUnpoolRequestList.TryGetValue(i, TempRequest);
+      InputOriginMapping.Add(TempRequest, GetPointer(this));
+   }
+}
+
 //--- Operations
-CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetLongRequest(void)       { return LongRequestList;                         }
-CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetShortRequest(void)      { return ShortRequestList;                        }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetLongRequest(void)       { return LongRequestList;  }
+CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetShortRequest(void)      { return ShortRequestList; }
 
 //--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
 CArrayList<MqlTradeRequestWrapper*> *ConstructTradePool::GetUnpoolRequests(CArrayList<MqlTradeRequestWrapper*> *RequestList) {
    CArrayList<MqlTradeRequestWrapper*> *UnpoolRequestList = new CArrayList<MqlTradeRequestWrapper*>();
    
    MqlTradeRequestWrapper *RequestTemp;
-
    for (int i = 0; i < RequestList.Count(); i++) {
       RequestList.TryGetValue(i, RequestTemp);
       if (IsRequestUnpool(RequestTemp)) {
@@ -247,10 +274,10 @@ double ConstructTradePool::GetCurrentPnL(void) {
 
 //--- Helper Functions: GetCurrentPnL
 int ConstructTradePool::GetPnLInPts(MqlTradeRequestWrapper *InputRequest) {
-   if (IsBuyRequest(InputRequest)) {
+   if (InputRequest.IsBuyRequest()) {
       return GetPnLBuyRequestInPts(InputRequest);
    }
-   if (IsSellRequest(InputRequest)) {
+   if (InputRequest.IsSellRequest()) {
       return GetPnLSellRequestInPts(InputRequest);
    }
    return 0;
@@ -285,10 +312,10 @@ double ConstructTradePool::GetPositiveSlippagePnL(void) {
 
 //--- Helper Functions: GetPositiveSlippagePnL
 int ConstructTradePool::GetPositiveSlippageInPts(MqlTradeRequestWrapper *InputRequest) {
-   if (IsBuyRequest(InputRequest)) {
+   if (InputRequest.IsBuyRequest()) {
       return GetPositiveSlippageBuyRequestInPts(InputRequest);
    }
-   if (IsSellRequest(InputRequest)) {
+   if (InputRequest.IsSellRequest()) {
       return GetPositiveSlippageSellRequestInPts(InputRequest);
    }
    return 0;
@@ -296,7 +323,7 @@ int ConstructTradePool::GetPositiveSlippageInPts(MqlTradeRequestWrapper *InputRe
 
 //--- Helper Functions: GetPositiveSlippagePnL
 int ConstructTradePool::GetPositiveSlippageBuyRequestInPts(MqlTradeRequestWrapper *InputRequest) {
-   if (InputRequest.action == TRADE_ACTION_DEAL) {
+   if (InputRequest.IsMarketRequest()) {
       return GetPositiveSlippageBuyRequestMarketOrderInPts(InputRequest);
    }
    return GetPositiveSlippageBuyRequestPendingOrderInPts(InputRequest);
@@ -323,7 +350,7 @@ int ConstructTradePool::GetPositiveSlippageBuyRequestPendingOrderInPts(MqlTradeR
 
 //--- Helper Functions: GetPositiveSlippagePnL
 int ConstructTradePool::GetPositiveSlippageSellRequestInPts(MqlTradeRequestWrapper *InputRequest) {
-   if (InputRequest.action == TRADE_ACTION_PENDING) {
+   if (InputRequest.IsPendingRequest()) {
       return GetPositiveSlippageSellRequestMarketOrderInPts(InputRequest);
    }
    return GetPositiveSlippageSellRequestPendingOrderInPts(InputRequest);
@@ -400,40 +427,8 @@ double ConstructTradePool::GetRequestVolume(MqlTradeRequestWrapper *InputRequest
 }
 
 //--- Auxilary Functions: Get Raw Info
-double ConstructTradePool::GetOrderVolume(ulong InputOrderTicket) {
-   MqlTradeRequestWrapper *RequestTemp;
-   
-   //--- Check From LongRequestList
-   for (int i = 0; i < LongRequestList.Count(); i++) {
-      LongRequestList.TryGetValue(i, RequestTemp);
-      if (IsRequestMatchesOrderTicket(RequestTemp, InputOrderTicket)) {
-         return GetRequestVolume(RequestTemp);
-      }
-   }
-   
-   //--- Check From ShortRequestList
-   for (int i = 0; i < ShortRequestList.Count(); i++) {
-      ShortRequestList.TryGetValue(i, RequestTemp);
-      if (IsRequestMatchesOrderTicket(RequestTemp, InputOrderTicket)) {
-         return GetRequestVolume(RequestTemp);
-      }
-   }
-   return 0;
-}
-
-//--- Helper Functions: GetOrderVolume
-bool ConstructTradePool::IsRequestMatchesOrderTicket(MqlTradeRequestWrapper *InputRequest, ulong InputOrderTicket) {
-   return GetTradeResult(InputRequest).order == InputOrderTicket;
-}
-
-//--- Auxilary Functions: Get Raw Info
-ENUM_ORDER_TYPE ConstructTradePool::GetOrderType(ulong InputOrderTicket) {
-   return (ENUM_ORDER_TYPE) HistoryOrderGetInteger(InputOrderTicket, ORDER_TYPE);
-}
-
-//--- Auxilary Functions: Get Raw Info
 double ConstructTradePool::GetDesiredPrice(MqlTradeRequestWrapper *InputRequest) {
-   if (IsBuyStopLimitRequest(InputRequest) || IsSellStopLimitRequest(InputRequest)) {
+   if (InputRequest.IsStopLimitRequest()) {
       return InputRequest.stoplimit;
    }
    return InputRequest.price;
@@ -446,10 +441,10 @@ double ConstructTradePool::GetRealPrice(MqlTradeRequestWrapper *InputRequest) {
 
 //--- Auxilary Functions: Get Raw Info
 ulong ConstructTradePool::GetDealTicket(MqlTradeRequestWrapper *InputRequest) {
-   if (IsMarketRequest(InputRequest)) {
+   if (InputRequest.IsMarketRequest()) {
       return GetMarketDealTicket(InputRequest);
    }
-   if (IsPendingRequest(InputRequest)) {
+   if (InputRequest.IsPendingRequest()) {
       return GetPendingDealTicket(InputRequest);
    }
    return 0;
@@ -480,70 +475,4 @@ ulong ConstructTradePool::GetPendingDealTicket(MqlTradeRequestWrapper *InputRequ
 //--- Auxilary Functions: Get Raw Info
 double ConstructTradePool::GetDealPrice(MqlTradeRequestWrapper *InputRequest) {
    return HistoryDealGetDouble(GetDealTicket(InputRequest), DEAL_PRICE);
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsMarketRequest(MqlTradeRequestWrapper *InputRequest) {
-   return IsRawMarketRequest(InputRequest);
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsPendingRequest(MqlTradeRequestWrapper *InputRequest) {
-   return IsLimitRequest(InputRequest) || IsStopRequest(InputRequest) || IsStopLimitRequest(InputRequest);
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsBuyRequest(MqlTradeRequestWrapper *InputRequest) {
-   return IsBuyMarketRequest(InputRequest)   ||
-          IsBuyLimitRequest(InputRequest)    ||
-          IsBuyStopRequest(InputRequest)     ||
-          IsBuyStopLimitRequest(InputRequest);
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsBuyMarketRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsBuyLimitRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY_LIMIT;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsBuyStopRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY_STOP;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsBuyStopLimitRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_BUY_STOP_LIMIT;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsSellRequest(MqlTradeRequestWrapper *InputRequest) {
-   return IsSellMarketRequest(InputRequest)   ||
-          IsSellLimitRequest(InputRequest)    ||
-          IsSellStopRequest(InputRequest)     ||
-          IsSellStopLimitRequest(InputRequest);
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsSellMarketRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_SELL;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsSellLimitRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_SELL_LIMIT;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsSellStopRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_SELL_STOP;
-}
-
-//--- Auxilary Functions: Get Raw Info
-bool ConstructTradePool::IsSellStopLimitRequest(MqlTradeRequestWrapper *InputRequest) {
-   return InputRequest.type == ORDER_TYPE_SELL_STOP_LIMIT;
 }

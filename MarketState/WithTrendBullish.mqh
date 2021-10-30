@@ -11,13 +11,14 @@ public:
    
 private:
    //--- Behavioral Logics
-   void MonitorStateTransition(void) override;
-   void MonitorCurrentState(void)    override;
-   void MonitorBoomerang(void)       override;
+   void MonitorStateTransition(void)   override;
+   void MonitorCurrentState(void)      override;
+   void MonitorBoomerang(void)         override;
+   void MonitorDownsideBoomerang(void) override;
 
    //--- Helper Functions: State Transition
-   bool   IsWithTrendBullishToRanging(void);
-   bool   IsWithTrendBullishToCounterTrendBullish(void);
+   bool IsWithTrendBullishToRanging(void);
+   bool IsWithTrendBullishToCounterTrendBullish(void);
    
    //--- Helper Functions: MonitorCurrentState
    void MonitorCapstoneLevel(void)                      override;
@@ -35,6 +36,9 @@ private:
    //--- Helper Functions: IsNewEntry
    bool IsFirstPositionNewEntry(void);
    bool IsOtherPositionNewEntry(void);
+   
+   //--- Utility Functions
+   double GetBullishStopLossLevel(void);
 };
 
 #endif

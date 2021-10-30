@@ -29,10 +29,10 @@ public:
    void AddNewRequest(CArrayList<MqlTradeRequestWrapper*> *InputRequestList);
    void AddNewRequest(MqlTradeRequestWrapper *InputRequest);
    
-   CArrayList<MqlTradeRequestWrapper*> *PoolRawMarketRequest(void);
-   CArrayList<MqlTradeRequestWrapper*> *PoolLimitRequest(void);
-   CArrayList<MqlTradeRequestWrapper*> *PoolStopLimitRequest(void);
-   CArrayList<MqlTradeRequestWrapper*> *PoolStopRequest(void);
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *GetRawMarketRequestOriginMapping(void);
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *GetLimitRequestOriginMapping(void);
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *GetStopLimitRequestOriginMapping(void);
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *GetStopRequestOriginMapping(void);
    
    CArrayList<MqlTradeRequestWrapper*> *GetLongRequest(void);
    CArrayList<MqlTradeRequestWrapper*> *GetShortRequest(void);
@@ -69,10 +69,13 @@ private:
    void AddNewRequestByOrderType(MqlTradeRequestWrapper *InputRequest);
    void AddNewRequestByOrderDirection(MqlTradeRequestWrapper *InputRequest);
    
-   bool IsRawMarketRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsLimitRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsStopLimitRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsStopRequest(MqlTradeRequestWrapper *InputRequest);
+   //--- Helper Functions: GetOriginMapping
+   CArrayList<MqlTradeRequestWrapper*> *PoolRawMarketRequest(void);
+   CArrayList<MqlTradeRequestWrapper*> *PoolLimitRequest(void);
+   CArrayList<MqlTradeRequestWrapper*> *PoolStopLimitRequest(void);
+   CArrayList<MqlTradeRequestWrapper*> *PoolStopRequest(void);
+   
+   void MakeOriginMapping(CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputOriginMapping, CArrayList<MqlTradeRequestWrapper*> *InputUnpoolRequestList);
    
    //--- Helper Functions: PoolRawMarketRequest/PoolLimitRequest/PoolStopLimitRequest/PoolStopRequest
    CArrayList<MqlTradeRequestWrapper*> *GetUnpoolRequests(CArrayList<MqlTradeRequestWrapper*> *RequestList);
@@ -125,11 +128,7 @@ private:
    MqlTradeResultWrapper *GetTradeResult(MqlTradeRequestWrapper *InputRequest);  
    
    double          GetRequestVolume(MqlTradeRequestWrapper *InputRequest);
-   double          GetOrderVolume(ulong InputOrderTicket);
-   ENUM_ORDER_TYPE GetOrderType(ulong InputOrderTicket);
-   
-   bool            IsRequestMatchesOrderTicket(MqlTradeRequestWrapper *InputRequest, ulong InputOrderTicket);
-   
+
    double GetDesiredPrice(MqlTradeRequestWrapper *InputRequest);
    double GetRealPrice(MqlTradeRequestWrapper *InputRequest);
    
@@ -138,21 +137,6 @@ private:
    
    ulong GetMarketDealTicket(MqlTradeRequestWrapper *InputRequest);
    ulong GetPendingDealTicket(MqlTradeRequestWrapper *InputRequest);
-   
-   bool IsMarketRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsPendingRequest(MqlTradeRequestWrapper *InputRequest);
-   
-   bool IsBuyRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsBuyMarketRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsBuyLimitRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsBuyStopRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsBuyStopLimitRequest(MqlTradeRequestWrapper *InputRequest);
-   
-   bool IsSellRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsSellMarketRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsSellLimitRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsSellStopRequest(MqlTradeRequestWrapper *InputRequest);
-   bool IsSellStopLimitRequest(MqlTradeRequestWrapper *InputRequest);
 };
 
 #endif

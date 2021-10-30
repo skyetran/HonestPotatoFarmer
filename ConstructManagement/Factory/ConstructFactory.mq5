@@ -177,7 +177,7 @@ MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double 
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_BUY;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);
    request.price     = IP.GetAskPrice(CURRENT_BAR);
    request.comment   = comment;
    
@@ -194,7 +194,7 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_SELL;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = IP.GetBidPrice(CURRENT_BAR);
    request.comment   = comment;
    
@@ -221,7 +221,7 @@ MqlTradeRequestWrapper *ConstructFactory::BuyLimitOrderRequest(const double volu
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_BUY_LIMIT;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = NormalizeDouble(price, Digits());
    request.comment   = comment;
    
@@ -238,7 +238,7 @@ MqlTradeRequestWrapper *ConstructFactory::SellLimitOrderRequest(const double vol
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_SELL_LIMIT;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = NormalizeDouble(price, Digits());
    request.comment   = comment;
    
@@ -265,9 +265,9 @@ MqlTradeRequestWrapper *ConstructFactory::BuyStopLimitOrderRequest(const double 
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_BUY_LIMIT;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = NormalizeDouble(price, Digits());
-   request.stoplimit = NormalizeDouble(price, Digits());
+   request.stoplimit = NormalizeDouble(stoplimit, Digits());
    request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
@@ -283,9 +283,9 @@ MqlTradeRequestWrapper *ConstructFactory::SellStopLimitOrderRequest(const double
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_SELL_LIMIT;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = NormalizeDouble(price, Digits());
-   request.stoplimit = NormalizeDouble(price, Digits());
+   request.stoplimit = NormalizeDouble(stoplimit, Digits());
    request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
@@ -311,7 +311,7 @@ MqlTradeRequestWrapper *ConstructFactory::BuyStopOrderRequest(const double volum
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_BUY_STOP;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = NormalizeDouble(price, Digits());
    request.comment   = comment;
    
@@ -328,7 +328,7 @@ MqlTradeRequestWrapper *ConstructFactory::SellStopOrderRequest(const double volu
    request.deviation = PMHP.GetSlippageInPts();
    request.type      = ORDER_TYPE_SELL_STOP;
    
-   request.volume    = volume;
+   request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
    request.price     = NormalizeDouble(price, Digits());
    request.comment   = comment;
    

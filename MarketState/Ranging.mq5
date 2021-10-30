@@ -112,6 +112,10 @@ void Ranging::MonitorShortBoomerang(void) {
    }
 }
 
+void Ranging::MonitorDownsideBoomerang(void) {
+   //--- Intentionally Left Blank
+}
+
 //--- Helper Functions: Extract Long Big Hedge Attributes
 double Ranging::GetLongBigHedgeCapstoneLevel(void) {
    return IP.GetUpperSSB(CURRENT_BAR);

@@ -31,14 +31,16 @@ void MarketState::Monitor(void) {
    MonitorStateTransition();
    MonitorCurrentState();
    MonitorBoomerang();
+   MonitorDownsideBoomerang();
 }
 
 //--- Helper Functions
-void MarketState::NewEntryProtocol(const double InputBoomerangLevel) {
+void MarketState::NewEntryProtocol(const double InputBoomerangLevel, const double InputDownsideBoomerangLevel) {
    IncrementEntryPosition();
-   BoomerangLevel  = InputBoomerangLevel;
-   BoomerangStatus = BOOMERANG_NOT_ALLOWED;
-   EntryDateTime   = TimeGMT();
+   BoomerangLevel         = InputBoomerangLevel;
+   DownsideBoomerangLevel = InputDownsideBoomerangLevel;
+   BoomerangStatus        = BOOMERANG_NOT_ALLOWED;
+   EntryDateTime          = TimeGMT();
 }
 
 //--- Helper Functions
