@@ -119,6 +119,9 @@ private:
    void ManageNewRequestPoolingStatus(CArrayList<MqlTradeRequestWrapper*> *InputRequestList);
    void ManageNewRequestPoolingStatus(MqlTradeRequestWrapper *InputRequest);
    
+   void ManageCombinedRequestNav(CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *InputCombinedRequestNavBuffer);
+   void ManageCombinedRequestVol(CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *InputCombinedRequestVolBuffer);
+   
    //--- Helper Functions: ManagePoolRawMarketRequestLists/ManagePoolLimitRequestLists/ManagePoolStopLimitRequestLists/ManagePoolStopRequestLists
    CArrayList<MqlTradeRequestWrapper*> *GetCombinedRequestList(CArrayList<MqlTradeRequestWrapper*> *InputRequestList);
    

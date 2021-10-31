@@ -46,6 +46,14 @@ void OrderManager::Managing(void) {
    ManageExistedRequestStream();
 }
 
+//--- Helper Functions: Managing
+void OrderManager::ManageNewRequestStream(void) {
+   CombineRawMarketRequestList();
+   CombineLimitRequestList();
+   CombineStopLimitRequestList();
+   CombineStopRequestList();
+}
+
 //--- Helper Functions: ManageNewRequestStream
 void OrderManager::CombineRawMarketRequestList(void) {
    CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *RawMarketRequestOriginMapping = GetRawMarketRequestOriginMapping();
@@ -54,6 +62,10 @@ void OrderManager::CombineRawMarketRequestList(void) {
    CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *CombinedRequestVol = new CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>();
    
    CombineRequest(RawMarketRequestOriginMapping, CombinedRequestList, CombinedRequestNav, CombinedRequestVol);
+   ManagePoolRawMarketRequestList(CombinedRequestList);
+   ManageNewRequestGeneralProperties(CombinedRequestList);
+   ManageCombinedRequestNav(CombinedRequestNav);
+   ManageCombinedRequestVol(CombinedRequestVol);
    
    delete CombinedRequestVol;
    delete CombinedRequestNav;
@@ -77,23 +89,104 @@ CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *OrderManager::GetRawMark
 }
 
 //--- Helper Functions: CombineOperations
+void OrderManager::CombineLimitRequestList(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *LimitRequestOriginMapping = GetLimitRequestOriginMapping();
+   CArrayList<MqlTradeRequestWrapper*> *CombinedRequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *CombinedRequestNav = new CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*>();
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *CombinedRequestVol = new CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>();
+   
+   CombineRequest(LimitRequestOriginMapping, CombinedRequestList, CombinedRequestNav, CombinedRequestVol);
+   ManagePoolLimitRequestList(CombinedRequestList);
+   ManageNewRequestGeneralProperties(CombinedRequestList);
+   ManageCombinedRequestNav(CombinedRequestNav);
+   ManageCombinedRequestVol(CombinedRequestVol);
+   
+   delete CombinedRequestVol;
+   delete CombinedRequestNav;
+   delete CombinedRequestList;
+   delete LimitRequestOriginMapping;
+}
+
+//--- Helper Functions: CombineOperations
 CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *OrderManager::GetLimitRequestOriginMapping(void) {
    CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *LimitRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
-   //--- TODO:
+   
+   ConstructTradePool *TempTradePool;
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *TempTradePoolLimitRequestOriginMapping;
+   for (int i = 0; i < TradePoolList.Count(); i++) {
+      TradePoolList.TryGetValue(i, TempTradePool);
+      TempTradePoolLimitRequestOriginMapping = TempTradePool.GetLimitRequestOriginMapping();
+      MergeOriginMapping(TempTradePoolLimitRequestOriginMapping, LimitRequestOriginMapping);
+      delete TempTradePoolLimitRequestOriginMapping;
+   }
    return LimitRequestOriginMapping;
+}
+
+//--- Helper Functinos: CombineOperations
+void OrderManager::CombineStopLimitRequestList(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *StopLimitRequestOriginMapping = GetStopLimitRequestOriginMapping();
+   CArrayList<MqlTradeRequestWrapper*> *CombinedRequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *CombinedRequestNav = new CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*>();
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *CombinedRequestVol = new CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>();
+   
+   CombineRequest(StopLimitRequestOriginMapping, CombinedRequestList, CombinedRequestNav, CombinedRequestVol);
+   ManagePoolStopLimitRequestList(CombinedRequestList);
+   ManageNewRequestGeneralProperties(CombinedRequestList);
+   ManageCombinedRequestNav(CombinedRequestNav);
+   ManageCombinedRequestVol(CombinedRequestVol);
+   
+   delete CombinedRequestVol;
+   delete CombinedRequestNav;
+   delete CombinedRequestList;
+   delete StopLimitRequestOriginMapping;
 }
 
 //--- Helper Functions: CombineOperations
 CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *OrderManager::GetStopLimitRequestOriginMapping(void) {
    CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *StopLimitRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
-   //--- TODO:
+   
+   ConstructTradePool *TempTradePool;
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *TempTradePoolStopLimitRequestOriginMapping;
+   for (int i = 0; i < TradePoolList.Count(); i++) {
+      TradePoolList.TryGetValue(i, TempTradePool);
+      TempTradePoolStopLimitRequestOriginMapping = TempTradePool.GetStopLimitRequestOriginMapping();
+      MergeOriginMapping(TempTradePoolStopLimitRequestOriginMapping, StopLimitRequestOriginMapping);
+      delete TempTradePoolStopLimitRequestOriginMapping;
+   }
    return StopLimitRequestOriginMapping;
+}
+
+//--- Helper Functinos: CombineOperations
+void OrderManager::CombineStopRequestList(void) {
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *StopRequestOriginMapping = GetStopRequestOriginMapping();
+   CArrayList<MqlTradeRequestWrapper*> *CombinedRequestList = new CArrayList<MqlTradeRequestWrapper*>();
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *CombinedRequestNav = new CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*>();
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *CombinedRequestVol = new CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>();
+   
+   CombineRequest(StopRequestOriginMapping, CombinedRequestList, CombinedRequestNav, CombinedRequestVol);
+   ManagePoolStopRequestList(CombinedRequestList);
+   ManageNewRequestGeneralProperties(CombinedRequestList);
+   ManageCombinedRequestNav(CombinedRequestNav);
+   ManageCombinedRequestVol(CombinedRequestVol);
+   
+   delete CombinedRequestVol;
+   delete CombinedRequestNav;
+   delete CombinedRequestList;
+   delete StopRequestOriginMapping;
 }
 
 //--- Helper Functions: CombineOperations
 CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *OrderManager::GetStopRequestOriginMapping(void) {
    CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *StopRequestOriginMapping = new CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*>();
-   //--- TODO:
+   
+   ConstructTradePool *TempTradePool;
+   CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *TempTradePoolStopRequestOriginMapping;
+   for (int i = 0; i < TradePoolList.Count(); i++) {
+      TradePoolList.TryGetValue(i, TempTradePool);
+      TempTradePoolStopRequestOriginMapping = TempTradePool.GetStopRequestOriginMapping();
+      MergeOriginMapping(TempTradePoolStopRequestOriginMapping, StopRequestOriginMapping);
+      delete TempTradePoolStopRequestOriginMapping;
+   }
    return StopRequestOriginMapping;
 }
 
@@ -130,8 +223,6 @@ void OrderManager::CombineRequest(CHashMap<MqlTradeRequestWrapper*, ConstructTra
       OutputCombinedRequestNav.Add(CombinedRequest, CombinedRequestOriginMapping);
       OutputCombinedRequestVol.Add(CombinedRequest, CombinedRequestVolumeMapping);
       
-      delete CombinedRequestVolumeMapping;
-      delete CombinedRequestOriginMapping;
       delete TempSameGroupingAttributeRequestList;
    }
    delete IntermediateCombinedRequestList;
@@ -206,6 +297,7 @@ MqlTradeRequestWrapper *OrderManager::GetFirstRequest(CArrayList<MqlTradeRequest
    return FirstRequest;
 }
 
+//--- Helper Functions: CombineOperations
 void OrderManager::MergeRequest(MqlTradeRequestWrapper *InputSource, MqlTradeRequestWrapper *InputDestination) {
    InputDestination.volume += InputSource.volume;
 }
@@ -299,6 +391,28 @@ void OrderManager::ManageNewRequestPoolingStatus(CArrayList<MqlTradeRequestWrapp
 //--- Helper Functions: ManageNewRequestStream
 void OrderManager::ManageNewRequestPoolingStatus(MqlTradeRequestWrapper *InputRequest) {
    RequestSessionExpiration.Add(InputRequest, UNPOOL);
+}
+
+//--- Helper Functions: ManageNewRequestStream
+void OrderManager::ManageCombinedRequestNav(CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *InputCombinedRequestNavBuffer) {
+   MqlTradeRequestWrapper *CombinedRequestList[];
+   CArrayList<ConstructTradePool*> *CombinedRequestNavList[];
+   InputCombinedRequestNavBuffer.CopyTo(CombinedRequestList, CombinedRequestNavList);
+   
+   for (int i = 0; i < ArraySize(CombinedRequestList); i++) {
+      CombinedTradeRequestNav.Add(CombinedRequestList[i], CombinedRequestNavList[i]);
+   }
+}
+
+//--- Helper Functinos: ManageNewRequestStream
+void OrderManager::ManageCombinedRequestVol(CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *InputCombinedRequestVolBuffer) {
+   MqlTradeRequestWrapper *CombinedRequestList[];
+   CArrayList<double> *CombinedRequestVolList[];
+   InputCombinedRequestVolBuffer.CopyTo(CombinedRequestList, CombinedRequestVolList);
+   
+   for (int i = 0; i < ArraySize(CombinedRequestList); i++) {
+      CombinedTradeRequestVol.Add(CombinedRequestList[i], CombinedRequestVolList[i]);
+   }
 }
 
 //--- Operations
