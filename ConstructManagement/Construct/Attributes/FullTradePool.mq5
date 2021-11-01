@@ -128,11 +128,11 @@ CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetOneTimeRequest(c
 
 //--- Helper Functions: GetOneTimeRequest
 void ConstructFullTradePool::TransferOneTimeRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To) {
+   MqlTradeRequestWrapper *Request;
    for (int i = 0; i < From.Count(); i++) {
-      MqlTradeRequestWrapper *Request;
       From.TryGetValue(i, Request);
       if (IsOneTimeBoomerangStatus(Request)) {
-         To.Add(Request);
+         To.Add(new MqlTradeRequestWrapper(Request));
          SetOneTimeBoomerangStatus(Request, BOOMERANG_NOT_ALLOWED);
       }
    }
@@ -172,7 +172,7 @@ void ConstructFullTradePool::TransferRecurrentRequest(CArrayList<MqlTradeRequest
       MqlTradeRequestWrapper *Request;
       From.TryGetValue(i, Request);
       if (IsRecurrentBoomerangStatus(Request)) {
-         To.Add(Request);
+         To.Add(new MqlTradeRequestWrapper(Request));
          SetRecurrentBoomerangStatus(Request, BOOMERANG_NOT_ALLOWED);
       }
    }

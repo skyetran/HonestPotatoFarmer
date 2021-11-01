@@ -21,6 +21,16 @@ ConstructTradePool::ConstructTradePool(void) {
 
 //--- Destructor
 ConstructTradePool::~ConstructTradePool(void) {
+   RequestResultSession.Clear();
+   RequestSessionExpiration.Clear();
+   
+   RawMarketRequestList.Clear();
+   LimitRequestList.Clear();
+   StopLimitRequestList.Clear();
+   StopRequestList.Clear();
+   LongRequestList.Clear();
+   ShortRequestList.Clear();
+   
    delete RequestResultSession;
    delete RequestSessionExpiration;
    

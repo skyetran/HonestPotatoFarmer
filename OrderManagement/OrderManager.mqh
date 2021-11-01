@@ -16,7 +16,7 @@ public:
    ~OrderManager(void);
    
    //--- OnTick Function
-   void Managing(void);
+   void ManageNewRequestStream(void);
    
    //--- Operations
    void AddTradePool(CArrayList<ConstructTradePool*> *InputTradePools);
@@ -30,7 +30,7 @@ public:
    CArrayList<MqlTradeRequestWrapper*> *GetLongRequest(void);
    CArrayList<MqlTradeRequestWrapper*> *GetShortRequest(void);
    
-   void LogExecutedRequest(MqlTradeRequestWrapper *InputRequest, MqlTradeResultWrapper *InputResult);
+   void LogExecutedRequest(MqlTradeRequestWrapper *InputCombinedRequest, MqlTradeResultWrapper *InputCombinedResult);
    
    void MakeFullyHedged(void);
    
@@ -50,8 +50,9 @@ private:
    CArrayList<ConstructTradePool*> *TradePoolList;
    
    //--- Log Combined Trade Requests Storage
-   CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *CombinedTradeRequestNav;
-   CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>              *CombinedTradeRequestVol;
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<MqlTradeRequestWrapper*>*> *CombinedTradeRequestNavIntermediate;
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*>     *CombinedTradeRequestNav;
+   CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*>                  *CombinedTradeRequestVol;
    
    //--- Session History
    CHashMap<MqlTradeRequestWrapper*, MqlTradeResultWrapper*> *RequestResultSession;
@@ -64,10 +65,6 @@ private:
    CArrayList<MqlTradeRequestWrapper*> *StopRequestList;
    CArrayList<MqlTradeRequestWrapper*> *LongRequestList;
    CArrayList<MqlTradeRequestWrapper*> *ShortRequestList;
-   
-   //--- Helper Functions: Managing
-   void ManageNewRequestStream(void);
-   void ManageExistedRequestStream(void);
    
    //--- Helper Functions: ManageNewRequestStream
    void CombineRawMarketRequestList(void);
@@ -82,7 +79,7 @@ private:
    CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *GetStopRequestOriginMapping(void);
    void MergeOriginMapping(CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputSource, CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputDestination);
    
-   void CombineRequest(CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputRequestOriginMapping, CArrayList<MqlTradeRequestWrapper*> *OutputCombinedRequestList, CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *OutputCombinedRequestNav, CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *OutputCombinedRequestVol);
+   void CombineRequest(CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputRequestOriginMapping, CArrayList<MqlTradeRequestWrapper*> *OutputCombinedRequestList, CHashMap<MqlTradeRequestWrapper*, CArrayList<MqlTradeRequestWrapper*>*> *OutputCombinedRequestNavIntermediate, CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *OutputCombinedRequestNav, CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *OutputCombinedRequestVol);
    
    CHashMap<string, CArrayList<MqlTradeRequestWrapper*>*> *GetIntermediateCombinedRequestList(CHashMap<MqlTradeRequestWrapper*, ConstructTradePool*> *InputRequestOriginMapping);
    bool IsNewGroupingAttributeRequest(CHashMap<string, CArrayList<MqlTradeRequestWrapper*>*> *InputIntermediateCombinedRequestList, MqlTradeRequestWrapper *InputRequest);
@@ -119,6 +116,7 @@ private:
    void ManageNewRequestPoolingStatus(CArrayList<MqlTradeRequestWrapper*> *InputRequestList);
    void ManageNewRequestPoolingStatus(MqlTradeRequestWrapper *InputRequest);
    
+   void ManageCombinedRequestNavIntermediate(CHashMap<MqlTradeRequestWrapper*, CArrayList<MqlTradeRequestWrapper*>*> *InputCombinedRequestNavIntermediateBuffer);
    void ManageCombinedRequestNav(CHashMap<MqlTradeRequestWrapper*, CArrayList<ConstructTradePool*>*> *InputCombinedRequestNavBuffer);
    void ManageCombinedRequestVol(CHashMap<MqlTradeRequestWrapper*, CArrayList<double>*> *InputCombinedRequestVolBuffer);
    

@@ -12,10 +12,13 @@ public:
    MqlTradeResultWrapper(void);
    
    //--- Main Constructor
-   MqlTradeResultWrapper(MqlTradeResult &result);
+   MqlTradeResultWrapper(MqlTradeResult &InputResult);
    
    //--- Main Constructor
-   MqlTradeResultWrapper(MqlTradeResult &result, const double InputVolumeRatio);
+   MqlTradeResultWrapper(MqlTradeResult &InputResult, const double InputVolumeRatio);
+   
+   //--- Main Constructor
+   MqlTradeResultWrapper(MqlTradeResultWrapper *InputResult, const double InputVolumeRatio);
    
    //--- Revert Back To Struct Format
    void Unwrap(MqlTradeResult &result);

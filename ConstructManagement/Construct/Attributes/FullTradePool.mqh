@@ -74,7 +74,6 @@ private:
    
    //--- Auxilary Functions
    bool IsInExecutionZone(ExecutionBoundary *InputBoundary, const double InputPrice);
-   
 };
 
 #endif
