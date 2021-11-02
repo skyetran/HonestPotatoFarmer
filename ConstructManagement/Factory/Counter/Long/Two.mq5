@@ -41,15 +41,15 @@ ConstructFullTradePool *TwoLevelNetLongCounterFactory::CreateFullTradePool(Const
    
    //--- Base Entry Order
    ExecutionBoundary *BaseEntryBoundary = new ExecutionBoundary(GetSpreadOffsetBuyOrderPriceEntry(GetNLevelPrice(InputParameters, LEVEL_ZERO)) - InputParameters.GetIntervalSizeInPrice() - PMHP.GetSlippageInPrice(), GetSpreadOffsetBuyOrderPriceEntry(GetNLevelPrice(InputParameters, LEVEL_ZERO)) - PMHP.GetSlippageInPrice());
-   FullTradePool.AddOneTimeRequest(BaseEntryBoundary, BuyRawMarketOrderRequest(GetCoveredAllCoveredCounterLotSize(InputParameters, TWO_LEVEL), UniqueFactoryComment + CL_UNIQUE_COMMENT_01));
+   FullTradePool.AddOneTimeRequest(BaseEntryBoundary, BuyRawMarketOrderRequest(GetCoveredAllCoveredCounterLotSize(InputParameters, TWO_LEVEL), GetNLevelPrice(InputParameters, LEVEL_ZERO) - PMHP.GetSlippageInPrice(), UniqueFactoryComment + CL_UNIQUE_COMMENT_01));
    FullTradePool.AddOneTimeRequest(BaseEntryBoundary, SellLimitOrderRequest(GetCoveredAllCoveredCounterLotSize(InputParameters, TWO_LEVEL), GetNLevelPrice(InputParameters, LEVEL_ONE), UniqueFactoryComment + CL_UNIQUE_COMMENT_02));
    
    CompletionBoundary *BaseExitBoundary1 = new CompletionBoundary(GetNLevelPrice(InputParameters, LEVEL_ONE), GetNLevelPrice(InputParameters, LEVEL_OUT_OF_BOUND));
-   FullTradePool.AddRecurrentRequest(BaseEntryBoundary, BuyRawMarketOrderRequest(GetCoveredCounterLotSizeNLevel(ONE_LEVEL , InputParameters, TWO_LEVEL), UniqueFactoryComment + CL_UNIQUE_COMMENT_03), BaseExitBoundary1);
+   FullTradePool.AddRecurrentRequest(BaseEntryBoundary, BuyRawMarketOrderRequest(GetCoveredCounterLotSizeNLevel(ONE_LEVEL , InputParameters, TWO_LEVEL), GetNLevelPrice(InputParameters, LEVEL_ZERO) - PMHP.GetSlippageInPrice(), UniqueFactoryComment + CL_UNIQUE_COMMENT_03), BaseExitBoundary1);
    FullTradePool.AddRecurrentRequest(BaseEntryBoundary, SellLimitOrderRequest(GetCoveredCounterLotSizeNLevel(   ONE_LEVEL , InputParameters, TWO_LEVEL), GetNLevelPrice(InputParameters, LEVEL_ONE), UniqueFactoryComment + CL_UNIQUE_COMMENT_04), BaseExitBoundary1);
    
    CompletionBoundary *BaseExitBoundary2 = new CompletionBoundary(GetNLevelPrice(InputParameters, LEVEL_TWO), GetNLevelPrice(InputParameters, LEVEL_OUT_OF_BOUND));
-   FullTradePool.AddRecurrentRequest(BaseEntryBoundary, BuyRawMarketOrderRequest(GetCoveredCounterLotSizeNLevel(ZERO_LEVEL, InputParameters, TWO_LEVEL), UniqueFactoryComment + CL_UNIQUE_COMMENT_05), BaseExitBoundary2);
+   FullTradePool.AddRecurrentRequest(BaseEntryBoundary, BuyRawMarketOrderRequest(GetCoveredCounterLotSizeNLevel(ZERO_LEVEL, InputParameters, TWO_LEVEL), GetNLevelPrice(InputParameters, LEVEL_ZERO) - PMHP.GetSlippageInPrice(), UniqueFactoryComment + CL_UNIQUE_COMMENT_05), BaseExitBoundary2);
    FullTradePool.AddRecurrentRequest(BaseEntryBoundary, SellLimitOrderRequest(GetCoveredCounterLotSizeNLevel(   ZERO_LEVEL, InputParameters, TWO_LEVEL), GetNLevelPrice(InputParameters, LEVEL_TWO), UniqueFactoryComment + CL_UNIQUE_COMMENT_06), BaseExitBoundary2);
    
    //--- Counter Entry Order

@@ -6,6 +6,8 @@
 
 #include "ConstructManagement/Construct/Construct.mqh"
 #include "ConstructManagement/Factory/Counter/CounterFactory.mqh"
+#include "OrderManagement/OrderManager.mqh"
+
 #include "General/GeneralSettings.mqh"
 #include "General/MoneyManagementHyperParameters.mqh"
 #include "General/PositionManagementHyperParameters.mqh"
@@ -107,24 +109,47 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   DebugMsg += MW.GetDebugMessage();
-
-   //ConstructType         *TestType           = new ConstructType(BIG_HEDGE_LONG, FOUR_LEVEL);
-   //ConstructParameters   *TestParameters     = new ConstructParameters(1, 1, 0.99700, 50);
-
-   //Construct *Test = Construct::Create(TestType, TestParameters, 1);
-   //ConstructFullTradePool *TestPool = Test.GetFullConstructTradePool();
-   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(1);
-   //for (int i = 0; i < RequestList.Count(); i++) {
-   //   MqlTradeRequestWrapper *Request;
-   //   RequestList.TryGetValue(i, Request);
-   //   DebugMsg += DoubleToString(Request.price) + " " + DoubleToString(Request.volume) + "\n";
-   //}
+   //DebugMsg += MW.GetDebugMessage();
    
-   //ConstructPreCheckInfo *TestPreCheck = Construct::PreCheck(TestType, TestParameters);
-   //DebugMsg += DoubleToString(TestPreCheck.GetMaxLotSizeExposure()) + "\n";
-   //DebugMsg += DoubleToString(TestPreCheck.GetPersistingLotSizeExposure()) + "\n";
-   //DebugMsg += IntegerToString(TestPreCheck.GetMaxPotentialLossInMinLotPointValue()) + "\n";
+   static ConstructType          *TestType;
+   static ConstructParameters    *TestParameters;
+   static Construct              *Test;
+   static ConstructFullTradePool *TestPool;
+   static double                  BidPrice, AskPrice;
+   static int k = 0;
+   
+   DebugMsg += "Bid Price: " + DoubleToString(BidPrice) + "\n";
+   DebugMsg += "Ask Price: " + DoubleToString(AskPrice) + "\n";
+   
+   static bool Once = true;
+   if (Once) {
+      Once = false;
+      BidPrice = IP.GetBidPrice(CURRENT_BAR);
+      AskPrice = IP.GetAskPrice(CURRENT_BAR);
+      TestType = new ConstructType(FREE_STYLING_LONG, FOUR_LEVEL);
+      TestParameters = new ConstructParameters(BidPrice, BidPrice + 0.00120, BidPrice - 0.00050, 30);
+      Test = Construct::Create(TestType, TestParameters, 1);
+      TestPool = Test.GetFullConstructTradePool();
+   }
+   
+   DebugMsg += TestPool.OutputAllOneTimeRequest() + "\n";
+   DebugMsg += TestPool.OutputAllRecurrentRequest();
+   
+   CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(IP.GetBidPrice(CURRENT_BAR));
+   TestPool.UpdateRecurrentTradeBoomerangStatus(IP.GetBidPrice(CURRENT_BAR));
+   
+   MqlTradeRequestWrapper *Request;
+   for (int i = 0; i < RequestList.Count(); i++) {
+      RequestList.TryGetValue(i, Request);
+      Print(DoubleToString(Request.price) + " " + DoubleToString(Request.volume));
+      
+      ObjectCreate(0, IntegerToString(k++), OBJ_HLINE, 0, TimeCurrent(), MathMax(Request.price, Request.stoplimit));
+   }
+   
+   ConstructPreCheckInfo *TestPreCheck = Construct::PreCheck(TestType, TestParameters);
+   DebugMsg += DoubleToString(TestPreCheck.GetMaxLotSizeExposure()) + "\n";
+   DebugMsg += DoubleToString(TestPreCheck.GetPersistingLotSizeExposure()) + "\n";
+   DebugMsg += IntegerToString(TestPreCheck.GetMaxPotentialLossInMinLotPointValue()) + "\n";
    
    static MqlTradeRequest request1 = {};
    static MqlTradeResult  result1  = {};
@@ -208,39 +233,6 @@ void OnTick()
       //OrderSend(request5, result5);
       //OrderSend(request6, result6);
    }
-   ulong deal_ticket;            // deal ticket
-   ulong order_ticket;           // ticket of the order the deal was executed on
-   datetime transaction_time;    // time of a deal execution 
-   long deal_type ;              // type of a trade operation
-   long position_ID;             // position ID
-   string deal_description;      // operation description
-   double volume;                // operation volume
-   string symbol;                // symbol of the deal
-   datetime from_date=0;         
-   datetime to_date=TimeCurrent();
-
-   HistorySelect(from_date,to_date);
-
-   int deals=HistoryDealsTotal();
-//--- now process each trade
-   for(int i=0;i<deals;i++)
-     {
-      deal_ticket=               HistoryDealGetTicket(i);
-      volume=                    HistoryDealGetDouble(deal_ticket,DEAL_VOLUME);
-      transaction_time=(datetime)HistoryDealGetInteger(deal_ticket,DEAL_TIME);
-      order_ticket=              HistoryDealGetInteger(deal_ticket,DEAL_ORDER);
-      deal_type=                 HistoryDealGetInteger(deal_ticket,DEAL_TYPE);
-      symbol=                    HistoryDealGetString(deal_ticket,DEAL_SYMBOL);
-      position_ID=               HistoryDealGetInteger(deal_ticket,DEAL_POSITION_ID);
-      //--- perform fine formatting for the deal number
-      string print_index=StringFormat("% 3d",i);
-      //--- show information on the deal
-      //Print(print_index+": deal #",deal_ticket," at ",position_ID);
-     }
-   
-   //DebugMsg += HistoryOrderSelect(result6.order) + "\n";
-   //DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_INITIAL) + "\n";
-   //DebugMsg += HistoryOrderGetDouble(result6.order, ORDER_VOLUME_CURRENT) + "\n";
    
    Comment(DebugMsg);
 }

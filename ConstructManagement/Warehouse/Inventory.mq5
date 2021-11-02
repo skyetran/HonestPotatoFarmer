@@ -24,7 +24,6 @@ void Inventory::Clear(void) {
    ConstructInventory.CopyTo(Types, Containers);
    
    for (int i = 0; i < ArraySize(Types); i++) {
-      delete Types[i];
       delete Containers[i];
    }
 }

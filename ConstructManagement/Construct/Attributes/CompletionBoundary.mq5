@@ -9,6 +9,8 @@ CompletionBoundary::CompletionBoundary(void) {
 
 //--- Main Constructor
 CompletionBoundary::CompletionBoundary(const double InputLowerBound, const double InputUpperBound) {
+   IP = IndicatorProcessor::GetInstance();
+   
    BidLowerBound = MathMin(InputLowerBound, InputUpperBound);
    BidUpperBound = MathMax(InputLowerBound, InputUpperBound);
    AskLowerBound = BidLowerBound + IP.GetAverageSpreadInPrice(CURRENT_BAR);

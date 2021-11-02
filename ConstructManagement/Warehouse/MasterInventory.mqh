@@ -9,14 +9,14 @@
 class MasterInventory
 {
 public:   
+   //--- Main Constructor
+   MasterInventory(void);
+   
    //--- Destructor
    ~MasterInventory(void);
 
    //--- Clear All Master Inventory
    void Clear(void);
-   
-   //--- Get Singleton Instance
-   static MasterInventory *GetInstance(void);
    
    //--- Add New Construct To The Master Inventory
    void Add(Construct *InputConstruct);
@@ -25,12 +25,6 @@ public:
    Construct *RetrieveConstruct(ConstructKey *InputKey);
 
 private:
-   //--- Main Constructor --- Singleton
-   MasterInventory(void);
-   
-   //--- Singleton Instance
-   static MasterInventory* Instance;
-   
    //--- Map From The Entry Position ID To The Right Inventory
    CHashMap<int, Inventory*> *ConstructMasterInventory;
    
@@ -38,7 +32,5 @@ private:
    void CheckAndHandleNewEntryPositionID(Construct *InputConstruct);
    void LocateInventoryAndAddConstruct(Construct *InputConstruct);
 };
-
-MasterInventory* MasterInventory::Instance = NULL;
 
 #endif

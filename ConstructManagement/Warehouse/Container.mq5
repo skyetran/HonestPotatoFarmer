@@ -24,7 +24,6 @@ void Container::Clear(void) {
    ConstructContainer.CopyTo(ParametersSets, Constructs);
    
    for (int i = 0; i < ArraySize(ParametersSets); i++) {
-      delete ParametersSets[i];
       delete Constructs[i];
    }
 }

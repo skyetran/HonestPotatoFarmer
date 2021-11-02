@@ -57,6 +57,8 @@ protected:
    MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume);
    MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume, const string comment);
    MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume, const string comment);
+   MqlTradeRequestWrapper *BuyRawMarketOrderRequest(const double volume, const double price, const string comment);
+   MqlTradeRequestWrapper *SellRawMarketOrderRequest(const double volume, const double price, const string comment);
    
    //--- Limit Entry Orders
    MqlTradeRequestWrapper *BuyLimitOrderRequest(const double volume, const double price);

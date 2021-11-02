@@ -24,14 +24,6 @@ void MasterInventory::Clear(void) {
    }
 }
 
-//--- Get Singleton Instance
-MasterInventory* MasterInventory::GetInstance(void) {
-   if (!Instance) {
-      Instance = new MasterInventory();
-   }
-   return Instance;
-}
-
 //--- Add New Construct To The Master Inventory
 void MasterInventory::Add(Construct *InputConstruct) {
    CheckAndHandleNewEntryPositionID(InputConstruct);

@@ -169,6 +169,16 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
 
 //--- Raw Base Entry Orders
 MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume, const string comment) {
+   return BuyRawMarketOrderRequest(volume, IP.GetAskPrice(CURRENT_BAR), comment);
+}
+
+//--- Raw Base Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume, const string comment) {
+   return SellRawMarketOrderRequest(volume, IP.GetBidPrice(CURRENT_BAR), comment);
+}
+
+//--- Raw Base Entry Orders
+MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double volume, const double price, const string comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_DEAL;
@@ -178,14 +188,14 @@ MqlTradeRequestWrapper *ConstructFactory::BuyRawMarketOrderRequest(const double 
    request.type      = ORDER_TYPE_BUY;
    
    request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);
-   request.price     = IP.GetAskPrice(CURRENT_BAR);
+   request.price     = NormalizeDouble(price, Digits());
    request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);
 }
 
 //--- Raw Base Entry Orders
-MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume, const string comment) {
+MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double volume, const double price, const string comment) {
    MqlTradeRequest request = {};
    
    request.action    = TRADE_ACTION_DEAL;
@@ -195,7 +205,7 @@ MqlTradeRequestWrapper *ConstructFactory::SellRawMarketOrderRequest(const double
    request.type      = ORDER_TYPE_SELL;
    
    request.volume    = NormalizeDouble(volume, LOT_SIZE_DIGITS);;
-   request.price     = IP.GetBidPrice(CURRENT_BAR);
+   request.price     = NormalizeDouble(price, Digits());
    request.comment   = comment;
    
    return new MqlTradeRequestWrapper(request);

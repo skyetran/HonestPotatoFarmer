@@ -9,6 +9,8 @@ ExecutionBoundary::ExecutionBoundary(void) {
 
 //--- Main Constructor
 ExecutionBoundary::ExecutionBoundary(const double InputLowerBound, const double InputUpperBound) {
+   IP = IndicatorProcessor::GetInstance();
+   
    BidLowerBound = MathMin(InputLowerBound, InputUpperBound);
    BidUpperBound = MathMax(InputLowerBound, InputUpperBound);
    AskLowerBound = BidLowerBound + IP.GetAverageSpreadInPrice(CURRENT_BAR);

@@ -35,7 +35,7 @@ public:
    string GetDebugMessage(void);
    
    //--- Get Singleton Instance
-   static IndicatorProcessor* GetInstance(void);
+   static IndicatorProcessor *GetInstance(void);
    
    //--- Indicator Init
    void FullInit(void);
@@ -114,7 +114,7 @@ private:
    double SSB_Beta , SSB_StopLossBeta;
    
    //--- Singleton Instance
-   static IndicatorProcessor* Instance;
+   static IndicatorProcessor *Instance;
    
    // Main Constructor --- Singleton
    IndicatorProcessor(void);
@@ -124,6 +124,6 @@ private:
    bool IsSSBValid(const int &AttenuationPeriod, const double &Alpha, const double &Beta) const;
 };
 
-IndicatorProcessor* IndicatorProcessor::Instance = NULL;
+IndicatorProcessor *IndicatorProcessor::Instance = NULL;
 
 #endif

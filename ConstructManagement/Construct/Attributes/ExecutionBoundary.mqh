@@ -3,6 +3,7 @@
 
 #include <Generic/Interfaces/IComparable.mqh>
 
+#include "../../../General/GlobalConstants.mqh"
 #include "../../../General/IndicatorProcessor.mqh"
 
 class ExecutionBoundary : public IComparable<ExecutionBoundary*>

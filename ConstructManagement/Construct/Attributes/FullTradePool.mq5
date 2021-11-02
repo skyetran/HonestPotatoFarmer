@@ -100,13 +100,16 @@ void ConstructFullTradePool::AddNewCompletionBoundaryRecurrentRequest(Completion
 CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetRequest(const double CurrentPrice) {
    CArrayList<MqlTradeRequestWrapper*> *OneTimeRequestList   = GetOneTimeRequest(CurrentPrice);
    CArrayList<MqlTradeRequestWrapper*> *RecurrentRequestList = GetRecurrentRequest(CurrentPrice);
-   CArrayList<MqlTradeRequestWrapper*> *FinalRequestList     = new CArrayList<MqlTradeRequestWrapper*>();
    
-   FinalRequestList.AddRange(OneTimeRequestList);
-   FinalRequestList.AddRange(RecurrentRequestList);
+   CArrayList<MqlTradeRequestWrapper*> *FinalRequestListBuffer = new CArrayList<MqlTradeRequestWrapper*>();
+   FinalRequestListBuffer.AddRange(OneTimeRequestList);
+   FinalRequestListBuffer.AddRange(RecurrentRequestList);
+   
+   CArrayList<MqlTradeRequestWrapper*> *FinalRequestList  = GetCloneRequestList(FinalRequestListBuffer);
    
    delete OneTimeRequestList;
    delete RecurrentRequestList;
+   delete FinalRequestListBuffer;
    return FinalRequestList;
 }
 
@@ -234,4 +237,64 @@ bool ConstructFullTradePool::IsInExecutionZone(ExecutionBoundary *InputBoundary,
    return InputBoundary.GetBidLowerBound() <= InputPrice && InputPrice <= InputBoundary.GetBidUpperBound() &&
           InputBoundary.GetAskLowerBound() <= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)           &&
           InputBoundary.GetAskUpperBound() >= InputPrice + IP.GetCloseSpreadInPrice(CURRENT_BAR)            ;
+}
+
+//--- Helper Functions: GetRequest
+CArrayList<MqlTradeRequestWrapper*> *ConstructFullTradePool::GetCloneRequestList(CArrayList<MqlTradeRequestWrapper*> *Source) {
+   CArrayList<MqlTradeRequestWrapper*> *ClonedList = new CArrayList<MqlTradeRequestWrapper*>();
+   
+   MqlTradeRequestWrapper *TempRequest;
+   for (int i = 0; i < Source.Count(); i++) {
+      Source.TryGetValue(i, TempRequest);
+      ClonedList.Add(new MqlTradeRequestWrapper(TempRequest));
+   }
+   return ClonedList;
+}
+
+//--- Testing --- TODO: Delete
+string ConstructFullTradePool::OutputAllOneTimeRequest(void) {
+   string Output = "";
+      
+   ExecutionBoundary *ExeList[];
+   CArrayList<MqlTradeRequestWrapper*> *SameBoundTradeList[];
+   OneTimeTradePool.CopyTo(ExeList, SameBoundTradeList);
+   
+   MqlTradeRequestWrapper *TempRequest;
+   bool BoomerangStatus;
+   for (int i = 0; i < ArraySize(SameBoundTradeList); i++) {
+      for (int j = 0; j < SameBoundTradeList[i].Count(); j++) {
+         SameBoundTradeList[i].TryGetValue(j, TempRequest);
+         OneTimeTradeBoomerangStatus.TryGetValue(TempRequest, BoomerangStatus);
+         Output += DoubleToString(ExeList[i].GetAskUpperBound()) + " " + 
+                   DoubleToString(ExeList[i].GetBidLowerBound()) + " " +
+                   DoubleToString(MathMax(TempRequest.price, TempRequest.stoplimit)) + " " + 
+                   DoubleToString(TempRequest.volume) + " " + 
+                   BoomerangStatus + "\n";
+      }
+   }
+   return Output;
+}
+
+//--- Testing --- TODO: Delete
+string ConstructFullTradePool::OutputAllRecurrentRequest(void) {
+   string Output = "";
+   
+   ExecutionBoundary *ExeList[];
+   CArrayList<MqlTradeRequestWrapper*> *SameBoundTradeList[];
+   RecurrentTradePool.CopyTo(ExeList, SameBoundTradeList);
+   
+   MqlTradeRequestWrapper *TempRequest;
+   bool BoomerangStatus;
+   for (int i = 0; i < ArraySize(SameBoundTradeList); i++) {
+      for (int j = 0; j < SameBoundTradeList[i].Count(); j++) {
+         SameBoundTradeList[i].TryGetValue(j, TempRequest);
+         RecurrentTradeBoomerangStatus.TryGetValue(TempRequest, BoomerangStatus);
+         Output += DoubleToString(ExeList[i].GetAskUpperBound()) + " " + 
+                   DoubleToString(ExeList[i].GetBidLowerBound()) + " " +
+                   DoubleToString(MathMax(TempRequest.price, TempRequest.stoplimit)) + " " + 
+                   DoubleToString(TempRequest.volume) + " " + 
+                   BoomerangStatus + "\n";
+      }
+   }
+   return Output;
 }

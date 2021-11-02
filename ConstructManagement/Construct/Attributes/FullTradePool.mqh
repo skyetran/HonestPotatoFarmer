@@ -31,6 +31,10 @@ public:
    CArrayList<MqlTradeRequestWrapper*> *GetRequest(const double CurrentPrice);
    void UpdateRecurrentTradeBoomerangStatus(const double CurrentPrice);
 
+   //--- Testing --- TODO: Delete
+   string OutputAllOneTimeRequest(void);
+   string OutputAllRecurrentRequest(void);
+
 private:
    //--- External Entities
    IndicatorProcessor *IP;
@@ -56,6 +60,7 @@ private:
    //--- Helper Functions: GetRequest
    CArrayList<MqlTradeRequestWrapper*> *GetOneTimeRequest(const double CurrentPrice);
    CArrayList<MqlTradeRequestWrapper*> *GetRecurrentRequest(const double CurrentPrice);
+   CArrayList<MqlTradeRequestWrapper*> *GetCloneRequestList(CArrayList<MqlTradeRequestWrapper*> *Source);
    
    //--- Helper Functions: GetOneTimeRequest
    void TransferOneTimeRequest(CArrayList<MqlTradeRequestWrapper*> *From, CArrayList<MqlTradeRequestWrapper*> *To);

@@ -6,6 +6,8 @@
 
 #include "ConstructTradePool.mqh"
 
+class Construct;
+
 class OrderManager
 {
 public:
@@ -19,6 +21,8 @@ public:
    void ManageNewRequestStream(void);
    
    //--- Operations
+   void AddTradePool(CArrayList<Construct*> *InputConstructs);
+   void AddTradePool(Construct *InputConstruct);
    void AddTradePool(CArrayList<ConstructTradePool*> *InputTradePools);
    void AddTradePool(ConstructTradePool *InputTradePool);
    

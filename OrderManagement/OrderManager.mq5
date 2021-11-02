@@ -455,6 +455,21 @@ void OrderManager::ManageCombinedRequestVol(CHashMap<MqlTradeRequestWrapper*, CA
 }
 
 //--- Operations
+void OrderManager::AddTradePool(CArrayList<Construct*> *InputConstructs) {
+   Construct *TempConstruct;
+   for (int i = 0; i < InputConstructs.Count(); i++) {
+      InputConstructs.TryGetValue(i, TempConstruct);
+      AddTradePool(TempConstruct);
+   }
+   delete InputConstructs;
+}
+
+//--- Operations
+void OrderManager::AddTradePool(Construct *InputConstruct) {
+   AddTradePool(InputConstruct.GetConstructTradePool());
+}
+
+//--- Operations
 void OrderManager::AddTradePool(CArrayList<ConstructTradePool*> *InputTradePools) {
    TradePoolList.AddRange(InputTradePools);
    delete InputTradePools;
