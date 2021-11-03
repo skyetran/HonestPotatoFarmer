@@ -48,6 +48,7 @@ public:
    ConstructKey           *GetConstructKey(void)           const;
    ConstructType          *GetConstructType(void)          const;
    ConstructParameters    *GetConstructParameters(void)    const;
+   ConstructPreCheckInfo  *GetConstructPreCheckInfo(void)  const;
    ConstructRollingInfo   *GetConstructRollingInfo(void)   const;
    ConstructResultInfo    *GetConstructResultInfo(void)    const;
    int                     GetEntryPositionID(void)        const;

@@ -1,6 +1,8 @@
 #ifndef CONSTRUCT_MANAGER_H
 #define CONSTRUCT_MANAGER_H
 
+#include "../../General/IndicatorProcessor.mqh"
+
 class ConstructManager
 {
 public:
@@ -11,6 +13,7 @@ public:
    ~ConstructManager(void);
    
 protected:
+   IndicatorProcessor *IP;
 };
 
 #endif

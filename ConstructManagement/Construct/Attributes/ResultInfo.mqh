@@ -14,6 +14,10 @@ public:
    double GetTotalRealizedProfit(void) const;
    double GetMaxRisk(void) const;
    
+   //--- Updaters
+   void UpdateTotalRealizedProfit(const double NewTotalRealizedProfit);
+   void UpdateMaxRisk(const double NewMaxRisk);
+   
 private:
    //--- Attributes
    double TotalRealizedProfit;

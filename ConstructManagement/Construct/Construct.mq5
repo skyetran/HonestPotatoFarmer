@@ -64,15 +64,16 @@ static Construct *Construct::Create(ConstructType *InputType, ConstructParameter
 }
 
 //--- Getters
-ConstructFullTradePool *Construct::GetFullConstructTradePool(void) const { return FullTradePool;   }
-ConstructTradePool     *Construct::GetConstructTradePool(void)     const { return Pool;            }
-ConstructKey           *Construct::GetConstructKey(void)           const { return Key;             }
-ConstructType          *Construct::GetConstructType(void)          const { return Type;            }
-ConstructParameters    *Construct::GetConstructParameters(void)    const { return Parameters;      }
-ConstructRollingInfo   *Construct::GetConstructRollingInfo(void)   const { return RollingInfo;     }
-ConstructResultInfo    *Construct::GetConstructResultInfo(void)    const { return ResultInfo;      }
-int                     Construct::GetEntryPositionID(void)        const { return EntryPositionID; }
-int                     Construct::GetMultiplier(void)             const { return Multiplier;      }
+ConstructFullTradePool *Construct::GetFullConstructTradePool(void) const { return FullTradePool;              }
+ConstructTradePool     *Construct::GetConstructTradePool(void)     const { return Pool;                       }
+ConstructKey           *Construct::GetConstructKey(void)           const { return Key;                        }
+ConstructType          *Construct::GetConstructType(void)          const { return Type;                       }
+ConstructParameters    *Construct::GetConstructParameters(void)    const { return Parameters;                 }
+ConstructPreCheckInfo  *Construct::GetConstructPreCheckInfo(void)  const { return PreCheck(Type, Parameters); }
+ConstructRollingInfo   *Construct::GetConstructRollingInfo(void)   const { return RollingInfo;                }
+ConstructResultInfo    *Construct::GetConstructResultInfo(void)    const { return ResultInfo;                 }
+int                     Construct::GetEntryPositionID(void)        const { return EntryPositionID;            }
+int                     Construct::GetMultiplier(void)             const { return Multiplier;                 }
 
 //--- Setters
 void Construct::SetConstructKey(ConstructKey *InputConstructKey)                      { Key             = InputConstructKey;        }

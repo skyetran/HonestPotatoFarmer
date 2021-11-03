@@ -109,7 +109,7 @@ void OnTick()
    Update();
    string DebugMsg;
    //DebugMsg += IP.GetDebugMessage() + "\n";
-   //DebugMsg += MW.GetDebugMessage();
+   DebugMsg += MW.GetDebugMessage();
    
    static ConstructType          *TestType;
    static ConstructParameters    *TestParameters;
@@ -118,38 +118,38 @@ void OnTick()
    static double                  BidPrice, AskPrice;
    static int k = 0;
    
-   DebugMsg += "Bid Price: " + DoubleToString(BidPrice) + "\n";
-   DebugMsg += "Ask Price: " + DoubleToString(AskPrice) + "\n";
+   //DebugMsg += "Bid Price: " + DoubleToString(BidPrice) + "\n";
+   //DebugMsg += "Ask Price: " + DoubleToString(AskPrice) + "\n";
    
-   static bool Once = true;
-   if (Once) {
-      Once = false;
-      BidPrice = IP.GetBidPrice(CURRENT_BAR);
-      AskPrice = IP.GetAskPrice(CURRENT_BAR);
-      TestType = new ConstructType(FREE_STYLING_LONG, FOUR_LEVEL);
-      TestParameters = new ConstructParameters(BidPrice, BidPrice + 0.00120, BidPrice - 0.00050, 30);
-      Test = Construct::Create(TestType, TestParameters, 1);
-      TestPool = Test.GetFullConstructTradePool();
-   }
+   //static bool Once = true;
+   //if (Once) {
+   //   Once = false;
+   //   BidPrice = IP.GetBidPrice(CURRENT_BAR);
+   //   AskPrice = IP.GetAskPrice(CURRENT_BAR);
+   //   TestType = new ConstructType(FREE_STYLING_LONG, FOUR_LEVEL);
+   //   TestParameters = new ConstructParameters(BidPrice, BidPrice + 0.00120, BidPrice - 0.00050, 30);
+   //   Test = Construct::Create(TestType, TestParameters, 1);
+   //   TestPool = Test.GetFullConstructTradePool();
+   //}
    
-   DebugMsg += TestPool.OutputAllOneTimeRequest() + "\n";
-   DebugMsg += TestPool.OutputAllRecurrentRequest();
+   //DebugMsg += TestPool.OutputAllOneTimeRequest() + "\n";
+   //DebugMsg += TestPool.OutputAllRecurrentRequest();
    
-   CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(IP.GetBidPrice(CURRENT_BAR));
-   TestPool.UpdateRecurrentTradeBoomerangStatus(IP.GetBidPrice(CURRENT_BAR));
+   //CArrayList<MqlTradeRequestWrapper*> *RequestList = TestPool.GetRequest(IP.GetBidPrice(CURRENT_BAR));
+   //TestPool.UpdateRecurrentTradeBoomerangStatus(IP.GetBidPrice(CURRENT_BAR));
    
-   MqlTradeRequestWrapper *Request;
-   for (int i = 0; i < RequestList.Count(); i++) {
-      RequestList.TryGetValue(i, Request);
-      Print(DoubleToString(Request.price) + " " + DoubleToString(Request.volume));
+   //MqlTradeRequestWrapper *Request;
+   //for (int i = 0; i < RequestList.Count(); i++) {
+   //   RequestList.TryGetValue(i, Request);
+   //   Print(DoubleToString(Request.price) + " " + DoubleToString(Request.volume));
       
-      ObjectCreate(0, IntegerToString(k++), OBJ_HLINE, 0, TimeCurrent(), MathMax(Request.price, Request.stoplimit));
-   }
+   //   ObjectCreate(0, IntegerToString(k++), OBJ_HLINE, 0, TimeCurrent(), MathMax(Request.price, Request.stoplimit));
+   //}
    
-   ConstructPreCheckInfo *TestPreCheck = Construct::PreCheck(TestType, TestParameters);
-   DebugMsg += DoubleToString(TestPreCheck.GetMaxLotSizeExposure()) + "\n";
-   DebugMsg += DoubleToString(TestPreCheck.GetPersistingLotSizeExposure()) + "\n";
-   DebugMsg += IntegerToString(TestPreCheck.GetMaxPotentialLossInMinLotPointValue()) + "\n";
+   //ConstructPreCheckInfo *TestPreCheck = Construct::PreCheck(TestType, TestParameters);
+   //DebugMsg += DoubleToString(TestPreCheck.GetMaxLotSizeExposure()) + "\n";
+   //DebugMsg += DoubleToString(TestPreCheck.GetPersistingLotSizeExposure()) + "\n";
+   //DebugMsg += IntegerToString(TestPreCheck.GetMaxPotentialLossInMinLotPointValue()) + "\n";
    
    static MqlTradeRequest request1 = {};
    static MqlTradeResult  result1  = {};

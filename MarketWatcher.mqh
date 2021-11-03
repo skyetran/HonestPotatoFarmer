@@ -1,6 +1,8 @@
 #ifndef MARKET_WATCHER_H
 #define MARKET_WATCHER_H
 
+#include "Wrapper/MqlTradeRequestWrapper.mqh"
+
 #include "General/GlobalConstants.mqh"
 #include "General/GlobalHelperFunctions.mqh"
 #include "General/IndicatorProcessor.mqh"

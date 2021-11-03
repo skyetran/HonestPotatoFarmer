@@ -4,7 +4,7 @@
 
 //--- Main Constructor
 ConstructManager::ConstructManager(void) {
-
+   IP = IndicatorProcessor::GetInstance();
 }
 
 //--- Destructor
